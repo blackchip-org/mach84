@@ -1,0 +1,20 @@
+{
+    "name": "mach84",
+    "version": "4.0.0",
+    "author": "blackchip.org <admin@blackchip.org>",
+    "description": "The Virtual Machinery Playpen",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/blackchip-org/mach84"
+    },
+    "devDependencies": {
+        "buster": "0.7.x",
+        "grunt": "0.4.x",
+        "grunt-buster": "0.3.x",
+        "grunt-contrib-jshint": "0.10.x",
+        "grunt-contrib-yuidoc": "0.5.x",
+        "phantomjs": "1.9.x",
+        "jshint": "2.5.x",
+        "yuidocjs": "0.3.x"
+    }
+}
