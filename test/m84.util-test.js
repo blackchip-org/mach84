@@ -34,19 +34,19 @@ buster.testCase("m84.util", {
     },
 
     "Byte converts to a hex string": function() {
-        buster.assert.equals(m84.util.x8(128), "80");
+        buster.assert.equals(m84.util.xb(128), "80");
     },
 
     "Byte converts to a hex string with zero padding": function() {
-        buster.assert.equals(m84.util.x8(10), "0a");
+        buster.assert.equals(m84.util.xb(10), "0a");
     },
 
     "Word converts to a hex string": function() {
-        buster.assert.equals(m84.util.x16(65244), "fedc");
+        buster.assert.equals(m84.util.xw(65244), "fedc");
     },
 
     "Word converts to a hext string with zero padding": function() {
-        buster.assert.equals(m84.util.x16(10), "000a");
+        buster.assert.equals(m84.util.xw(10), "000a");
     }
 
 });

@@ -63,22 +63,22 @@ m84.util = m84.util || (function() {
     /**
      * Converts a byte value to a hexadecimal string value.
      *
-     * @method x8
+     * @method xb
      * @param {byte} value to convert
      * @return value as a hexadecimal string value padded with zeros.
      */
-    self.x8 = function(val) {
+    self.xb = function(val) {
         return toHex(val, 2);
     };
 
     /**
      * Converts a word value to a hexadecimal string value.
      *
-     * @method x16
+     * @method xw
      * @param {word} value to convert
      * @return value as a hexadecimal string value padded with zeros.
      */
-    self.x16 = function(val) {
+    self.xw = function(val) {
         return toHex(val, 4);
     };
 

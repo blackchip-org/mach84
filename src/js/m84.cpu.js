@@ -206,12 +206,12 @@ m84.cpu = m84.cpu || function() {
         var bit = function(b) { return b ? "*" : "."; };
 
         return " pc  sr ac xr yr sp  n v - b d i z c\n" +
-            m84.util.x16(self.pc)  + " " +
-            m84.util.x8(self.sr()) + " " +
-            m84.util.x8(self.a)    + " " +
-            m84.util.x8(self.x)    + " " +
-            m84.util.x8(self.y)    + " " +
-            m84.util.x8(self.sp)   + " " +
+            m84.util.xw(self.pc)  + " " +
+            m84.util.xb(self.sr()) + " " +
+            m84.util.xb(self.a)    + " " +
+            m84.util.xb(self.x)    + " " +
+            m84.util.xb(self.y)    + " " +
+            m84.util.xb(self.sp)   + " " +
             " " +
             bit(self.n) + " " +
             bit(self.v) + " " +
