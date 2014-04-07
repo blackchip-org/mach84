@@ -24,101 +24,104 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-buster.testCase("m84.cpu", {
+buster.testCase("m84.cpu", (function() {
 
-    cpu: null,
+    var self = {};
+    var cpu;
 
-    setUp: function() {
-        this.cpu = m84.cpu();
-    },
+    self.setUp = function() {
+        cpu = m84.cpu();
+    };
 
-    "Set C flag": function() {
-        this.cpu.sr(parseInt("00000001", 2));
-        self.assert(this.cpu.c);
-    },
+    self["Set C flag"] = function() {
+        cpu.sr(parseInt("00000001", 2));
+        buster.assert(cpu.c);
+    };
 
-    "Get C flag": function() {
-        this.cpu.c = true;
-        self.assert.equals(this.cpu.sr(), parseInt("00100001", 2));
-    },
+    self["Get C flag"] = function() {
+        cpu.c = true;
+        buster.assert.equals(cpu.sr(), parseInt("00100001", 2));
+    };
 
-    "Set Z flag": function() {
-        this.cpu.sr(parseInt("00000010", 2));
-        self.assert(this.cpu.z);
-    },
+    self["Set Z flag"] = function() {
+        cpu.sr(parseInt("00000010", 2));
+        buster.assert(cpu.z);
+    };
 
-    "Get Z flag": function() {
-        this.cpu.z = true;
-        self.assert.equals(this.cpu.sr(), parseInt("00100010", 2));
-    },
+    self["Get Z flag"] = function() {
+        cpu.z = true;
+        buster.assert.equals(cpu.sr(), parseInt("00100010", 2));
+    };
 
-    "Set I flag": function() {
-        this.cpu.sr(parseInt("00000100", 2));
-        self.assert(this.cpu.i);
-    },
+    self["Set I flag"] = function() {
+        cpu.sr(parseInt("00000100", 2));
+        buster.assert(cpu.i);
+    };
 
-    "Get I flag": function() {
-        this.cpu.i = true;
-        self.assert.equals(this.cpu.sr(), parseInt("00100100", 2));
-    },
+    self["Get I flag"] = function() {
+        cpu.i = true;
+        buster.assert.equals(cpu.sr(), parseInt("00100100", 2));
+    };
 
-    "Set D flag": function() {
-        this.cpu.sr(parseInt("00001000", 2));
-        self.assert(this.cpu.d);
-    },
+    self["Set D flag"] = function() {
+        cpu.sr(parseInt("00001000", 2));
+        buster.assert(cpu.d);
+    };
 
-    "Get D flag": function() {
-        this.cpu.d = true;
-        self.assert.equals(this.cpu.sr(), parseInt("00101000", 2));
-    },
+    self["Get D flag"] = function() {
+        cpu.d = true;
+        buster.assert.equals(cpu.sr(), parseInt("00101000", 2));
+    };
 
-    "Set B flag": function() {
-        this.cpu.sr(parseInt("00010000", 2));
-        self.assert(this.cpu.b);
-    },
+    self["Set B flag"] = function() {
+        cpu.sr(parseInt("00010000", 2));
+        buster.assert(cpu.b);
+    };
 
-    "Get B flag": function() {
-        this.cpu.b = true;
-        self.assert.equals(this.cpu.sr(), parseInt("00110000", 2));
-    },
+    self["Get B flag"] = function() {
+        cpu.b = true;
+        buster.assert.equals(cpu.sr(), parseInt("00110000", 2));
+    };
 
-    "Set V flag": function() {
-        this.cpu.sr(parseInt("01000000", 2));
-        self.assert(this.cpu.v);
-    },
+    self["Set V flag"] = function() {
+        cpu.sr(parseInt("01000000", 2));
+        buster.assert(cpu.v);
+    };
 
-    "Get V flag": function() {
-        this.cpu.v = true;
-        self.assert.equals(this.cpu.sr(), parseInt("01100000", 2));
-    },
+    self["Get V flag"] = function() {
+        cpu.v = true;
+        buster.assert.equals(cpu.sr(), parseInt("01100000", 2));
+    };
 
-    "Set N flag": function() {
-        this.cpu.sr(parseInt("10000000", 2));
-        self.assert(this.cpu.n);
-    },
+    self["Set N flag"] = function() {
+        cpu.sr(parseInt("10000000", 2));
+        buster.assert(cpu.n);
+    };
 
-    "Get N flag": function() {
-        this.cpu.n = true;
-        self.assert.equals(this.cpu.sr(), parseInt("10100000", 2));
-    },
+    self["Get N flag"] = function() {
+        cpu.n = true;
+        buster.assert.equals(cpu.sr(), parseInt("10100000", 2));
+    };
 
-    "Valid status": function() {
-        this.cpu.pc = 0x0123;
-        this.cpu.a = 0x45;
-        this.cpu.x = 0x67;
-        this.cpu.y = 0x89;
-        this.cpu.sp = 0xab;
-        this.cpu.n = true;
-        this.cpu.v = true;
-        this.cpu.b = true;
-        this.cpu.d = true;
-        this.cpu.i = true;
-        this.cpu.z = true;
-        this.cpu.c = true;
+    self["Valid status"] = function() {
+        cpu.pc = 0x0123;
+        cpu.a = 0x45;
+        cpu.x = 0x67;
+        cpu.y = 0x89;
+        cpu.sp = 0xab;
+        cpu.n = true;
+        cpu.v = true;
+        cpu.b = true;
+        cpu.d = true;
+        cpu.i = true;
+        cpu.z = true;
+        cpu.c = true;
 
-        self.assert.equals(this.cpu.status(),
+        buster.assert.equals(cpu.status(),
             " pc  sr ac xr yr sp  n v - b d i z c\n" +
             "0123 ff 45 67 89 ab  * * * * * * * *");
-    }
+    };
 
-});
+    return self;
+
+})());

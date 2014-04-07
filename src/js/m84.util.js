@@ -85,7 +85,7 @@ m84.util = m84.util || (function() {
     /**
      * Throws an exception if the value is not a valid byte.
      *
-     * Byte is not valid if it not between 0 and 0xff.
+     * Byte is valid if it between 0 and 0xff.
      *
      * @method assertb
      * @param {byte} value the value to check
@@ -99,7 +99,7 @@ m84.util = m84.util || (function() {
     /**
      * Throws an exception if the value is not a valid word.
      *
-     * Word is not valid if it not between 0 and 0xffff.
+     * Word is valid if it is between 0 and 0xffff.
      *
      * @method assertw
      * @param {word} value the value to check

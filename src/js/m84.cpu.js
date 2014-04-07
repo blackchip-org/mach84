@@ -32,18 +32,15 @@ var m84 = m84 || {};
  * 6502 central processing unit.
  *
  * @class m84.cpu
+ * @uses m84.pc
  */
-m84.cpu = m84.cpu || function() {
+m84.cpu = m84.cpu || function(spec) {
 
+    spec = spec || {};
+    var mem = spec.mem || m84.mem(spec);
     var self = {};
 
-    /**
-     * Program counter.
-     *
-     * @property pc
-     * @type word
-     */
-    self.pc = 0;
+    self = m84.pc(spec);
 
     /**
      * Accumulator register.

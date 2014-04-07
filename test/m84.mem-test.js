@@ -23,98 +23,100 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-buster.testCase("m84.mem.mmu", {
+buster.testCase("m84.mem", (function() {
 
-    array: null,
-    mem: null,
+    var self = {};
+    var array;
+    var mem;
 
-    setUp: function() {
-        this.array = [0, 0, 0x34, 0x12];
-        this.mem = m84.mem.mmu(this.array);
-    },
+    self.setUp = function() {
+        array = [0, 0, 0x34, 0x12];
+        mem = m84.mem({array: array});
+    };
 
-    "Load byte": function() {
-        buster.assert.equals(this.mem.loadb(2), 0x34);
-    },
+    self["Load byte"] = function() {
+        buster.assert.equals(mem.loadb(2), 0x34);
+    };
 
-    "Load word": function() {
-        buster.assert.equals(this.mem.loadw(2), 0x1234);
-    },
+    self["Load word"] = function() {
+        buster.assert.equals(mem.loadw(2), 0x1234);
+    };
 
-    "Store byte": function() {
-        this.mem.storew(4, 0x56);
-        buster.assert.equals(this.array[4], 0x56);
-    },
+    self["Store byte"] = function() {
+        mem.storew(4, 0x56);
+        buster.assert.equals(array[4], 0x56);
+    };
 
-    "Store word": function() {
-        this.mem.storew(4, 0x5678);
-        buster.assert.equals(this.array[4], 0x78);
-        buster.assert.equals(this.array[5], 0x56);
-    }
+    self["Store word"] = function() {
+        mem.storew(4, 0x5678);
+        buster.assert.equals(array[4], 0x78);
+        buster.assert.equals(array[5], 0x56);
+    };
 
-});
+    return self;
 
-buster.testCase("m84.mem.mmu.debug", {
+})());
 
-    array: null,
-    mem: null,
+buster.testCase("m84.debug.mem", (function() {
 
-    setUp: function() {
-        this.array = [0, 0, 0x34, 0x12];
-        this.mem = m84.mem.mmu.debug(this.array);
-    },
+    var self = {};
+    var array;
+    var mem;
 
-    "Load byte": function() {
-        buster.assert.equals(this.mem.loadb(2), 0x34);
-    },
+    self.setUp = function() {
+        array = [0, 0, 0x34, 0x12];
+        mem = m84.mem({array: array, debug: true});
+    };
 
-    "Invalid parameters loading byte": function() {
-        var self = this;
+    self["Load byte"] = function() {
+        buster.assert.equals(mem.loadb(2), 0x34);
+    };
+
+    self["Invalid parameters loading byte"] = function() {
         buster.assert.exception(function() {
-            self.mem.loadb(0x10000);
+            mem.loadb(0x10000);
         });
-    },
+    };
 
-    "Load word": function() {
-        buster.assert.equals(this.mem.loadw(2), 0x1234);
-    },
+    self["Load word"] = function() {
+        buster.assert.equals(mem.loadw(2), 0x1234);
+    };
 
-    "Invalid parameters loading word": function() {
-        var self = this;
+    self["Invalid parameters loading word"] = function() {
         buster.assert.exception(function() {
-            self.mem.loadw(0x10000);
+            mem.loadw(0x10000);
         });
-    },
+    };
 
-    "Store byte": function() {
-        this.mem.storew(4, 0x56);
-        buster.assert.equals(this.array[4], 0x56);
-    },
+    self["Store byte"] = function() {
+        mem.storew(4, 0x56);
+        buster.assert.equals(array[4], 0x56);
+    };
 
-    "Invalid parameters storing byte": function() {
-        var self = this;
+    self["Invalid parameters storing byte"] = function() {
         buster.assert.exception(function() {
-            self.mem.storeb(0x10000, 0);
-        });
-        buster.assert.exception(function() {
-            self.mem.storeb(0, 0x100);
-        });
-    },
-
-    "Store word": function() {
-        this.mem.storew(4, 0x5678);
-        buster.assert.equals(this.array[4], 0x78);
-        buster.assert.equals(this.array[5], 0x56);
-    },
-
-    "Invalid parameters storing word": function() {
-        var self = this;
-        buster.assert.exception(function() {
-            self.mem.storew(0x10000, 0);
+            mem.storeb(0x10000, 0);
         });
         buster.assert.exception(function() {
-            self.mem.storew(0, 0x10000);
+            mem.storeb(0, 0x100);
         });
-    }
+    };
 
-});
+    self["Store word"] = function() {
+        mem.storew(4, 0x5678);
+        buster.assert.equals(array[4], 0x78);
+        buster.assert.equals(array[5], 0x56);
+    };
+
+    self["Invalid parameters storing word"] = function() {
+        buster.assert.exception(function() {
+            mem.storew(0x10000, 0);
+        });
+        buster.assert.exception(function() {
+            mem.storew(0, 0x10000);
+        });
+    };
+
+    return self;
+
+})());

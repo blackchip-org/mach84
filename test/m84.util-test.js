@@ -23,58 +23,62 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-buster.testCase("m84.util", {
+buster.testCase("m84.util", (function() {
 
-    "Repeat returns empty string when zero": function() {
+    var self = {};
+
+    self["Repeat returns empty string when zero"] = function() {
         buster.assert.equals(m84.util.repeat("x", 0), "");
-    },
+    };
 
-    "Repeats the string three times": function() {
+    self["Repeats the string three times"] = function() {
         buster.assert.equals(m84.util.repeat("xy", 3), "xyxyxy");
-    },
+    };
 
-    "Byte converts to a hex string": function() {
+    self["Byte converts to a hex string"] = function() {
         buster.assert.equals(m84.util.hexb(128), "80");
-    },
+    };
 
-    "Byte converts to a hex string with zero padding": function() {
+    self["Byte converts to a hex string with zero padding"] = function() {
         buster.assert.equals(m84.util.hexb(10), "0a");
-    },
+    };
 
-    "Word converts to a hex string": function() {
+    self["Word converts to a hex string"] = function() {
         buster.assert.equals(m84.util.hexw(65244), "fedc");
-    },
+    };
 
-    "Word converts to a hext string with zero padding": function() {
+    self["Word converts to a hext string with zero padding"] = function() {
         buster.assert.equals(m84.util.hexw(10), "000a");
-    },
+    };
 
-    "Valid byte in assertion": function() {
+    self["Valid byte in assertion"] = function() {
         m84.util.assertb(0x42);
         buster.assert(true);
-    },
+    };
 
-    "Invalid byte in assertion": function() {
+    self["Invalid byte in assertion"] = function() {
         buster.assert.exception(function() {
             m84.util.assertb(0x100);
         });
         buster.assert.exception(function() {
             m84.util.assertb(-1);
         });
-    },
+    };
 
-    "Valid word in assertion": function() {
+    self["Valid word in assertion"] = function() {
         m84.util.assertw(0x4242);
         buster.assert(true);
-    },
+    };
 
-    "Invalid word in assertion": function() {
+    self["Invalid word in assertion"] =function() {
         buster.assert.exception(function() {
             m84.util.assertw(0x10000);
         });
         buster.assert.exception(function() {
             m84.util.assertw(-1);
         });
-    }
+    };
 
-});
+    return self;
+
+})());
