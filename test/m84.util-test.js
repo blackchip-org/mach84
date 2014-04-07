@@ -34,19 +34,47 @@ buster.testCase("m84.util", {
     },
 
     "Byte converts to a hex string": function() {
-        buster.assert.equals(m84.util.xb(128), "80");
+        buster.assert.equals(m84.util.hexb(128), "80");
     },
 
     "Byte converts to a hex string with zero padding": function() {
-        buster.assert.equals(m84.util.xb(10), "0a");
+        buster.assert.equals(m84.util.hexb(10), "0a");
     },
 
     "Word converts to a hex string": function() {
-        buster.assert.equals(m84.util.xw(65244), "fedc");
+        buster.assert.equals(m84.util.hexw(65244), "fedc");
     },
 
     "Word converts to a hext string with zero padding": function() {
-        buster.assert.equals(m84.util.xw(10), "000a");
+        buster.assert.equals(m84.util.hexw(10), "000a");
+    },
+
+    "Valid byte in assertion": function() {
+        m84.util.assertb(0x42);
+        buster.assert(true);
+    },
+
+    "Invalid byte in assertion": function() {
+        buster.assert.exception(function() {
+            m84.util.assertb(0x100);
+        });
+        buster.assert.exception(function() {
+            m84.util.assertb(-1);
+        });
+    },
+
+    "Valid word in assertion": function() {
+        m84.util.assertw(0x4242);
+        buster.assert(true);
+    },
+
+    "Invalid word in assertion": function() {
+        buster.assert.exception(function() {
+            m84.util.assertw(0x10000);
+        });
+        buster.assert.exception(function() {
+            m84.util.assertw(-1);
+        });
     }
 
 });

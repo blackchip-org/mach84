@@ -55,31 +55,59 @@ m84.util = m84.util || (function() {
         return Array(count + 1).join(str);
     };
 
-    var toHex = function(val, length) {
-        var hex = val.toString(16);
+    var toHex = function(value, length) {
+        var hex = value.toString(16);
         return self.repeat("0", length - hex.length) + hex;
     };
 
     /**
      * Converts a byte value to a hexadecimal string value.
      *
-     * @method xb
-     * @param {byte} value to convert
+     * @method hexb
+     * @param {byte} value value to convert
      * @return value as a hexadecimal string value padded with zeros.
      */
-    self.xb = function(val) {
-        return toHex(val, 2);
+    self.hexb = function(value) {
+        return toHex(value, 2);
     };
 
     /**
      * Converts a word value to a hexadecimal string value.
      *
-     * @method xw
-     * @param {word} value to convert
+     * @method hexw
+     * @param {word} value value to convert
      * @return value as a hexadecimal string value padded with zeros.
      */
-    self.xw = function(val) {
+    self.hexw = function(val) {
         return toHex(val, 4);
+    };
+
+    /**
+     * Throws an exception if the value is not a valid byte.
+     *
+     * Byte is not valid if it not between 0 and 0xff.
+     *
+     * @method assertb
+     * @param {byte} value the value to check
+     */
+    self.assertb = function(value) {
+        if ( value < 0 || value > 0xff ) {
+            throw new Error("Invalid byte value: $" + parseInt(value, 16));
+        }
+    };
+
+    /**
+     * Throws an exception if the value is not a valid word.
+     *
+     * Word is not valid if it not between 0 and 0xffff.
+     *
+     * @method assertw
+     * @param {word} value the value to check
+     */
+    self.assertw = function(value) {
+        if ( value < 0 || value > 0xffff ) {
+            throw new Error("Invalid word value: $" + parseInt(value, 16));
+        }
     };
 
     return self;
