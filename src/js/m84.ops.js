@@ -37,9 +37,14 @@ m84.ops = m84.ops || function(spec) {
         cpu.n = (cpu.a & 128) !== 0;
     };
 
+    var sta_zp = function(cpu, mem) {
+        mem.storeb(cpu.a, cpu.fetchb());
+    };
+
     // Information about each instruction
     var ops = spec.ops || [
         { name: "lda", mode: "imm", code: 0x89, execute: lda_imm },
+        { name: "sta", mode: "zp",  code: 0x85, execute: sta_zp  },
     ];
 
     // Length of arguments depending on addressing mode
