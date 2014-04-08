@@ -14,7 +14,6 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
- *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -59,6 +58,42 @@ buster.testCase("m84.ops.lda", (function() {
         buster.assert.equals(cpu.a, 0xff);
         buster.refute(cpu.z);
         buster.assert(cpu.n);
+    };
+
+    self["zp, not zero, not signed"] = function() {
+        mem.storeb(0x12, 0x34);
+        a.lda_zp(0x12);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0x34);
+        buster.refute(cpu.z);
+        buster.refute(cpu.n);
+    };
+
+    self["zp, zero, not signed"] = function() {
+        mem.storeb(0x12, 0x00);
+        a.lda_zp(0x12);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0x00);
+        buster.assert(cpu.z);
+        buster.refute(cpu.n);
+    };
+
+    self["zp, not zero, signed"] = function() {
+        mem.storeb(0x12, 0xff);
+        a.lda_zp(0x12);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0xff);
+        buster.refute(cpu.z);
+        buster.assert(cpu.n);
+    };
+
+    self["abs, not zero, not signed"] = function() {
+        mem.storeb(0xabcd, 0x34);
+        a.lda_abs(0xabcd);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0x34);
+        buster.refute(cpu.z);
+        buster.refute(cpu.n);
     };
 
     return self;

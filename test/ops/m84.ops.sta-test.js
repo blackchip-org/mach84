@@ -45,6 +45,13 @@ buster.testCase("m84.ops.sta", (function() {
         buster.assert.equals(mem.loadb(0x12), 0x34);
     };
 
+    self["abs"] = function() {
+        cpu.a = 0x12;
+        a.sta_abs(0xabcd);
+        cpu.execute();
+        buster.assert.equals(mem.loadb(0xabcd), 0x12);
+    };
+
     return self;
 
 })());

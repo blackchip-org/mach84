@@ -31,10 +31,26 @@ var m84 = m84 || {};
 m84.ops = m84.ops || function(spec) {
 
     // Executors for each instruction
+    var lda_abs = function(cpu, mem) {
+        cpu.a = mem.loadb(cpu.fetchw());
+        cpu.z = cpu.a === 0;
+        cpu.n = (cpu.a & 128) !== 0;
+    };
+
     var lda_imm = function(cpu, mem) {
         cpu.a = cpu.fetchb();
         cpu.z = cpu.a === 0;
         cpu.n = (cpu.a & 128) !== 0;
+    };
+
+    var lda_zp = function(cpu, mem) {
+        cpu.a = mem.loadb(cpu.fetchb());
+        cpu.z = cpu.a === 0;
+        cpu.n = (cpu.a & 128) !== 0;
+    };
+
+    var sta_abs = function(cpu, mem) {
+        mem.storeb(cpu.fetchw(), cpu.a);
     };
 
     var sta_zp = function(cpu, mem) {
@@ -43,8 +59,11 @@ m84.ops = m84.ops || function(spec) {
 
     // Information about each instruction
     var ops = spec.ops || [
+        { name: "lda", mode: "abs", code: 0xad, execute: lda_abs },
         { name: "lda", mode: "imm", code: 0x89, execute: lda_imm },
+        { name: "lda", mode: "zp",  code: 0xa5, execute: lda_zp  },
         { name: "sta", mode: "zp",  code: 0x85, execute: sta_zp  },
+        { name: "sta", mode: "abs", code: 0x8d, execute: sta_abs }
     ];
 
     // Length of arguments depending on addressing mode
