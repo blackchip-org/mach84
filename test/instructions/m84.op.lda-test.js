@@ -24,36 +24,24 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-module.exports = function(grunt) {
+buster.testCase("m84.op.lda", (function() {
 
-    grunt.initConfig({
-        pkg: grunt.file.readJSON("package.json"),
+    var self = {};
+    var mem;
+    var cpu;
 
-        jshint: {
-            main: [
-                "src/js/**/*.js",
-                "test/**/*.js"
-            ]
-        },
+    self.setUp = function() {
+        mem = m84.mem({debug: true});
+        cpu = m84.cpu({mem: mem, debug: true});
+    };
 
-        yuidoc: {
-            main: {
-                name: "Mach-84",
-                description: "Virtual Machinery Playpen",
-                version: "<%= pkg.version %>",
-                url: "http://blackchip.org/mach84",
-                options: {
-                    paths: ["src/js"],
-                    outdir: "build/mach84-doc"
-                }
-            }
-        }
-    });
+    self.imm = function() {
+        mem.storeb(1, 0x89);
+        mem.storeb(2, 0xab);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0xab);
+    };
 
-    grunt.loadNpmTasks("grunt-contrib-jshint");
-    grunt.loadNpmTasks("grunt-contrib-yuidoc");
+    return self;
 
-    grunt.registerTask("default", ["jshint", "yuidoc"]);
-    grunt.registerTask("lint", ["jshint"]);
-
-};
+})());

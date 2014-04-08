@@ -38,6 +38,8 @@ m84.cpu = m84.cpu || function(spec) {
 
     spec = spec || {};
     var mem = spec.mem || m84.mem(spec);
+    var op = spec.op || m84.op(spec);
+
     var self = {};
 
     self = m84.pc(spec);
@@ -186,6 +188,10 @@ m84.cpu = m84.cpu || function(spec) {
             self.v = (value & 64)  !== 0;
             self.n = (value & 128) !== 0;
         }
+    };
+
+    self.execute = function() {
+        op[self.fetchb()].execute(self, mem);
     };
 
     /**
