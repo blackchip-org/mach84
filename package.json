@@ -7,6 +7,9 @@
         "type": "git",
         "url": "https://github.com/blackchip-org/mach84"
     },
+    "scripts": {
+        "test": "grunt test"
+    },
     "devDependencies": {
         "buster": "0.7.x",
         "grunt": "0.4.x",

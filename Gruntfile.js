@@ -47,13 +47,18 @@ module.exports = function(grunt) {
                     outdir: "build/mach84-doc"
                 }
             }
+        },
+
+        buster: {
+            console: {}
         }
     });
 
+    grunt.loadNpmTasks("grunt-buster");
     grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-contrib-yuidoc");
 
     grunt.registerTask("default", ["jshint", "yuidoc"]);
     grunt.registerTask("lint", ["jshint"]);
-
+    grunt.registerTask("test", ["buster:console"]);
 };
