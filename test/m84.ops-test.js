@@ -23,7 +23,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-buster.testCase("m84.op", (function() {
+buster.testCase("m84.ops", (function() {
 
     var self = {};
     var executor;
@@ -35,13 +35,13 @@ buster.testCase("m84.op", (function() {
     };
 
     self["Correct opcode table"] = function() {
-        var instructions = [
-            { op: "lda", mode: "imm", code: 0x89, execute: executor }
+        var ops = [
+            { name: "lda", mode: "imm", code: 0x89, execute: executor }
         ];
-        var lookup = m84.op({instructions: instructions});
+        var lookup = m84.ops({ops: ops});
         var i = lookup[0x89];
         buster.assert(i);
-        buster.assert.equals(i.op, "lda");
+        buster.assert.equals(i.name, "lda");
         buster.assert.equals(i.mode, "imm");
         buster.assert.equals(i.code, 0x89);
         buster.assert.equals(i.execute(), "answer");
@@ -49,43 +49,44 @@ buster.testCase("m84.op", (function() {
     };
 
     self["Duplicate opcode"] = function() {
-        var instructions = [
-            { op: "lda", mode: "imm", code: 0x89, execute: executor },
-            { op: "ldx", mode: "imm", code: 0x89, execute: executor }
+        var ops = [
+            { name: "lda", mode: "imm", code: 0x89, execute: executor },
+            { name: "ldx", mode: "imm", code: 0x89, execute: executor }
         ];
         buster.assert.exception(function() {
-            m84.op({instructions: instructions});
+            m84.ops({ops: ops});
         });
     };
 
     self["Invalid addressing mode"] = function() {
-        var instructions = [
-            { op: "lda", mode: "xxx", code: 0x89, execute: executor },
+        var ops = [
+            { name: "lda", mode: "xxx", code: 0x89, execute: executor },
         ];
         buster.assert.exception(function() {
-            m84.op({instructions: instructions});
+            m84.ops({ops: ops});
         });
     };
 
     self["Illegal instruction"] = function() {
-        var lookup = m84.op({instructions: []});
+        var lookup = m84.ops({ops: []});
         var i = lookup[0xab];
         buster.assert(i);
-        buster.assert.equals(i.op, "?ab");
+        buster.assert.equals(i.name, "?ab");
         buster.assert.equals(i.mode, "imp");
         buster.assert.equals(i.code, 0xab);
         buster.assert.equals(i.length, 0);
+        buster.assert(i.illegal);
     };
 
     self["No-op on illegal instruction"] = function() {
-        var lookup = m84.op({instructions: []});
+        var lookup = m84.ops({ops: []});
         var i = lookup[0xab];
         i.execute();
         buster.assert(true);
     };
 
     self["Exception on illegal instruction"] = function() {
-        var lookup = m84.op({instructions: [], debug: true});
+        var lookup = m84.ops({ops: [], debug: true});
         var i = lookup[0xab];
         buster.assert.exception(function() {
             i.execute();

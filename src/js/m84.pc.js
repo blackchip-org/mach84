@@ -98,6 +98,16 @@ m84.pc = m84.pc || function(self, spec) {
         return mem.loadw(self.pc - 2);
     };
 
+    self.storeb = function(value) {
+        self.pc += 1;
+        mem.storew(self.pc - 1, value);
+    };
+
+    self.storew = function(value) {
+        self.pc += 2;
+        mem.storew(self.pc - 2, value);
+    };
+
     if ( spec.debug || spec.debug_pc ) {
         self = m84.debug.pc(self);
     }

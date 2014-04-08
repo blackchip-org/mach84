@@ -26,10 +26,11 @@
 buster.testCase("m84.pc", (function() {
 
     var self = {};
+    var array;
     var it;
 
     self.setUp = function() {
-        var array = [0, 0, 0x34, 0x12, 0x78, 0x56];
+        array = [0, 0, 0x34, 0x12, 0x78, 0x56];
         it = m84.pc({}, {array: array});
     };
 
@@ -55,6 +56,24 @@ buster.testCase("m84.pc", (function() {
         it.pc = 2;
         buster.assert.equals(it.nextw(), 0x1234);
         buster.assert.equals(it.nextw(), 0x5678);
+    };
+
+    self["Store byte"] = function() {
+        it.pc = 2;
+        it.storeb(0xbb);
+        it.storeb(0xaa);
+        buster.assert.equals(array[2], 0xbb);
+        buster.assert.equals(array[3], 0xaa);
+    };
+
+    self["Store word"] = function() {
+        it.pc = 2;
+        it.storew(0xaabb);
+        it.storew(0xccdd);
+        buster.assert.equals(array[2], 0xbb);
+        buster.assert.equals(array[3], 0xaa);
+        buster.assert.equals(array[4], 0xdd);
+        buster.assert.equals(array[5], 0xcc);
     };
 
     return self;

@@ -38,7 +38,7 @@ m84.cpu = m84.cpu || function(spec) {
 
     spec = spec || {};
     var mem = spec.mem || m84.mem(spec);
-    var op = spec.op || m84.op(spec);
+    var ops = spec.ops || m84.ops(spec);
 
     var self = {};
 
@@ -191,7 +191,7 @@ m84.cpu = m84.cpu || function(spec) {
     };
 
     self.execute = function() {
-        op[self.fetchb()].execute(self, mem);
+        ops[self.fetchb()].execute(self, mem);
     };
 
     /**

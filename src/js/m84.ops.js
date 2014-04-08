@@ -28,7 +28,7 @@
  */
 var m84 = m84 || {};
 
-m84.op = m84.op || function(spec) {
+m84.ops = m84.ops || function(spec) {
 
     // Executors for each instruction
     var lda_imm = function(cpu, mem) {
@@ -36,8 +36,8 @@ m84.op = m84.op || function(spec) {
     };
 
     // Information about each instruction
-    var instructions = spec.instructions || [
-        { op: "lda", mode: "imm", code: 0x89, execute: lda_imm },
+    var ops = spec.ops || [
+        { name: "lda", mode: "imm", code: 0x89, execute: lda_imm },
     ];
 
     // Length of arguments depending on addressing mode
@@ -59,7 +59,7 @@ m84.op = m84.op || function(spec) {
     // Create a lookup table via opcode
     var table = {};
 
-    _.each(instructions, function(i) {
+    _.each(ops, function(i) {
         // Make sure an opcode isn't duplicated by accident
         if ( table[i.code] ) {
             throw new Error("Duplicate opcode " + m84.util.hexb(i.code));
@@ -93,11 +93,12 @@ m84.op = m84.op || function(spec) {
                 executor = noop;
             }
             table[opcode] = {
-                op: "?" + m84.util.hexb(opcode),
+                name: "?" + m84.util.hexb(opcode),
                 mode: "imp",
                 code: opcode,
                 length: 0,
-                execute: executor
+                execute: executor,
+                illegal: true
             };
         }
     }
