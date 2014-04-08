@@ -24,7 +24,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-buster.testCase("m84.op.lda", (function() {
+buster.testCase("m84.ops.lda", (function() {
 
     var self = {};
     var mem;
@@ -38,11 +38,27 @@ buster.testCase("m84.op.lda", (function() {
     };
 
     self["imm, not zero, not signed"] = function() {
-        a.lda_imm(0xab);
+        a.lda_imm(0x12);
         cpu.execute();
-        buster.assert.equals(cpu.a, 0xab);
+        buster.assert.equals(cpu.a, 0x12);
         buster.refute(cpu.z);
-        buster.refute(cpu.v);
+        buster.refute(cpu.n);
+    };
+
+    self["imm, zero, not signed"] = function() {
+        a.lda_imm(0x00);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0x00);
+        buster.assert(cpu.z);
+        buster.refute(cpu.n);
+    };
+
+    self["imm, not zero, signed"] = function() {
+        a.lda_imm(0xff);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0xff);
+        buster.refute(cpu.z);
+        buster.assert(cpu.n);
     };
 
     return self;
