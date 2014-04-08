@@ -35,12 +35,14 @@ m84.asm = m84.asm || function(spec) {
 
     var mem = spec.mem || m84.mem(spec);
     var ops = spec.ops || m84.ops(spec);
+    var map = spec.map || m84.map(spec);
 
     var self = {};
 
     m84.pc(self);
 
     var init = function() {
+        self.pc = map.PROGRAM;
         _.each(ops, function(op) {
             if ( op.illegal ) {
                 return;

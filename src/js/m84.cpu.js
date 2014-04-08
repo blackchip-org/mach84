@@ -39,10 +39,16 @@ m84.cpu = m84.cpu || function(spec) {
     spec = spec || {};
     var mem = spec.mem || m84.mem(spec);
     var ops = spec.ops || m84.ops(spec);
+    var map = spec.map || m84.map(spec);
 
     var self = {};
 
     self = m84.pc(spec);
+
+    var init = function() {
+        // FIXME: Vector to cold start
+        self.reset();
+    };
 
     /**
      * Accumulator register.
@@ -194,6 +200,11 @@ m84.cpu = m84.cpu || function(spec) {
         ops[self.fetchb()].execute(self, mem);
     };
 
+    self.reset = function() {
+        // FIXME: Vector to warm start
+        self.pc = map.PROGRAM - 1;
+    };
+
     /**
      * String representation of the CPU status.
      *
@@ -225,6 +236,7 @@ m84.cpu = m84.cpu || function(spec) {
             bit(self.c);
     };
 
+    init();
     return self;
 };
 

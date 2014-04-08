@@ -33,6 +33,8 @@ m84.ops = m84.ops || function(spec) {
     // Executors for each instruction
     var lda_imm = function(cpu, mem) {
         cpu.a = cpu.fetchb();
+        cpu.z = cpu.a === 0;
+        cpu.n = cpu.a & 128 !== 0;
     };
 
     // Information about each instruction

@@ -14,7 +14,6 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
- *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,27 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-buster.testCase("m84.op.lda", (function() {
+/**
+ * @module m84
+ */
+var m84 = m84 || {};
+
+m84.map = m84.map || function(spec) {
 
     var self = {};
-    var mem;
-    var cpu;
-    var a;
 
-    self.setUp = function() {
-        mem = m84.mem({debug: true});
-        cpu = m84.cpu({mem: mem, debug: true});
-        a = m84.asm({mem: mem});
-    };
-
-    self["imm, not zero, not signed"] = function() {
-        a.lda_imm(0xab);
-        cpu.execute();
-        buster.assert.equals(cpu.a, 0xab);
-        buster.refute(cpu.z);
-        buster.refute(cpu.v);
-    };
+    self.PROGRAM = 0x4000;
 
     return self;
+};
 
-})());
