@@ -38,8 +38,16 @@ buster.testCase("m84.mem", (function() {
         buster.assert.equals(mem.loadb(2), 0x34);
     };
 
+    self["Loaded undefined byte is zero"] = function() {
+        buster.assert.equals(mem.loadb(0xff), 0);
+    };
+
     self["Load word"] = function() {
         buster.assert.equals(mem.loadw(2), 0x1234);
+    };
+
+    self["Loaded undefined word is zero"] = function() {
+        buster.assert.equals(mem.loadw(0xff), 0);
     };
 
     self["Store byte"] = function() {

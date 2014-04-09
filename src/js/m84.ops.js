@@ -54,7 +54,11 @@ m84.ops = m84.ops || function(spec) {
     };
 
     var sta_zp = function(cpu, mem) {
-        mem.storeb(cpu.a, cpu.fetchb());
+        mem.storeb(cpu.fetchb(), cpu.a);
+    };
+
+    var sta_zpx = function(cpu, mem) {
+        mem.storeb((cpu.fetchb() + cpu.x) & 0xff, cpu.a);
     };
 
     // Information about each instruction

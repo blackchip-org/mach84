@@ -50,7 +50,7 @@ m84.mem = m84.mem || function(spec) {
      * @return {byte} the value at the memory location.
      */
     self.loadb = function(address) {
-        return mem[address];
+        return mem[address] || 0;
     };
 
     /**
@@ -72,7 +72,7 @@ m84.mem = m84.mem || function(spec) {
      * @return {word} the litte endian value at the memory location.
      */
     self.loadw = function(address) {
-        return mem[address] + (mem[address + 1] << 8);
+        return (mem[address] + (mem[address + 1] << 8)) || 0;
     };
 
     /**
