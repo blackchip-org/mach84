@@ -41,21 +41,55 @@ m84.debug.mem = m84.debug.mem || function(parent) {
         return parent.loadb(address);
     };
 
+    self.loadb_zp = function(address) {
+        m84.util.assertb(address);
+        return parent.loadb_zp(address);
+    };
+
     self.storeb = function(address, value) {
         m84.util.assertw(address);
         m84.util.assertb(value);
-        return parent.storeb(address, value);
+        parent.storeb(address, value);
+    };
+
+    self.storeb_zp = function(address, value) {
+        m84.util.assertb(address);
+        m84.util.assertb(value);
+        parent.storeb_zp(address, value);
     };
 
     self.loadw = function(address) {
         m84.util.assertw(address);
+        if ( address === 0xffff ) {
+            throw new Error("Word load at memory boundary");
+        }
         return parent.loadw(address);
+    };
+
+    self.loadw_zp = function(address) {
+        m84.util.assertb(address);
+        if ( address === 0xff ) {
+            throw new Error("Word load at page zero boundary");
+        }
+        return parent.loadw_zp(address);
     };
 
     self.storew = function(address, value) {
         m84.util.assertw(address);
         m84.util.assertw(value);
-        return parent.storew(address, value);
+        if ( address === 0xffff ) {
+            throw new Error("Word store at memory boundary");
+        }
+        parent.storew(address, value);
+    };
+
+    self.storew_zp = function(address, value) {
+        m84.util.assertb(address);
+        m84.util.assertw(value);
+        if ( address === 0xff ) {
+            throw new Error("Word store at page zero boundary");
+        }
+        parent.storew_zp(address, value);
     };
 
     return self;

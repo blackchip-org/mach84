@@ -38,7 +38,7 @@ buster.testCase("m84.mem", (function() {
         buster.assert.equals(mem.loadb(2), 0x34);
     };
 
-    self["Loaded undefined byte is zero"] = function() {
+    self["Load undefined byte is zero"] = function() {
         buster.assert.equals(mem.loadb(0xff), 0);
     };
 
@@ -46,8 +46,14 @@ buster.testCase("m84.mem", (function() {
         buster.assert.equals(mem.loadw(2), 0x1234);
     };
 
-    self["Loaded undefined word is zero"] = function() {
+    self["Load undefined word is zero"] = function() {
         buster.assert.equals(mem.loadw(0xff), 0);
+    };
+
+    self["Load word wraps at end of memory"] = function() {
+        array[0xffff] = 0x34;
+        array[0x0000] = 0x12;
+        buster.assert.equals(mem.loadw(0xffff), 0x1234);
     };
 
     self["Store byte"] = function() {
@@ -59,6 +65,34 @@ buster.testCase("m84.mem", (function() {
         mem.storew(4, 0x5678);
         buster.assert.equals(array[4], 0x78);
         buster.assert.equals(array[5], 0x56);
+    };
+
+    self["Store word wraps at end of memory"] = function() {
+        mem.storew(0xffff, 0x1234);
+        buster.assert.equals(array[0xffff], 0x34);
+        buster.assert.equals(array[0x0000], 0x12);
+    };
+
+    self["Load word, zero page"] = function() {
+        buster.assert.equals(mem.loadw_zp(2), 0x1234);
+    };
+
+    self["Load word, zero page, wraps at page boundary"] = function() {
+        array[0xff] = 0x34;
+        array[0x00] = 0x12;
+        buster.assert.equals(mem.loadw_zp(0xff), 0x1234);
+    };
+
+    self["Store word, zero page"] = function() {
+        mem.storew_zp(4, 0x5678);
+        buster.assert.equals(array[4], 0x78);
+        buster.assert.equals(array[5], 0x56);
+    };
+
+    self["Store word, zero page, wraps at page boundary"] = function() {
+        mem.storew_zp(0xff, 0x1234);
+        buster.assert.equals(array[0xff], 0x34);
+        buster.assert.equals(array[0x00], 0x12);
     };
 
     return self;
@@ -86,6 +120,16 @@ buster.testCase("m84.debug.mem", (function() {
         });
     };
 
+    self["Load zero page byte"] = function() {
+        buster.assert.equals(mem.loadb_zp(2), 0x34);
+    };
+
+    self["Invalid address loading zero page byte"] = function() {
+        buster.assert.exception(function() {
+            mem.loadb_zp(0x100);
+        });
+    };
+
     self["Load word"] = function() {
         buster.assert.equals(mem.loadw(2), 0x1234);
     };
@@ -93,6 +137,28 @@ buster.testCase("m84.debug.mem", (function() {
     self["Invalid parameters loading word"] = function() {
         buster.assert.exception(function() {
             mem.loadw(0x10000);
+        });
+    };
+
+    self["Exception loading on memory boundary wrap"] = function() {
+        buster.assert.exception(function() {
+            mem.loadw(0xffff);
+        });
+    };
+
+    self["Load zero page word"] = function() {
+        buster.assert.equals(mem.loadw_zp(2), 0x1234);
+    };
+
+    self["Invalid address loading zero page word"] = function() {
+        buster.assert.exception(function() {
+            mem.loadw_zp(0x100);
+        });
+    };
+
+    self["Exception on load with zero page wrap around"] = function() {
+        buster.assert.exception(function() {
+            mem.loadw_zp(0xff);
         });
     };
 
@@ -110,6 +176,20 @@ buster.testCase("m84.debug.mem", (function() {
         });
     };
 
+    self["Store zero page byte"] = function() {
+        mem.storew_zp(4, 0x56);
+        buster.assert.equals(array[4], 0x56);
+    };
+
+    self["Invalid parameters storing zero page byte"] = function() {
+        buster.assert.exception(function() {
+            mem.storeb_zp(0x100, 0);
+        });
+        buster.assert.exception(function() {
+            mem.storeb_zp(0, 0x100);
+        });
+    };
+
     self["Store word"] = function() {
         mem.storew(4, 0x5678);
         buster.assert.equals(array[4], 0x78);
@@ -122,6 +202,33 @@ buster.testCase("m84.debug.mem", (function() {
         });
         buster.assert.exception(function() {
             mem.storew(0, 0x10000);
+        });
+    };
+
+    self["Exception on store with memory boundary wrap"] = function() {
+        buster.assert.exception(function() {
+            mem.storew(0xffff, 0x1234);
+        });
+    };
+
+    self["Store zero page word"] = function() {
+        mem.storew_zp(4, 0x3456);
+        buster.assert.equals(array[4], 0x56);
+        buster.assert.equals(array[5], 0x34);
+    };
+
+    self["Invalid parameters storing zero page word"] = function() {
+        buster.assert.exception(function() {
+            mem.storew_zp(0x100, 0);
+        });
+        buster.assert.exception(function() {
+            mem.storew_zp(0, 0x10000);
+        });
+    };
+
+    self["Exception on load with zero page wrap around"] = function() {
+        buster.assert.exception(function() {
+            mem.storew_zp(0xff, 0);
         });
     };
 

@@ -36,6 +36,109 @@ buster.testCase("m84.ops.lda", (function() {
         a = m84.asm({mem: mem});
     };
 
+    self["abs, not zero, not signed"] = function() {
+        mem.storeb(0xabcd, 0x34);
+        a.lda_abs(0xabcd);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0x34);
+        buster.refute(cpu.z);
+        buster.refute(cpu.n);
+    };
+
+    self["abs, zero, not signed"] = function() {
+        mem.storeb(0xabcd, 0x00);
+        a.lda_abs(0xabcd);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0x00);
+        buster.assert(cpu.z);
+        buster.refute(cpu.n);
+    };
+
+    self["abs, not zero, signed"] = function() {
+        mem.storeb(0xabcd, 0xff);
+        a.lda_abs(0xabcd);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0xff);
+        buster.refute(cpu.z);
+        buster.assert(cpu.n);
+    };
+
+    self["abx, not zero, not signed"] = function() {
+        mem.storeb(0x5432, 0x34);
+        cpu.x = 2;
+        a.lda_abx(0x5430);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0x34);
+        buster.refute(cpu.z);
+        buster.refute(cpu.n);
+    };
+
+    self["abx, zero, not signed"] = function() {
+        mem.storeb(0x5432, 0x00);
+        cpu.x = 2;
+        a.lda_abx(0x5430);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0x00);
+        buster.assert(cpu.z);
+        buster.refute(cpu.n);
+    };
+
+    self["abx, not zero, signed"] = function() {
+        mem.storeb(0x5432, 0xff);
+        cpu.x = 2;
+        a.lda_abx(0x5430);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0xff);
+        buster.refute(cpu.z);
+        buster.assert(cpu.n);
+    };
+
+    self["abx, wrap around"] = function() {
+        mem.storeb(0x01, 0x12);
+        cpu.x = 2;
+        a.lda_abx(0xffff);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0x12);
+    };
+
+    self["aby, not zero, not signed"] = function() {
+        mem.storeb(0x5432, 0x34);
+        cpu.y = 2;
+        a.lda_aby(0x5430);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0x34);
+        buster.refute(cpu.z);
+        buster.refute(cpu.n);
+    };
+
+    self["aby, zero, not signed"] = function() {
+        mem.storeb(0x5432, 0x00);
+        cpu.y = 2;
+        a.lda_aby(0x5430);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0x00);
+        buster.assert(cpu.z);
+        buster.refute(cpu.n);
+    };
+
+    self["aby, not zero, signed"] = function() {
+        mem.storeb(0x5432, 0xff);
+        cpu.y = 2;
+        a.lda_aby(0x5430);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0xff);
+        buster.refute(cpu.z);
+        buster.assert(cpu.n);
+    };
+
+    self["aby, wrap around"] = function() {
+        mem.storeb(0x01, 0x12);
+        cpu.y = 2;
+        a.lda_aby(0xffff);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0x12);
+    };
+
     self["imm, not zero, not signed"] = function() {
         a.lda_imm(0x12);
         cpu.execute();
@@ -54,6 +157,39 @@ buster.testCase("m84.ops.lda", (function() {
 
     self["imm, not zero, signed"] = function() {
         a.lda_imm(0xff);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0xff);
+        buster.refute(cpu.z);
+        buster.assert(cpu.n);
+    };
+
+    self["izx, not zero, not signed"] = function() {
+        mem.storew_zp(0x0a, 0xdddd);
+        mem.storeb(0xdddd, 0x11);
+        cpu.x = 0x0a;
+        a.lda_izx(0x00);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0x11);
+        buster.refute(cpu.z);
+        buster.refute(cpu.n);
+    };
+
+    self["izx, zero, not signed"] = function() {
+        mem.storew_zp(0x0a, 0xdddd);
+        mem.storeb(0xdddd, 0x00);
+        cpu.x = 0x0a;
+        a.lda_izx(0x00);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0x00);
+        buster.assert(cpu.z);
+        buster.refute(cpu.n);
+    };
+
+    self["izx, not zero, signed"] = function() {
+        mem.storew_zp(0x0a, 0xdddd);
+        mem.storeb(0xdddd, 0xff);
+        cpu.x = 0x0a;
+        a.lda_izx(0x00);
         cpu.execute();
         buster.assert.equals(cpu.a, 0xff);
         buster.refute(cpu.z);
@@ -87,13 +223,42 @@ buster.testCase("m84.ops.lda", (function() {
         buster.assert(cpu.n);
     };
 
-    self["abs, not zero, not signed"] = function() {
-        mem.storeb(0xabcd, 0x34);
-        a.lda_abs(0xabcd);
+    self["zpx, not zero, not signed"] = function() {
+        mem.storeb(0x14, 0x34);
+        cpu.x = 2;
+        a.lda_zpx(0x12);
         cpu.execute();
         buster.assert.equals(cpu.a, 0x34);
         buster.refute(cpu.z);
         buster.refute(cpu.n);
+    };
+
+    self["zpx, zero, not signed"] = function() {
+        mem.storeb(0x14, 0x00);
+        cpu.x = 2;
+        a.lda_zpx(0x12);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0x00);
+        buster.assert(cpu.z);
+        buster.refute(cpu.n);
+    };
+
+    self["zpx, not zero, signed"] = function() {
+        mem.storeb(0x14, 0xff);
+        cpu.x = 2;
+        a.lda_zpx(0x12);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0xff);
+        buster.refute(cpu.z);
+        buster.assert(cpu.n);
+    };
+
+    self["zpx, wrap around"] = function() {
+        mem.storeb(0x01, 0x12);
+        cpu.x = 2;
+        a.lda_zpx(0xff);
+        cpu.execute();
+        buster.assert.equals(cpu.a, 0x12);
     };
 
     return self;

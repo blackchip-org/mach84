@@ -24,7 +24,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-buster.testCase("m84.ops.sta", (function() {
+buster.testCase("m84.ops.stx", (function() {
 
     var self = {};
     var mem;
@@ -39,72 +39,31 @@ buster.testCase("m84.ops.sta", (function() {
     };
 
     self.abs = function() {
-        cpu.a = 0x12;
-        a.sta_abs(0xabcd);
+        cpu.x = 0x12;
+        a.stx_abs(0xabcd);
         cpu.execute();
         buster.assert.equals(mem.loadb(0xabcd), 0x12);
     };
 
-    self.abx = function() {
-        cpu.a = 0x12;
-        cpu.x = 2;
-        a.sta_abx(0x5430);
-        cpu.execute();
-        buster.assert.equals(mem.loadb(0x5432), 0x12);
-    };
-
-    self["abx, wrap around"] = function() {
-        cpu.a = 0x12;
-        cpu.x = 2;
-        a.sta_abx(0xffff);
-        cpu.execute();
-        buster.assert.equals(mem.loadb(0x01), 0x12);
-    };
-
-    self.aby = function() {
-        cpu.a = 0x12;
-        cpu.y = 2;
-        a.sta_aby(0x5430);
-        cpu.execute();
-        buster.assert.equals(mem.loadb(0x5432), 0x12);
-    };
-
-    self["aby, wrap around"] = function() {
-        cpu.a = 0x12;
-        cpu.y = 2;
-        a.sta_aby(0xffff);
-        cpu.execute();
-        buster.assert.equals(mem.loadb(0x01), 0x12);
-    };
-
-    self.izx = function() {
-        mem.storew_zp(0x0a, 0xdddd);
-        cpu.a = 0x11;
-        cpu.x = 0x0a;
-        a.sta_izx(0x00);
-        cpu.execute();
-        buster.assert.equals(mem.loadb(0xdddd), 0x11);
-    };
-
     self.zp = function() {
-        cpu.a = 0x12;
-        a.sta_zp(0x34);
+        cpu.x = 0x12;
+        a.stx_zp(0x34);
         cpu.execute();
         buster.assert.equals(mem.loadb(0x34), 0x12);
     };
 
-    self.zpx = function() {
-        cpu.a = 0x12;
-        cpu.x = 0x02;
-        a.sta_zpx(0x34);
+    self.zpy = function() {
+        cpu.x = 0x12;
+        cpu.y = 0x02;
+        a.stx_zpy(0x34);
         cpu.execute();
         buster.assert.equals(mem.loadb(0x36), 0x12);
     };
 
-    self["zpx, wrap around"] = function() {
-        cpu.a = 0x12;
-        cpu.x = 0x02;
-        a.sta_zpx(0xff);
+    self["zpy, wrap around"] = function() {
+        cpu.x = 0x12;
+        cpu.y = 0x02;
+        a.stx_zpy(0xff);
         cpu.execute();
         buster.assert.equals(mem.loadb(0x01), 0x12);
     };
