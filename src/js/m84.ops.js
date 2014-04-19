@@ -33,44 +33,37 @@ m84.ops = m84.ops || function(spec) {
     // Executors for each instruction
     var lda_abs = function(cpu, mem) {
         cpu.a = mem.loadb(cpu.fetchw());
-        cpu.z = cpu.a === 0;
-        cpu.n = (cpu.a & 128) !== 0;
+        flags(cpu, cpu.a);
     };
 
     var lda_abx = function(cpu, mem) {
         cpu.a = mem.loadb((cpu.fetchw() + cpu.x) & 0xffff);
-        cpu.z = cpu.a === 0;
-        cpu.n = (cpu.a & 128) !== 0;
+        flags(cpu, cpu.a);
     };
 
     var lda_aby = function(cpu, mem) {
         cpu.a = mem.loadb((cpu.fetchw() + cpu.y) & 0xffff);
-        cpu.z = cpu.a === 0;
-        cpu.n = (cpu.a & 128) !== 0;
+        flags(cpu, cpu.a);
     };
 
     var lda_imm = function(cpu, mem) {
         cpu.a = cpu.fetchb();
-        cpu.z = cpu.a === 0;
-        cpu.n = (cpu.a & 128) !== 0;
+        flags(cpu, cpu.a);
     };
 
     var lda_izx = function(cpu, mem) {
         cpu.a = mem.loadb(mem.loadw_zp((cpu.fetchb() + cpu.x) & 0xff));
-        cpu.z = cpu.a === 0;
-        cpu.n = (cpu.a & 128) !== 0;
+        flags(cpu, cpu.a);
     };
 
     var lda_zp = function(cpu, mem) {
         cpu.a = mem.loadb_zp(cpu.fetchb());
-        cpu.z = cpu.a === 0;
-        cpu.n = (cpu.a & 128) !== 0;
+        flags(cpu, cpu.a);
     };
 
     var lda_zpx = function(cpu, mem) {
         cpu.a = mem.loadb_zp((cpu.fetchb() + cpu.x) & 0xff);
-        cpu.z = cpu.a === 0;
-        cpu.n = (cpu.a & 128) !== 0;
+        flags(cpu, cpu.a);
     };
 
     var sta_abs = function(cpu, mem) {
@@ -119,6 +112,12 @@ m84.ops = m84.ops || function(spec) {
 
     var sty_zpx = function(cpu, mem) {
         mem.storeb_zp((cpu.fetchb() + cpu.x) & 0xff, cpu.y);
+    };
+
+    // Helper functions
+    var flags = function(cpu, value) {
+        cpu.z = value === 0;
+        cpu.n = (value & 128) !== 0;
     };
 
     // Information about each instruction
