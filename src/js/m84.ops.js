@@ -37,12 +37,12 @@ m84.ops = m84.ops || function(spec) {
     };
 
     var lda_abx = function(cpu, mem) {
-        cpu.a = mem.loadb((cpu.fetchw() + cpu.x) & 0xffff);
+        cpu.a = mem.loadb_i(cpu.fetchw(), cpu.x);
         flags(cpu, cpu.a);
     };
 
     var lda_aby = function(cpu, mem) {
-        cpu.a = mem.loadb((cpu.fetchw() + cpu.y) & 0xffff);
+        cpu.a = mem.loadb_i(cpu.fetchw(), cpu.y);
         flags(cpu, cpu.a);
     };
 
@@ -52,7 +52,7 @@ m84.ops = m84.ops || function(spec) {
     };
 
     var lda_izx = function(cpu, mem) {
-        cpu.a = mem.loadb(mem.loadw_zp((cpu.fetchb() + cpu.x) & 0xff));
+        cpu.a = mem.loadb_izx(cpu.fetchb(), cpu.x);
         flags(cpu, cpu.a);
     };
 
@@ -62,7 +62,7 @@ m84.ops = m84.ops || function(spec) {
     };
 
     var lda_zpx = function(cpu, mem) {
-        cpu.a = mem.loadb_zp((cpu.fetchb() + cpu.x) & 0xff);
+        cpu.a = mem.loadb_zpi(cpu.fetchb(), cpu.x);
         flags(cpu, cpu.a);
     };
 
@@ -71,15 +71,15 @@ m84.ops = m84.ops || function(spec) {
     };
 
     var sta_abx = function(cpu, mem) {
-        mem.storeb((cpu.fetchw() + cpu.x) & 0xffff, cpu.a);
+        mem.storeb_i(cpu.fetchw(), cpu.x, cpu.a);
     };
 
     var sta_aby = function(cpu, mem) {
-        mem.storeb((cpu.fetchw() + cpu.y) & 0xffff, cpu.a);
+        mem.storeb_i(cpu.fetchw(), cpu.y, cpu.a);
     };
 
     var sta_izx = function(cpu, mem) {
-        mem.storeb(mem.loadw_zp((cpu.fetchb() + cpu.x) & 0xff), cpu.a);
+        mem.storeb_izx(cpu.fetchb(), cpu.x, cpu.a);
     };
 
     var sta_zp = function(cpu, mem) {
@@ -87,7 +87,7 @@ m84.ops = m84.ops || function(spec) {
     };
 
     var sta_zpx = function(cpu, mem) {
-        mem.storeb_zp((cpu.fetchb() + cpu.x) & 0xff, cpu.a);
+        mem.storeb_zpi(cpu.fetchb(), cpu.x, cpu.a);
     };
 
     var stx_abs = function(cpu, mem) {
@@ -99,7 +99,7 @@ m84.ops = m84.ops || function(spec) {
     };
 
     var stx_zpy = function(cpu, mem) {
-        mem.storeb_zp((cpu.fetchb() + cpu.y) & 0xff, cpu.x);
+        mem.storeb_zpi(cpu.fetchb(), cpu.y, cpu.x);
     };
 
     var sty_abs = function(cpu, mem) {
@@ -111,7 +111,7 @@ m84.ops = m84.ops || function(spec) {
     };
 
     var sty_zpx = function(cpu, mem) {
-        mem.storeb_zp((cpu.fetchb() + cpu.x) & 0xff, cpu.y);
+        mem.storeb_zpi(cpu.fetchb(), cpu.x, cpu.y);
     };
 
     // Helper functions

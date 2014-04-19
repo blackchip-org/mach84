@@ -41,21 +41,43 @@ m84.debug.mem = m84.debug.mem || function(parent) {
         return parent.loadb(address);
     };
 
-    self.loadb_zp = function(address) {
-        m84.util.assertb(address);
-        return parent.loadb_zp(address);
-    };
-
     self.storeb = function(address, value) {
         m84.util.assertw(address);
         m84.util.assertb(value);
         parent.storeb(address, value);
     };
 
+    self.loadb_zp = function(address) {
+        m84.util.assertb(address);
+        return parent.loadb_zp(address);
+    };
+
     self.storeb_zp = function(address, value) {
         m84.util.assertb(address);
         m84.util.assertb(value);
         parent.storeb_zp(address, value);
+    };
+
+    self.loadb_i = function(address, index) {
+        m84.util.assertw(address + index);
+        return parent.loadb_i(address, index);
+    };
+
+    self.storeb_i = function(address, index, value) {
+        m84.util.assertw(address + index);
+        m84.util.assertb(value);
+        parent.storeb_i(address, index, value);
+    };
+
+    self.loadb_izx = function(address, index) {
+        m84.util.assertb(address + index);
+        return parent.loadb_izx(address, index);
+    };
+
+    self.storeb_izx = function(address, index, value) {
+        m84.util.assertb(address + index);
+        m84.util.assertb(value);
+        parent.storeb_izx(address, index, value);
     };
 
     self.loadw = function(address) {

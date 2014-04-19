@@ -88,6 +88,30 @@ m84.mem = m84.mem || function(spec) {
      */
     self.storeb_zp = self.storeb;
 
+    self.loadb_i = function(address, index) {
+        return mem[(address + index) & 0xffff];
+    };
+
+    self.storeb_i = function(address, index, value) {
+        mem[(address + index) & 0xffff] = value;
+    };
+
+    self.loadb_zpi = function(address, index) {
+        return mem[(address + index) & 0xff];
+    };
+
+    self.storeb_zpi = function(address, index, value) {
+        mem[(address + index) & 0xff] = value;
+    };
+
+    self.loadb_izx = function(address, index) {
+        return mem[self.loadw_zp(address + index)];
+    };
+
+    self.storeb_izx = function(address, index, value) {
+        mem[self.loadw_zp(address + index)] = value;
+    };
+
     /**
      * Loads a word from memory.
      *

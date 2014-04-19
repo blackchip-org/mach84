@@ -32,8 +32,8 @@ buster.testCase("m84.ops.sta", (function() {
     var a;
 
     self.setUp = function() {
-        mem = m84.mem({debug: true});
-        cpu = m84.cpu({mem: mem, debug: true});
+        mem = m84.mem();
+        cpu = m84.cpu({mem: mem});
         map = m84.map();
         a = m84.asm({mem: mem});
     };

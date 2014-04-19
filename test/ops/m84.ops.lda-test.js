@@ -31,8 +31,8 @@ buster.testCase("m84.ops.lda", (function() {
     var a;
 
     self.setUp = function() {
-        mem = m84.mem({debug: true});
-        cpu = m84.cpu({mem: mem, debug: true});
+        mem = m84.mem();
+        cpu = m84.cpu({mem: mem});
         a = m84.asm({mem: mem});
     };
 
