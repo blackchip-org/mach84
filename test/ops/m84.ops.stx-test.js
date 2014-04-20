@@ -24,6 +24,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+/* jshint sub: true */
+
 buster.testCase("m84.ops.stx", (function() {
 
     var self = {};
@@ -38,21 +40,21 @@ buster.testCase("m84.ops.stx", (function() {
         a = m84.asm({mem: mem});
     };
 
-    self.abs = function() {
+    self["stx_abs"] = function() {
         cpu.x = 0x12;
         a.stx_abs(0xabcd);
         cpu.execute();
         buster.assert.equals(mem.loadb(0xabcd), 0x12);
     };
 
-    self.zp = function() {
+    self["stx_zp"] = function() {
         cpu.x = 0x12;
         a.stx_zp(0x34);
         cpu.execute();
         buster.assert.equals(mem.loadb(0x34), 0x12);
     };
 
-    self.zpy = function() {
+    self["stx_zpy"] = function() {
         cpu.x = 0x12;
         cpu.y = 0x02;
         a.stx_zpy(0x34);
@@ -60,7 +62,7 @@ buster.testCase("m84.ops.stx", (function() {
         buster.assert.equals(mem.loadb(0x36), 0x12);
     };
 
-    self["zpy, wrap around"] = function() {
+    self["stx_zpy, wrap"] = function() {
         cpu.x = 0x12;
         cpu.y = 0x02;
         a.stx_zpy(0xff);
