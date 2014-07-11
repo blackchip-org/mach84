@@ -15,9 +15,7 @@
         "grunt": "0.4.x",
         "grunt-buster": "0.3.x",
         "grunt-contrib-jshint": "0.10.x",
-        "grunt-contrib-yuidoc": "0.5.x",
         "phantomjs": "1.9.x",
-        "jshint": "2.5.x",
-        "yuidocjs": "0.3.x"
+        "jshint": "2.5.x"
     }
 }

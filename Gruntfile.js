@@ -36,19 +36,6 @@ module.exports = function(grunt) {
             ]
         },
 
-        yuidoc: {
-            main: {
-                name: "Mach-84",
-                description: "Virtual Machinery Playpen",
-                version: "<%= pkg.version %>",
-                url: "http://blackchip.org/mach84",
-                options: {
-                    paths: ["src/js"],
-                    outdir: "build/mach84-doc"
-                }
-            }
-        },
-
         buster: {
             console: {}
         }
@@ -56,9 +43,8 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks("grunt-buster");
     grunt.loadNpmTasks("grunt-contrib-jshint");
-    grunt.loadNpmTasks("grunt-contrib-yuidoc");
 
-    grunt.registerTask("default", ["jshint", "yuidoc"]);
+    grunt.registerTask("default", ["jshint"]);
     grunt.registerTask("lint", ["jshint"]);
     grunt.registerTask("test", ["buster:console"]);
 };
