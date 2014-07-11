@@ -24,9 +24,6 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-/**
- * @module m84
- */
 var m84 = m84 || {};
 
 /**
@@ -113,5 +110,3 @@ m84.util = m84.util || (function() {
     return self;
 
 })();
-
-

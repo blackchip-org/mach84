@@ -50,120 +50,16 @@ m84.cpu = m84.cpu || function(spec) {
         self.reset();
     };
 
-    /**
-     * Accumulator register.
-     *
-     * @property a
-     * @type byte
-     */
     self.a = 0;
-
-    /**
-     * X index register.
-     *
-     * @property x
-     * @type byte
-     */
     self.x = 0;
-
-    /**
-     * Y index register.
-     *
-     * @property y
-     * @type byte
-     */
     self.y = 0;
-
-    /**
-     * Stack pointer.
-     *
-     * @property sp
-     * @type byte
-     */
     self.sp = 0;
-
-    /**
-     * Carry flag, bit 0.
-     *
-     * - Addition: Set if there a left over carry bit after performing the
-     *   operation. This flag should be cleared before starting
-     *   addition. If set, this adds one to the result.
-     * - Subtraction: Acts as the 'borrow' flag and is the inverse of the
-     *   carry. Clear if there is a bit that needs to be borrowed after
-     *   performing the operation. This flag should be set before starting
-     *   subtraction. If clear, this subtracts one from the result.
-     * - Shifting: Holds the value of the bit that was shifted out.
-     *
-     * @property c
-     * @type boolean
-     */
     self.c = false;
-
-    /**
-     * Zero flag, bit 1.
-     *
-     * Set when a reigster is loaded with a zero value.
-     *
-     * @property z
-     * @type boolean
-     */
     self.z = false;
-
-    /**
-     * Interrupt disable flag, bit 2.
-     *
-     * If set, the IRQ line is ignored.
-     *
-     * @property i
-     * @type boolean
-     */
     self.i = false;
-
-    /**
-     * Decimal math (BCD) flag, bit 3.
-     *
-     * When set, addition and subtraction is based on BCD numbers instead
-     * of binary numbers. When clear, ``$09 + $01 = $0A``, and when set,
-     * ``$09 + $01 = $10``.
-     *
-     * @property d
-     * @type boolean
-     */
     self.d = false;
-
-    /**
-     * Break flag, bit 4.
-     *
-     * In the Mach-84, this flag is set when a break instruction is
-     * encountered and the CPU is stopped. On a real 6502, this generates
-     * an interrupt.
-     *
-     * @property b
-     * @type boolean
-     */
     self.b = false;
-
-    /**
-     * Overflow flag, bit 6.
-     *
-     * This flag is set when an arithmetic operation causes an overflow on
-     * a signed value. For example, the operation ``$7F + $01`` sets the
-     * bit since the answer, 128, is too large to fit in a single signed
-     * byte.
-     *
-     * @property v
-     * @type boolean
-     */
     self.v = false;
-
-    /**
-     * Sign (negative) flag, bit 7.
-     *
-     * Set if the value loaded into a register has bit 7 set.
-     *
-     * @property n
-     * @type boolean
-     */
     self.n = false;
 
     /**
@@ -239,4 +135,3 @@ m84.cpu = m84.cpu || function(spec) {
     init();
     return self;
 };
-

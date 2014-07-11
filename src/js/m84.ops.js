@@ -208,6 +208,3 @@ m84.ops = m84.ops || function(spec) {
 
     return table;
 };
-
-
-

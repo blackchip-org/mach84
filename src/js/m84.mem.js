@@ -23,32 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-/**
- * @module m84
- */
 var m84 = m84 || {};
 
-/**
- * Memory management unit.
- *
- * This currently doesn't really do anything, but can be extended in the future
- * to add support for banking.
- *
- * @class m84.mem
- */
 m84.mem = m84.mem || function(spec) {
 
     spec = spec || {};
     mem = spec.array || [];
     var self = {};
 
-    /**
-     * Loads a byte from memory.
-     *
-     * @method loadb
-     * @param {word} address the memory location to load.
-     * @return {byte} the value at the memory location.
-     */
     self.loadb = function(address) {
         return mem[address] || 0;
     };
@@ -178,6 +160,3 @@ m84.mem = m84.mem || function(spec) {
 
     return self;
 };
-
-
-

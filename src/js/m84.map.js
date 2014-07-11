@@ -36,4 +36,3 @@ m84.map = m84.map || function(spec) {
 
     return self;
 };
-
