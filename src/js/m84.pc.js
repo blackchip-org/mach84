@@ -23,76 +23,31 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-/**
- * @module m84
- */
 var m84 = m84 || {};
 
-/**
- * Program counter.
- *
- * @class m84.pc
- * @constructor
- * @param {m84.mem} mem memory to reference
- * @param {object} self object to mixin properties and methods with.
- */
 m84.pc = m84.pc || function(self, spec) {
 
     spec = spec || {};
     var mem = spec.mem || m84.mem(spec);
     self = self || {};
 
-    /**
-     * Current position in memory, the program counter.
-     *
-     * @property pc
-     * @type {word}
-     */
     self.pc = 0;
 
-    /**
-     * Increments the program counter and then gets the byte from memory
-     * using the address in the program counter.
-     *
-     * @method fetchb
-     * @return {byte} the byte at the memory location.
-     */
     self.fetchb = function() {
         self.pc += 1;
         return mem.loadb(self.pc);
     };
 
-    /**
-     * Increments the program counter and then gets the word from memory
-     * using the address in the program counter.
-     *
-     * @method fetchw
-     * @return {word} the word at the memory location.
-     */
     self.fetchw = function() {
         self.pc += 2;
         return mem.loadw(self.pc - 1);
     };
 
-    /**
-     * Gets the byte from memory using the address in the program counter
-     * and then increments the program counter.
-     *
-     * @method nextb
-     * @return {byte} the byte at the memory location.
-     */
     self.nextb = function() {
         self.pc += 1;
         return mem.loadb(self.pc - 1);
     };
 
-    /**
-     * Gets the word from memory using the address in the program counter
-     * and then increments the program counter.
-     *
-     * @method nextw
-     * @return {byte} the word at the memory location.
-     */
     self.nextw = function() {
         self.pc += 2;
         return mem.loadw(self.pc - 2);
