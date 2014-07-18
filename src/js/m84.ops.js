@@ -23,13 +23,52 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-/**
- * @module m84
- */
 var m84 = m84 || {};
 
 m84.ops = m84.ops || function(spec) {
 
+    // ====== and
+    
+    var and_abs = function(cpu, mem) {
+        cpu.a = cpu.a & mem.loadb(cpu.fetchw());
+        flags(cpu, cpu.a);
+    };
+    
+    var and_abx = function(cpu, mem) {
+        cpu.a = cpu.a & mem.loadb_i(cpu.fetchw(), cpu.x);
+        flags(cpu, cpu.a);
+    };
+    
+    var and_aby = function(cpu, mem) {
+        cpu.a = cpu.a & mem.loadb_i(cpu.fetchw(), cpu.y);
+        flags(cpu, cpu.a);
+    };
+    
+    var and_imm = function(cpu, mem) {
+        cpu.a = cpu.a & cpu.fetchb();
+        flags(cpu, cpu.a);
+    };
+    
+    var and_izx = function(cpu, mem) {
+        cpu.a = cpu.a & mem.loadb_izx(cpu.fetchb(), cpu.x);
+        flags(cpu, cpu.a);
+    };
+    
+    var and_izy = function(cpu, mem) {
+        cpu.a = cpu.a & mem.loadb_izy(cpu.fetchb(), cpu.y);
+        flags(cpu, cpu.a);
+    };
+    
+    var and_zp = function(cpu, mem) {
+        cpu.a = cpu.a & mem.loadb_zp(cpu.fetchb());
+        flags(cpu, cpu.a);
+    };
+    
+    var and_zpx = function(cpu, mem) {
+        cpu.a = cpu.a & mem.loadb_zpi(cpu.fetchb(), cpu.x);
+        flags(cpu, cpu.a);
+    };
+    
     // ====== lda
     
     var lda_abs = function(cpu, mem) {
@@ -57,6 +96,11 @@ m84.ops = m84.ops || function(spec) {
         flags(cpu, cpu.a);
     };
 
+    var lda_izy = function(cpu, mem) {
+        cpu.a = mem.loadb_izy(cpu.fetchb(), cpu.y);
+        flags(cpu, cpu.a);
+    };
+    
     var lda_zp = function(cpu, mem) {
         cpu.a = mem.loadb_zp(cpu.fetchb());
         flags(cpu, cpu.a);
@@ -138,6 +182,10 @@ m84.ops = m84.ops || function(spec) {
     var sta_izx = function(cpu, mem) {
         mem.storeb_izx(cpu.fetchb(), cpu.x, cpu.a);
     };
+    
+    var sta_izy = function(cpu, mem) {
+        mem.storeb_izy(cpu.fetchb(), cpu.y, cpu.a);
+    };
 
     var sta_zp = function(cpu, mem) {
         mem.storeb_zp(cpu.fetchb(), cpu.a);
@@ -179,11 +227,21 @@ m84.ops = m84.ops || function(spec) {
 
     // Information about each instruction
     var ops = spec.ops || [
+        { name: "and", mode: "abs", code: 0x2d, execute: and_abs },
+        { name: "and", mode: "abx", code: 0x3d, execute: and_abx },
+        { name: "and", mode: "aby", code: 0x39, execute: and_aby },
+        { name: "and", mode: "imm", code: 0x29, execute: and_imm },
+        { name: "and", mode: "izx", code: 0x21, execute: and_izx },
+        { name: "and", mode: "izy", code: 0x31, execute: and_izy },
+        { name: "and", mode: "zp",  code: 0x25, execute: and_zp  },
+        { name: "and", mode: "zpx", code: 0x35, execute: and_zpx },
+
         { name: "lda", mode: "abs", code: 0xad, execute: lda_abs },
         { name: "lda", mode: "abx", code: 0xbd, execute: lda_abx },
         { name: "lda", mode: "aby", code: 0xb9, execute: lda_aby },
         { name: "lda", mode: "imm", code: 0x89, execute: lda_imm },
         { name: "lda", mode: "izx", code: 0xa1, execute: lda_izx },
+        { name: "lda", mode: "izy", code: 0xb1, execute: lda_izy },
         { name: "lda", mode: "zp",  code: 0xa5, execute: lda_zp  },
         { name: "lda", mode: "zpx", code: 0xb5, execute: lda_zpx },
         
@@ -203,6 +261,7 @@ m84.ops = m84.ops || function(spec) {
         { name: "sta", mode: "abx", code: 0x9d, execute: sta_abx },
         { name: "sta", mode: "aby", code: 0x99, execute: sta_aby },
         { name: "sta", mode: "izx", code: 0x81, execute: sta_izx },
+        { name: "sta", mode: "izy", code: 0x91, execute: sta_izy },
         { name: "sta", mode: "zp",  code: 0x85, execute: sta_zp  },
         { name: "sta", mode: "zpx", code: 0x95, execute: sta_zpx },
         

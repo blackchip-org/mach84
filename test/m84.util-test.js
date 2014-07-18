@@ -78,7 +78,15 @@ buster.testCase("m84.util", (function() {
             m84.util.assertw(-1);
         });
     };
+    
+    self["To BCD"] = function() {
+        buster.assert.equals(0x42, m84.util.to_bcd(42));
+    };
 
+    self["From BCD"] = function() {
+        buster.assert.equals(42, m84.util.from_bcd(0x42));
+    };
+    
     return self;
 
 })());

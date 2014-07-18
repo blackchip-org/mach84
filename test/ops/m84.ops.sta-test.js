@@ -88,6 +88,15 @@ buster.testCase("m84.ops.sta", (function() {
         buster.assert.equals(mem.loadb(0xdddd), 0x11);
     };
 
+    self["sta_izy"] = function() {
+        mem.storew_zp(0x0a, 0xdd00);
+        cpu.a = 0x11;
+        cpu.y = 0xdd;
+        a.sta_izy(0x0a);
+        cpu.execute();
+        buster.assert.equals(mem.loadb(0xdddd), 0x11);
+    };
+    
     self["sta_zp"] = function() {
         cpu.a = 0x12;
         a.sta_zp(0x34);

@@ -25,7 +25,7 @@
 
 /* jshint sub: true */
 
-buster.testCase("m84.ops.lda", (function() {
+buster.testCase("m84.ops.and", (function() {
 
     var self = {};
     var mem;
@@ -38,264 +38,264 @@ buster.testCase("m84.ops.lda", (function() {
         a = m84.asm({mem: mem});
     };
 
-    self["lda_abs"] = function() {
-        mem.storeb(0xabcd, 0x34);
-        a.lda_abs(0xabcd);
+    self["and_abs"] = function() {
+        mem.storeb(0xabcd, parseInt("101", 2));
+        cpu.a =            parseInt("110", 2);
+        a.and_abs(0xabcd);
         cpu.execute();
-        buster.assert.equals(cpu.a, 0x34);
+        buster.assert.equals(cpu.a, parseInt("100", 2));
         buster.refute(cpu.z);
         buster.refute(cpu.n);
     };
-
-    self["lda_abs, zero"] = function() {
-        mem.storeb(0xabcd, 0x00);
-        a.lda_abs(0xabcd);
+    
+    self["and_abs, zero"] = function() {
+        mem.storeb(0xabcd, parseInt("010", 2));
+        cpu.a =            parseInt("101", 2);
+        a.and_abs(0xabcd);
         cpu.execute();
-        buster.assert.equals(cpu.a, 0x00);
+        buster.assert.equals(cpu.a, parseInt("000", 2));
         buster.assert(cpu.z);
         buster.refute(cpu.n);
     };
-
-    self["lda_abs, signed"] = function() {
+    
+    self["and_abs, signed"] = function() {
         mem.storeb(0xabcd, 0xff);
-        a.lda_abs(0xabcd);
+        cpu.a = 0xff;
+        a.and_abs(0xabcd);
         cpu.execute();
         buster.assert.equals(cpu.a, 0xff);
         buster.refute(cpu.z);
         buster.assert(cpu.n);
     };
-
-    self["lda_abx"] = function() {
-        mem.storeb(0x5432, 0x34);
+    
+    self["and_abx"] = function() {
+        mem.storeb(0x5432, parseInt("101", 2));
+        cpu.a =            parseInt("110", 2);
         cpu.x = 2;
-        a.lda_abx(0x5430);
+        a.and_abx(0x5430);
         cpu.execute();
-        buster.assert.equals(cpu.a, 0x34);
+        buster.assert.equals(cpu.a, parseInt("100", 2));
         buster.refute(cpu.z);
         buster.refute(cpu.n);
     };
 
-    self["lda_abx, zero"] = function() {
-        mem.storeb(0x5432, 0x00);
+    self["and_abx, zero"] = function() {
+        mem.storeb(0x5432, parseInt("010", 2));
+        cpu.a =            parseInt("101", 2);
         cpu.x = 2;
-        a.lda_abx(0x5430);
+        a.and_abx(0x5430);
         cpu.execute();
         buster.assert.equals(cpu.a, 0x00);
         buster.assert(cpu.z);
         buster.refute(cpu.n);
     };
 
-    self["lda_abx, signed"] = function() {
+    self["and_abx, signed"] = function() {
         mem.storeb(0x5432, 0xff);
+        cpu.a = 0xff;
         cpu.x = 2;
-        a.lda_abx(0x5430);
+        a.and_abx(0x5430);
         cpu.execute();
         buster.assert.equals(cpu.a, 0xff);
         buster.refute(cpu.z);
         buster.assert(cpu.n);
     };
 
-    self["lda_abx, wrap"] = function() {
-        mem.storeb(0x01, 0x12);
-        cpu.x = 2;
-        a.lda_abx(0xffff);
-        cpu.execute();
-        buster.assert.equals(cpu.a, 0x12);
-    };
-
-    self["lda_aby"] = function() {
-        mem.storeb(0x5432, 0x34);
+    self["and_aby"] = function() {
+        mem.storeb(0x5432, parseInt("101", 2));
+        cpu.a =            parseInt("100", 2);
         cpu.y = 2;
-        a.lda_aby(0x5430);
+        a.and_aby(0x5430);
         cpu.execute();
-        buster.assert.equals(cpu.a, 0x34);
+        buster.assert.equals(cpu.a, parseInt("100", 2));
         buster.refute(cpu.z);
         buster.refute(cpu.n);
     };
 
-    self["lda_aby, zero"] = function() {
-        mem.storeb(0x5432, 0x00);
+    self["and_aby, zero"] = function() {
+        mem.storeb(0x5432, parseInt("010", 2));
+        cpu.a =            parseInt("101", 2);
         cpu.y = 2;
-        a.lda_aby(0x5430);
+        a.and_aby(0x5430);
         cpu.execute();
         buster.assert.equals(cpu.a, 0x00);
         buster.assert(cpu.z);
         buster.refute(cpu.n);
     };
 
-    self["lda_aby, signed"] = function() {
+    self["and_aby, signed"] = function() {
         mem.storeb(0x5432, 0xff);
+        cpu.a = 0xff;
         cpu.y = 2;
-        a.lda_aby(0x5430);
+        a.and_aby(0x5430);
         cpu.execute();
         buster.assert.equals(cpu.a, 0xff);
         buster.refute(cpu.z);
         buster.assert(cpu.n);
     };
-
-    self["lda_aby, wrap"] = function() {
-        mem.storeb(0x01, 0x12);
-        cpu.y = 2;
-        a.lda_aby(0xffff);
+    
+    self["and_imm"] = function() {
+        cpu.a =   parseInt("101", 2);
+        a.and_imm(parseInt("110", 2));
         cpu.execute();
-        buster.assert.equals(cpu.a, 0x12);
-    };
-
-    self["lda_imm"] = function() {
-        a.lda_imm(0x12);
-        cpu.execute();
-        buster.assert.equals(cpu.a, 0x12);
+        buster.assert.equals(cpu.a, parseInt("100", 2));
         buster.refute(cpu.z);
         buster.refute(cpu.n);
     };
 
-    self["lda_imm, zero"] = function() {
-        a.lda_imm(0x00);
+    self["and_imm, zero"] = function() {
+        cpu.a =   parseInt("010", 2);
+        a.and_imm(parseInt("101", 2));
         cpu.execute();
         buster.assert.equals(cpu.a, 0x00);
         buster.assert(cpu.z);
         buster.refute(cpu.n);
     };
 
-    self["lda_imm, signed"] = function() {
+    self["and_imm, signed"] = function() {
+        cpu.a = 0xff;
         a.lda_imm(0xff);
         cpu.execute();
         buster.assert.equals(cpu.a, 0xff);
         buster.refute(cpu.z);
         buster.assert(cpu.n);
     };
-
-    self["lda_izx"] = function() {
+    
+    self["and_izx"] = function() {
         mem.storew_zp(0x0a, 0xdddd);
-        mem.storeb(0xdddd, 0x11);
+        mem.storeb(0xdddd, parseInt("101", 2));
+        cpu.a =            parseInt("110", 2);
         cpu.x = 0x0a;
-        a.lda_izx(0x00);
+        a.and_izx(0x00);
         cpu.execute();
-        buster.assert.equals(cpu.a, 0x11);
+        buster.assert.equals(cpu.a, parseInt("100", 2));
         buster.refute(cpu.z);
         buster.refute(cpu.n);
     };
 
-    self["lda_izx, zero"] = function() {
+    self["and_izx, zero"] = function() {
         mem.storew_zp(0x0a, 0xdddd);
-        mem.storeb(0xdddd, 0x00);
+        mem.storeb(0xdddd, parseInt("010"));
+        cpu.a =            parseInt("101");
         cpu.x = 0x0a;
-        a.lda_izx(0x00);
+        a.and_izx(0x00);
         cpu.execute();
         buster.assert.equals(cpu.a, 0x00);
         buster.assert(cpu.z);
         buster.refute(cpu.n);
     };
 
-    self["lda_izx, signed"] = function() {
+    self["and_izx, signed"] = function() {
         mem.storew_zp(0x0a, 0xdddd);
         mem.storeb(0xdddd, 0xff);
+        cpu.a = 0xff;
         cpu.x = 0x0a;
-        a.lda_izx(0x00);
+        a.and_izx(0x00);
         cpu.execute();
         buster.assert.equals(cpu.a, 0xff);
         buster.refute(cpu.z);
         buster.assert(cpu.n);
     };
 
-    self["lda_izy"] = function() {
+    self["and_izy"] = function() {
         mem.storew_zp(0x0a, 0xdd00);
-        mem.storeb(0xdddd, 0x11);
+        mem.storeb(0xdddd, parseInt("101", 2));
+        cpu.a =            parseInt("110", 2);
         cpu.y = 0xdd;
-        a.lda_izy(0x0a);
+        a.and_izy(0x0a);
         cpu.execute();
-        buster.assert.equals(cpu.a, 0x11);
+        buster.assert.equals(cpu.a, parseInt("100", 2));
         buster.refute(cpu.z);
         buster.refute(cpu.n);
     };
     
-    self["lda_izy, zero"] = function() {
+    self["and_izy, zero"] = function() {
         mem.storew_zp(0x0a, 0xdd00);
-        mem.storeb(0xdddd, 0x00);
+        mem.storeb(0xdddd, parseInt("010", 2));
+        cpu.a =            parseInt("101", 2);
         cpu.y = 0xdd;
-        a.lda_izy(0x0a);
+        a.and_izy(0x0a);
         cpu.execute();
         buster.assert.equals(cpu.a, 0x00);
         buster.assert(cpu.z);
         buster.refute(cpu.n);
     };
     
-    self["lda_izy, signed"] = function() {
+    self["and_izy, signed"] = function() {
         mem.storew_zp(0x0a, 0xdd00);
         mem.storeb(0xdddd, 0xff);
+        cpu.a = 0xff;
         cpu.y = 0xdd;
-        a.lda_izy(0x0a);
+        a.and_izy(0x0a);
         cpu.execute();
         buster.assert.equals(cpu.a, 0xff);
         buster.refute(cpu.z);
         buster.assert(cpu.n);
     };
     
-    self["lda_zp"] = function() {
-        mem.storeb(0x12, 0x34);
-        a.lda_zp(0x12);
+    self["and_zp"] = function() {
+        mem.storeb(0x12, parseInt("101", 2));
+        cpu.a =          parseInt("110", 2);
+        a.and_zp(0x12);
         cpu.execute();
-        buster.assert.equals(cpu.a, 0x34);
+        buster.assert.equals(cpu.a, parseInt("100", 2));
         buster.refute(cpu.z);
         buster.refute(cpu.n);
     };
 
-    self["lda_zp, zero"] = function() {
-        mem.storeb(0x12, 0x00);
-        a.lda_zp(0x12);
+    self["and_zp, zero"] = function() {
+        mem.storeb(0x12, parseInt("010", 2));
+        cpu.a =          parseInt("101", 2);
+        a.and_zp(0x12);
         cpu.execute();
         buster.assert.equals(cpu.a, 0x00);
         buster.assert(cpu.z);
         buster.refute(cpu.n);
     };
 
-    self["lda_zp, signed"] = function() {
+    self["and_zp, signed"] = function() {
         mem.storeb(0x12, 0xff);
-        a.lda_zp(0x12);
+        cpu.a = 0xff;
+        a.and_zp(0x12);
         cpu.execute();
         buster.assert.equals(cpu.a, 0xff);
         buster.refute(cpu.z);
         buster.assert(cpu.n);
     };
 
-    self["lda_zpx"] = function() {
-        mem.storeb(0x14, 0x34);
+    self["and_zpx"] = function() {
+        mem.storeb(0x14, parseInt("101", 2));
+        cpu.a =          parseInt("110", 2);
         cpu.x = 2;
-        a.lda_zpx(0x12);
+        a.and_zpx(0x12);
         cpu.execute();
-        buster.assert.equals(cpu.a, 0x34);
+        buster.assert.equals(cpu.a, parseInt("100", 2));
         buster.refute(cpu.z);
         buster.refute(cpu.n);
     };
 
-    self["lda_zpx, zero"] = function() {
-        mem.storeb(0x14, 0x00);
+    self["and_zpx, zero"] = function() {
+        mem.storeb(0x14, parseInt("010", 2));
+        cpu.a =          parseInt("101", 2);
         cpu.x = 2;
-        a.lda_zpx(0x12);
+        a.and_zpx(0x12);
         cpu.execute();
         buster.assert.equals(cpu.a, 0x00);
         buster.assert(cpu.z);
         buster.refute(cpu.n);
     };
 
-    self["lda_zpx, signed"] = function() {
+    self["and_zpx, signed"] = function() {
         mem.storeb(0x14, 0xff);
+        cpu.a = 0xff;
         cpu.x = 2;
-        a.lda_zpx(0x12);
+        a.and_zpx(0x12);
         cpu.execute();
         buster.assert.equals(cpu.a, 0xff);
         buster.refute(cpu.z);
         buster.assert(cpu.n);
     };
-
-    self["lda_zpx, wrap"] = function() {
-        mem.storeb(0x01, 0x12);
-        cpu.x = 2;
-        a.lda_zpx(0xff);
-        cpu.execute();
-        buster.assert.equals(cpu.a, 0x12);
-    };
-
+    
     return self;
-
+    
 })());

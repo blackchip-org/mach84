@@ -79,6 +79,14 @@ m84.util = m84.util || (function() {
         return toHex(val, 4);
     };
 
+    self.to_bcd = function(val) {
+        return parseInt("0x" + val);
+    };
+    
+    self.from_bcd = function(val) {
+        return parseInt(val.toString(16));
+    };
+    
     /**
      * Throws an exception if the value is not a valid byte.
      *

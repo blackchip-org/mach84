@@ -80,6 +80,19 @@ m84.debug.mem = m84.debug.mem || function(parent) {
         parent.storeb_izx(address, index, value);
     };
 
+    self.loadb_izy = function(address, index) {
+        m84.util.assertb(address);
+        m84.util.assertb(index);
+        return parent.loadb_izy(address, index);
+    };
+    
+    self.storeb_izy = function(address, index, value) {
+        m84.util.assertb(address);
+        m84.util.assertb(index);
+        m84.util.assertb(value);
+        parent.storeb_izy(address, index, value);
+    };
+    
     self.loadw = function(address) {
         m84.util.assertw(address);
         if ( address === 0xffff ) {

@@ -24,7 +24,7 @@
  */
 
 /**
- * @module m84
+ * This is a test.
  */
 var m84 = m84 || {};
 
