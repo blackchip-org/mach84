@@ -23,17 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-/**
- * This is a test.
- */
 var m84 = m84 || {};
 
-/**
- * 6502 central processing unit.
- *
- * @class m84.cpu
- * @uses m84.pc
- */
 m84.cpu = m84.cpu || function(spec) {
 
     spec = spec || {};
@@ -62,15 +53,6 @@ m84.cpu = m84.cpu || function(spec) {
     self.v = false;
     self.n = false;
 
-    /**
-     * Sets or gets all flag values via the status register.
-     *
-     * @method sr
-     * @param {byte} [value] if specified, sets the value of the status
-     * register to the value
-     * @return {byte|undefined} if ```value``` is not specified, gets the value
-     * of the status register
-     */
     self.sr = function(value) {
         if ( _.isUndefined(value) ) {
             return (self.c ? 1   : 0) |
@@ -101,16 +83,6 @@ m84.cpu = m84.cpu || function(spec) {
         self.pc = map.PROGRAM - 1;
     };
 
-    /**
-     * String representation of the CPU status.
-     *
-     * @method status
-     * @return {string} in the form of:
-     * <pre>
-     *  pc  sr ac xr yr sp  n v - b d i z c
-     * 0000 20 00 00 00 00  . . * . . . . .
-     * </pre>
-     */
     self.status = function() {
         var bit = function(b) { return b ? "*" : "."; };
 
