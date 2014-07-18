@@ -69,6 +69,48 @@ m84.ops = m84.ops || function(spec) {
         flags(cpu, cpu.a);
     };
     
+    // ====== eor
+    
+    var eor_abs = function(cpu, mem) {
+        cpu.a = cpu.a ^ mem.loadb(cpu.fetchw());
+        flags(cpu, cpu.a);
+    };
+    
+    var eor_abx = function(cpu, mem) {
+        cpu.a = cpu.a ^ mem.loadb_i(cpu.fetchw(), cpu.x);
+        flags(cpu, cpu.a);
+    };
+    
+    var eor_aby = function(cpu, mem) {
+        cpu.a = cpu.a ^ mem.loadb_i(cpu.fetchw(), cpu.y);
+        flags(cpu, cpu.a);
+    };
+    
+    var eor_imm = function(cpu, mem) {
+        cpu.a = cpu.a ^ cpu.fetchb();
+        flags(cpu, cpu.a);
+    };
+    
+    var eor_izx = function(cpu, mem) {
+        cpu.a = cpu.a ^ mem.loadb_izx(cpu.fetchb(), cpu.x);
+        flags(cpu, cpu.a);
+    };
+    
+    var eor_izy = function(cpu, mem) {
+        cpu.a = cpu.a ^ mem.loadb_izy(cpu.fetchb(), cpu.y);
+        flags(cpu, cpu.a);
+    };
+    
+    var eor_zp = function(cpu, mem) {
+        cpu.a = cpu.a ^ mem.loadb_zp(cpu.fetchb());
+        flags(cpu, cpu.a);
+    };
+    
+    var eor_zpx = function(cpu, mem) {
+        cpu.a = cpu.a ^ mem.loadb_zpi(cpu.fetchb(), cpu.x);
+        flags(cpu, cpu.a);
+    };
+    
     // ====== lda
     
     var lda_abs = function(cpu, mem) {
@@ -277,6 +319,15 @@ m84.ops = m84.ops || function(spec) {
         { name: "and", mode: "izy", code: 0x31, execute: and_izy },
         { name: "and", mode: "zp",  code: 0x25, execute: and_zp  },
         { name: "and", mode: "zpx", code: 0x35, execute: and_zpx },
+
+        { name: "eor", mode: "abs", code: 0x4d, execute: eor_abs },
+        { name: "eor", mode: "abx", code: 0x5d, execute: eor_abx },
+        { name: "eor", mode: "aby", code: 0x59, execute: eor_aby },
+        { name: "eor", mode: "imm", code: 0x49, execute: eor_imm },
+        { name: "eor", mode: "izx", code: 0x41, execute: eor_izx },
+        { name: "eor", mode: "izy", code: 0x51, execute: eor_izy },
+        { name: "eor", mode: "zp",  code: 0x45, execute: eor_zp  },
+        { name: "eor", mode: "zpx", code: 0x55, execute: eor_zpx },
 
         { name: "lda", mode: "abs", code: 0xad, execute: lda_abs },
         { name: "lda", mode: "abx", code: 0xbd, execute: lda_abx },
