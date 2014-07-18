@@ -165,6 +165,48 @@ m84.ops = m84.ops || function(spec) {
         flags(cpu, cpu.y);
     };
     
+    // ====== ora
+    
+    var ora_abs = function(cpu, mem) {
+        cpu.a = cpu.a | mem.loadb(cpu.fetchw());
+        flags(cpu, cpu.a);
+    };
+    
+    var ora_abx = function(cpu, mem) {
+        cpu.a = cpu.a | mem.loadb_i(cpu.fetchw(), cpu.x);
+        flags(cpu, cpu.a);
+    };
+    
+    var ora_aby = function(cpu, mem) {
+        cpu.a = cpu.a | mem.loadb_i(cpu.fetchw(), cpu.y);
+        flags(cpu, cpu.a);
+    };
+    
+    var ora_imm = function(cpu, mem) {
+        cpu.a = cpu.a | cpu.fetchb();
+        flags(cpu, cpu.a);
+    };
+    
+    var ora_izx = function(cpu, mem) {
+        cpu.a = cpu.a | mem.loadb_izx(cpu.fetchb(), cpu.x);
+        flags(cpu, cpu.a);
+    };
+    
+    var ora_izy = function(cpu, mem) {
+        cpu.a = cpu.a | mem.loadb_izy(cpu.fetchb(), cpu.y);
+        flags(cpu, cpu.a);
+    };
+    
+    var ora_zp = function(cpu, mem) {
+        cpu.a = cpu.a | mem.loadb_zp(cpu.fetchb());
+        flags(cpu, cpu.a);
+    };
+    
+    var ora_zpx = function(cpu, mem) {
+        cpu.a = cpu.a | mem.loadb_zpi(cpu.fetchb(), cpu.x);
+        flags(cpu, cpu.a);
+    };
+    
     // ===== sta
     
     var sta_abs = function(cpu, mem) {
@@ -256,6 +298,15 @@ m84.ops = m84.ops || function(spec) {
         { name: "ldy", mode: "imm", code: 0xa0, execute: ldy_imm },
         { name: "ldy", mode: "zp",  code: 0xa4, execute: ldy_zp  },
         { name: "ldy", mode: "zpx", code: 0xb4, execute: ldy_zpx },
+
+        { name: "ora", mode: "abs", code: 0x0d, execute: ora_abs },
+        { name: "ora", mode: "abx", code: 0x1d, execute: ora_abx },
+        { name: "ora", mode: "aby", code: 0x19, execute: ora_aby },
+        { name: "ora", mode: "imm", code: 0x09, execute: ora_imm },
+        { name: "ora", mode: "izx", code: 0x01, execute: ora_izx },
+        { name: "ora", mode: "izy", code: 0x11, execute: ora_izy },
+        { name: "ora", mode: "zp",  code: 0x05, execute: ora_zp  },
+        { name: "ora", mode: "zpx", code: 0x15, execute: ora_zpx },
 
         { name: "sta", mode: "abs", code: 0x8d, execute: sta_abs },
         { name: "sta", mode: "abx", code: 0x9d, execute: sta_abx },
