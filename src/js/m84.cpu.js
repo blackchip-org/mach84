@@ -87,7 +87,7 @@ m84.cpu = m84.cpu || function(spec) {
         var bit = function(b) { return b ? "*" : "."; };
 
         return " pc  sr ac xr yr sp  n v - b d i z c\n" +
-            m84.util.hexw(self.pc)  + " " +
+            m84.util.hexw(self.pc)   + " " +
             m84.util.hexb(self.sr()) + " " +
             m84.util.hexb(self.a)    + " " +
             m84.util.hexb(self.x)    + " " +
