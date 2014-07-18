@@ -34,7 +34,7 @@ m84.cpu = m84.cpu || function(spec) {
 
     var self = {};
 
-    self = m84.pc(spec);
+    m84.pc(self, spec);
 
     var init = function() {
         // FIXME: Vector to cold start
