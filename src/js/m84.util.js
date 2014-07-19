@@ -26,25 +26,10 @@
 
 var m84 = m84 || {};
 
-/**
- * Utility functions.
- *
- * @class m84.util
- * @static
- */
 m84.util = m84.util || (function() {
 
     var self = {};
 
-    /**
-     * Repeats a strings a certain amount of times.
-     *
-     * @method repeat
-     * @param {str} str the string to repeat
-     * @param {int} count the amount of times to repeat the string
-     * @returns the string ```str``` repeated ```count``` times. If count
-     * is less than or equal to zero, an empty string is returned.
-     */
     self.repeat = function(str, count) {
         if ( count <= 0 ) {
             return "";
@@ -52,63 +37,44 @@ m84.util = m84.util || (function() {
         return Array(count + 1).join(str);
     };
 
-    var toHex = function(value, length) {
+    var to_hex = function(value, length) {
         var hex = value.toString(16);
         return self.repeat("0", length - hex.length) + hex;
     };
 
-    /**
-     * Converts a byte value to a hexadecimal string value.
-     *
-     * @method hexb
-     * @param {byte} value value to convert
-     * @return value as a hexadecimal string value padded with zeros.
-     */
     self.hexb = function(value) {
-        return toHex(value, 2);
+        return to_hex(value, 2);
     };
 
-    /**
-     * Converts a word value to a hexadecimal string value.
-     *
-     * @method hexw
-     * @param {word} value value to convert
-     * @return value as a hexadecimal string value padded with zeros.
-     */
-    self.hexw = function(val) {
-        return toHex(val, 4);
+    self.hexw = function(value) {
+        return to_hex(value, 4);
     };
 
-    self.to_bcd = function(val) {
-        return parseInt("0x" + val);
+    self.to_bcd = function(value) {
+        return parseInt("0x" + value);
     };
-    
-    self.from_bcd = function(val) {
-        return parseInt(val.toString(16));
+
+    self.from_bcd = function(value) {
+        var result = parseInt(value.toString(16));
+        if ( _.isNaN(result) ) {
+            throw new Error("Invalid BCD number: $" + self.hexb(value));
+        }
+        return result;
     };
-    
-    /**
-     * Throws an exception if the value is not a valid byte.
-     *
-     * Byte is valid if it between 0 and 0xff.
-     *
-     * @method assertb
-     * @param {byte} value the value to check
-     */
+
+    self.to_signed = function(value) {
+        if ( value & 0x80 ) {
+            value = value - (0xff + 1);
+        }
+        return value;
+    };
+
     self.assertb = function(value) {
         if ( value < 0 || value > 0xff ) {
             throw new Error("Invalid byte value: $" + parseInt(value, 16));
         }
     };
 
-    /**
-     * Throws an exception if the value is not a valid word.
-     *
-     * Word is valid if it is between 0 and 0xffff.
-     *
-     * @method assertw
-     * @param {word} value the value to check
-     */
     self.assertw = function(value) {
         if ( value < 0 || value > 0xffff ) {
             throw new Error("Invalid word value: $" + parseInt(value, 16));

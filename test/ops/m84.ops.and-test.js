@@ -47,7 +47,7 @@ buster.testCase("m84.ops.and", (function() {
         buster.refute(cpu.z);
         buster.refute(cpu.n);
     };
-    
+
     self["and_abs, zero"] = function() {
         mem.storeb(0xabcd, parseInt("010", 2));
         cpu.a =            parseInt("101", 2);
@@ -57,7 +57,7 @@ buster.testCase("m84.ops.and", (function() {
         buster.assert(cpu.z);
         buster.refute(cpu.n);
     };
-    
+
     self["and_abs, signed"] = function() {
         mem.storeb(0xabcd, 0xff);
         cpu.a = 0xff;
@@ -67,7 +67,7 @@ buster.testCase("m84.ops.and", (function() {
         buster.refute(cpu.z);
         buster.assert(cpu.n);
     };
-    
+
     self["and_abx"] = function() {
         mem.storeb(0x5432, parseInt("101", 2));
         cpu.a =            parseInt("110", 2);
@@ -133,7 +133,7 @@ buster.testCase("m84.ops.and", (function() {
         buster.refute(cpu.z);
         buster.assert(cpu.n);
     };
-    
+
     self["and_imm"] = function() {
         cpu.a =   parseInt("101", 2);
         a.and_imm(parseInt("110", 2));
@@ -160,7 +160,7 @@ buster.testCase("m84.ops.and", (function() {
         buster.refute(cpu.z);
         buster.assert(cpu.n);
     };
-    
+
     self["and_izx"] = function() {
         mem.storew_zp(0x0a, 0xdddd);
         mem.storeb(0xdddd, parseInt("101", 2));
@@ -208,7 +208,7 @@ buster.testCase("m84.ops.and", (function() {
         buster.refute(cpu.z);
         buster.refute(cpu.n);
     };
-    
+
     self["and_izy, zero"] = function() {
         mem.storew_zp(0x0a, 0xdd00);
         mem.storeb(0xdddd, parseInt("010", 2));
@@ -220,7 +220,7 @@ buster.testCase("m84.ops.and", (function() {
         buster.assert(cpu.z);
         buster.refute(cpu.n);
     };
-    
+
     self["and_izy, signed"] = function() {
         mem.storew_zp(0x0a, 0xdd00);
         mem.storeb(0xdddd, 0xff);
@@ -232,7 +232,7 @@ buster.testCase("m84.ops.and", (function() {
         buster.refute(cpu.z);
         buster.assert(cpu.n);
     };
-    
+
     self["and_zp"] = function() {
         mem.storeb(0x12, parseInt("101", 2));
         cpu.a =          parseInt("110", 2);
@@ -295,7 +295,7 @@ buster.testCase("m84.ops.and", (function() {
         buster.refute(cpu.z);
         buster.assert(cpu.n);
     };
-    
+
     return self;
-    
+
 })());

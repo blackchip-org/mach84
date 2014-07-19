@@ -78,7 +78,7 @@ buster.testCase("m84.util", (function() {
             m84.util.assertw(-1);
         });
     };
-    
+
     self["To BCD"] = function() {
         buster.assert.equals(0x42, m84.util.to_bcd(42));
     };
@@ -86,7 +86,29 @@ buster.testCase("m84.util", (function() {
     self["From BCD"] = function() {
         buster.assert.equals(42, m84.util.from_bcd(0x42));
     };
+
+    self["From BCD, invalid"] = function() {
+        buster.assert.exception(function() {
+            m84.util.from_bcd(0xaa);
+        });
+    };
     
+    self["To signed, positive"] = function() {
+        buster.assert.equals(2, m84.util.to_signed(0x02));
+    };
+
+    self["To signed, negative"] = function() {
+        buster.assert.equals(-1, m84.util.to_signed(0xff));
+    };
+
+    self["To signed, minimum"] = function() {
+        buster.assert.equals(-128, m84.util.to_signed(0x80));
+    };
+
+    self["To signed, maximum"] = function() {
+        buster.assert.equals(127, m84.util.to_signed(0x7f));
+    };
+
     return self;
 
 })());

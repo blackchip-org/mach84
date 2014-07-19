@@ -27,92 +27,148 @@ var m84 = m84 || {};
 
 m84.ops = m84.ops || function(spec) {
 
+    // ====== adc
+
+    var adc = function(cpu, a2) {
+        var a1 = cpu.a;
+        var carry = ( cpu.c ) ? 1 : 0;
+        if ( cpu.d ) {
+            a1 = m84.util.from_bcd(a1);
+            a2 = m84.util.from_bcd(a2);
+        }
+        var total = a1 + a2 + carry;
+        cpu.c = (cpu.d && total > 99) || (!cpu.d && total > 0xff);
+        if ( cpu.d ) {
+            total = m84.util.to_bcd(total);
+        } else {
+            var signed =
+                m84.util.to_signed(a1) +
+                m84.util.to_signed(a2) +
+                carry;
+            cpu.v = signed < -128 || signed > 127;
+        }
+        cpu.a = total & 0xff;
+        flags(cpu, cpu.a);
+    };
+
+    var adc_abs = function(cpu, mem) {
+        adc(cpu, mem.loadb(cpu.fetchw()));
+    };
+
+    var adc_abx = function(cpu, mem) {
+        adc(cpu, mem.loadb_i(cpu.fetchw(), cpu.x));
+    };
+
+    var adc_aby = function(cpu, mem) {
+        adc(cpu, mem.loadb_i(cpu.fetchw(), cpu.y));
+    };
+
+    var adc_imm = function(cpu, mem) {
+        adc(cpu, cpu.fetchb());
+    };
+
+    var adc_izx = function(cpu, mem) {
+        adc(cpu, mem.loadb_izx(cpu.fetchb(), cpu.x));
+    };
+
+    var adc_izy = function(cpu, mem) {
+        adc(cpu, mem.loadb_izy(cpu.fetchb(), cpu.y));
+    };
+
+    var adc_zp = function(cpu, mem) {
+        adc(cpu, mem.loadb_zp(cpu.fetchb()));
+    };
+
+    var adc_zpx = function(cpu, mem) {
+        adc(cpu, mem.loadb_zpi(cpu.fetchw(), cpu.x));
+    };
+
     // ====== and
-    
+
     var and_abs = function(cpu, mem) {
         cpu.a = cpu.a & mem.loadb(cpu.fetchw());
         flags(cpu, cpu.a);
     };
-    
+
     var and_abx = function(cpu, mem) {
         cpu.a = cpu.a & mem.loadb_i(cpu.fetchw(), cpu.x);
         flags(cpu, cpu.a);
     };
-    
+
     var and_aby = function(cpu, mem) {
         cpu.a = cpu.a & mem.loadb_i(cpu.fetchw(), cpu.y);
         flags(cpu, cpu.a);
     };
-    
+
     var and_imm = function(cpu, mem) {
         cpu.a = cpu.a & cpu.fetchb();
         flags(cpu, cpu.a);
     };
-    
+
     var and_izx = function(cpu, mem) {
         cpu.a = cpu.a & mem.loadb_izx(cpu.fetchb(), cpu.x);
         flags(cpu, cpu.a);
     };
-    
+
     var and_izy = function(cpu, mem) {
         cpu.a = cpu.a & mem.loadb_izy(cpu.fetchb(), cpu.y);
         flags(cpu, cpu.a);
     };
-    
+
     var and_zp = function(cpu, mem) {
         cpu.a = cpu.a & mem.loadb_zp(cpu.fetchb());
         flags(cpu, cpu.a);
     };
-    
+
     var and_zpx = function(cpu, mem) {
         cpu.a = cpu.a & mem.loadb_zpi(cpu.fetchb(), cpu.x);
         flags(cpu, cpu.a);
     };
-    
+
     // ====== eor
-    
+
     var eor_abs = function(cpu, mem) {
         cpu.a = cpu.a ^ mem.loadb(cpu.fetchw());
         flags(cpu, cpu.a);
     };
-    
+
     var eor_abx = function(cpu, mem) {
         cpu.a = cpu.a ^ mem.loadb_i(cpu.fetchw(), cpu.x);
         flags(cpu, cpu.a);
     };
-    
+
     var eor_aby = function(cpu, mem) {
         cpu.a = cpu.a ^ mem.loadb_i(cpu.fetchw(), cpu.y);
         flags(cpu, cpu.a);
     };
-    
+
     var eor_imm = function(cpu, mem) {
         cpu.a = cpu.a ^ cpu.fetchb();
         flags(cpu, cpu.a);
     };
-    
+
     var eor_izx = function(cpu, mem) {
         cpu.a = cpu.a ^ mem.loadb_izx(cpu.fetchb(), cpu.x);
         flags(cpu, cpu.a);
     };
-    
+
     var eor_izy = function(cpu, mem) {
         cpu.a = cpu.a ^ mem.loadb_izy(cpu.fetchb(), cpu.y);
         flags(cpu, cpu.a);
     };
-    
+
     var eor_zp = function(cpu, mem) {
         cpu.a = cpu.a ^ mem.loadb_zp(cpu.fetchb());
         flags(cpu, cpu.a);
     };
-    
+
     var eor_zpx = function(cpu, mem) {
         cpu.a = cpu.a ^ mem.loadb_zpi(cpu.fetchb(), cpu.x);
         flags(cpu, cpu.a);
     };
-    
+
     // ====== lda
-    
+
     var lda_abs = function(cpu, mem) {
         cpu.a = mem.loadb(cpu.fetchw());
         flags(cpu, cpu.a);
@@ -142,7 +198,7 @@ m84.ops = m84.ops || function(spec) {
         cpu.a = mem.loadb_izy(cpu.fetchb(), cpu.y);
         flags(cpu, cpu.a);
     };
-    
+
     var lda_zp = function(cpu, mem) {
         cpu.a = mem.loadb_zp(cpu.fetchb());
         flags(cpu, cpu.a);
@@ -154,7 +210,7 @@ m84.ops = m84.ops || function(spec) {
     };
 
     // ===== ldx
-    
+
     var ldx_abs = function(cpu, mem) {
         cpu.x = mem.loadb(cpu.fetchw());
         flags(cpu, cpu.x);
@@ -179,9 +235,9 @@ m84.ops = m84.ops || function(spec) {
         cpu.x = mem.loadb_zpi(cpu.fetchb(), cpu.y);
         flags(cpu, cpu.x);
     };
-    
+
     // ===== ldy
-    
+
     var ldy_abs = function(cpu, mem) {
         cpu.y = mem.loadb(cpu.fetchw());
         flags(cpu, cpu.y);
@@ -206,51 +262,51 @@ m84.ops = m84.ops || function(spec) {
         cpu.y = mem.loadb_zpi(cpu.fetchb(), cpu.x);
         flags(cpu, cpu.y);
     };
-    
+
     // ====== ora
-    
+
     var ora_abs = function(cpu, mem) {
         cpu.a = cpu.a | mem.loadb(cpu.fetchw());
         flags(cpu, cpu.a);
     };
-    
+
     var ora_abx = function(cpu, mem) {
         cpu.a = cpu.a | mem.loadb_i(cpu.fetchw(), cpu.x);
         flags(cpu, cpu.a);
     };
-    
+
     var ora_aby = function(cpu, mem) {
         cpu.a = cpu.a | mem.loadb_i(cpu.fetchw(), cpu.y);
         flags(cpu, cpu.a);
     };
-    
+
     var ora_imm = function(cpu, mem) {
         cpu.a = cpu.a | cpu.fetchb();
         flags(cpu, cpu.a);
     };
-    
+
     var ora_izx = function(cpu, mem) {
         cpu.a = cpu.a | mem.loadb_izx(cpu.fetchb(), cpu.x);
         flags(cpu, cpu.a);
     };
-    
+
     var ora_izy = function(cpu, mem) {
         cpu.a = cpu.a | mem.loadb_izy(cpu.fetchb(), cpu.y);
         flags(cpu, cpu.a);
     };
-    
+
     var ora_zp = function(cpu, mem) {
         cpu.a = cpu.a | mem.loadb_zp(cpu.fetchb());
         flags(cpu, cpu.a);
     };
-    
+
     var ora_zpx = function(cpu, mem) {
         cpu.a = cpu.a | mem.loadb_zpi(cpu.fetchb(), cpu.x);
         flags(cpu, cpu.a);
     };
-    
+
     // ===== sta
-    
+
     var sta_abs = function(cpu, mem) {
         mem.storeb(cpu.fetchw(), cpu.a);
     };
@@ -266,7 +322,7 @@ m84.ops = m84.ops || function(spec) {
     var sta_izx = function(cpu, mem) {
         mem.storeb_izx(cpu.fetchb(), cpu.x, cpu.a);
     };
-    
+
     var sta_izy = function(cpu, mem) {
         mem.storeb_izy(cpu.fetchb(), cpu.y, cpu.a);
     };
@@ -311,6 +367,15 @@ m84.ops = m84.ops || function(spec) {
 
     // Information about each instruction
     var ops = spec.ops || [
+        { name: "adc", mode: "abs", code: 0x6d, execute: adc_abs },
+        { name: "adc", mode: "abx", code: 0x7d, execute: adc_abx },
+        { name: "adc", mode: "aby", code: 0x79, execute: adc_aby },
+        { name: "adc", mode: "imm", code: 0x69, execute: adc_imm },
+        { name: "adc", mode: "izx", code: 0x61, execute: adc_izx },
+        { name: "adc", mode: "izy", code: 0x71, execute: adc_izy },
+        { name: "adc", mode: "zp",  code: 0x65, execute: adc_zp  },
+        { name: "adc", mode: "zpx", code: 0x75, execute: adc_zpx },
+
         { name: "and", mode: "abs", code: 0x2d, execute: and_abs },
         { name: "and", mode: "abx", code: 0x3d, execute: and_abx },
         { name: "and", mode: "aby", code: 0x39, execute: and_aby },
@@ -337,7 +402,7 @@ m84.ops = m84.ops || function(spec) {
         { name: "lda", mode: "izy", code: 0xb1, execute: lda_izy },
         { name: "lda", mode: "zp",  code: 0xa5, execute: lda_zp  },
         { name: "lda", mode: "zpx", code: 0xb5, execute: lda_zpx },
-        
+
         { name: "ldx", mode: "abs", code: 0xae, execute: ldx_abs },
         { name: "ldx", mode: "aby", code: 0xbe, execute: ldx_aby },
         { name: "ldx", mode: "imm", code: 0xa2, execute: ldx_imm },
@@ -366,11 +431,11 @@ m84.ops = m84.ops || function(spec) {
         { name: "sta", mode: "izy", code: 0x91, execute: sta_izy },
         { name: "sta", mode: "zp",  code: 0x85, execute: sta_zp  },
         { name: "sta", mode: "zpx", code: 0x95, execute: sta_zpx },
-        
+
         { name: "stx", mode: "abs", code: 0x8e, execute: stx_abs },
         { name: "stx", mode: "zp",  code: 0x86, execute: stx_zp  },
         { name: "stx", mode: "zpy", code: 0x96, execute: stx_zpy },
-        
+
         { name: "sty", mode: "abs", code: 0x8c, execute: sty_abs },
         { name: "sty", mode: "zp",  code: 0x84, execute: sty_zp  },
         { name: "sty", mode: "zpx", code: 0x94, execute: sty_zpx }
