@@ -23,61 +23,30 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-/**
- * @module m84
- */
-var m84 = m84 || {};
+/* jshint sub: true */
 
-/**
- * @class m84.asm
- */
-m84.asm = m84.asm || function(spec) {
-
-    var mem = spec.mem || m84.mem(spec);
-    var ops = spec.ops || m84.ops(spec);
-    var map = spec.map || m84.map(spec);
+buster.testCase("m84.ops.brk", (function() {
 
     var self = {};
+    var mem;
+    var cpu;
+    var a;
 
-    m84.pc(self);
-
-    var init = function() {
-        self.pc = map.PROGRAM;
-        _.each(ops, function(op) {
-            if ( op.illegal ) {
-                return;
-            }
-            var fname = op.name;
-            if ( op.mode !== "imp" ) {
-                fname += "_" + op.mode;
-            }
-            self[fname] = assemblers[op.length](op);
-        });
+    self.setUp = function() {
+        mem = m84.mem();
+        cpu = m84.cpu({mem: mem});
+        a = m84.asm({mem: mem});
     };
 
-    var arg0 = function(op) {
-        return function() {
-            self.storeb(op.code);
-        };
+    self["brk"] = function() {
+        a.pc = 0x9000;
+        a.brk();
+        cpu.pc = 0x8fff;
+        cpu.execute();
+        buster.assert(cpu.b);
+        buster.assert.equals(cpu.pc, 0x9001);
     };
 
-    var arg1 = function(op) {
-        return function(arg) {
-            self.storeb(op.code);
-            self.storeb(arg);
-        };
-    };
-
-    var arg2 = function(op) {
-        return function(arg) {
-            self.storeb(op.code);
-            self.storew(arg);
-        };
-    };
-
-    var assemblers = [arg0, arg1, arg2];
-
-    init();
     return self;
 
-};
+})());

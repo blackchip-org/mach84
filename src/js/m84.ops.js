@@ -182,6 +182,15 @@ m84.ops = m84.ops || function(spec) {
         bit(cpu, mem.loadb_zpi(cpu.fetchb(), cpu.x));
     };
 
+    // ====== brk
+
+    var brk_imp = function(cpu, mem) {
+        cpu.b = true;
+        cpu.exit = "break";
+        // Gobble up next byte
+        cpu.fetchb();
+    };
+
     // ====== eor
 
     var eor_abs = function(cpu, mem) {
@@ -452,6 +461,8 @@ m84.ops = m84.ops || function(spec) {
         { name: "bit", mode: "abx", code: 0x3c, execute: bit_abx },
         { name: "bit", mode: "zp",  code: 0x24, execute: bit_zp  },
         { name: "bit", mode: "zpx", code: 0x34, execute: bit_zpx },
+
+        { name: "brk", mode: "imp", code: 0x00, execute: brk_imp },
 
         { name: "eor", mode: "abs", code: 0x4d, execute: eor_abs },
         { name: "eor", mode: "abx", code: 0x5d, execute: eor_abx },

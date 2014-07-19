@@ -74,6 +74,8 @@ m84.cpu = m84.cpu || function(spec) {
         }
     };
 
+    self.exit = "";
+
     self.execute = function() {
         ops[self.fetchb()].execute(self, mem);
     };
