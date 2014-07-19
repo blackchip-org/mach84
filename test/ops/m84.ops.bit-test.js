@@ -25,7 +25,7 @@
 
 /* jshint sub: true */
 
-buster.testCase("m84.ops.asl", (function() {
+buster.testCase("m84.ops.bit", (function() {
 
     var self = {};
     var mem;
@@ -38,64 +38,78 @@ buster.testCase("m84.ops.asl", (function() {
         a = m84.asm({mem: mem});
     };
 
-    self["asl_acc"] = function() {
-        cpu.a = 4;
-        a.asl_acc();
+    self["bit_abs, zero"] = function() {
+        mem.storeb(0xabcd, 0xf0);
+        cpu.a = 0x0f;
+        a.bit_abs(0xabcd);
         cpu.execute();
-        buster.assert.equals(8, cpu.a);
-        buster.refute(cpu.z);
-        buster.refute(cpu.n);
-        buster.refute(cpu.c);
-    };
-
-    self["asl_acc, shift out"] = function() {
-        cpu.a = Math.pow(2, 7);
-        a.asl_acc();
-        cpu.execute();
-        buster.assert.equals(0, cpu.a);
         buster.assert(cpu.z);
-        buster.refute(cpu.n);
-        buster.assert(cpu.c);
     };
 
-    self["asl_acc, signed"] = function() {
-        cpu.a = Math.pow(2, 6);
-        a.asl_acc();
+    self["bit_abs, not zero"] = function() {
+        mem.storeb(0xabcd, 0xff);
+        cpu.a = 0xff;
+        a.bit_abs(0xabcd);
         cpu.execute();
-        buster.assert.equals(Math.pow(2, 7), cpu.a);
         buster.refute(cpu.z);
+    };
+
+    self["bit_abs, clear n and v"] = function() {
+        mem.storeb(0xabcd, 0x01);
+        a.bit_abs(0xabcd);
+        cpu.execute();
+        buster.refute(cpu.n);
+        buster.refute(cpu.v);
+    };
+
+    self["bit_abs, set n"] = function() {
+        mem.storeb(0xabcd, 128);
+        a.bit_abs(0xabcd);
+        cpu.execute();
         buster.assert(cpu.n);
-        buster.refute(cpu.c);
+        buster.refute(cpu.v);
     };
 
-    self["asl_abs"] = function() {
-        mem.storeb(0xabcd, 4);
-        a.asl_abs(0xabcd);
+    self["bit_abs, set v"] = function() {
+        mem.storeb(0xabcd, 64);
+        a.bit_abs(0xabcd);
         cpu.execute();
-        buster.assert.equals(8, mem.loadb(0xabcd));
+        buster.refute(cpu.n);
+        buster.assert(cpu.v);
     };
 
-    self["asl_abx"] = function() {
-        mem.storeb(0xabcd, 4);
+    self["bit_abs, set n and v"] = function() {
+        mem.storeb(0xabcd, 0xff);
+        a.bit_abs(0xabcd);
+        cpu.execute();
+        buster.assert(cpu.n);
+        buster.assert(cpu.v);
+    };
+
+    self["bit_abx"] = function() {
+        mem.storeb(0xabcd, 64);
         cpu.x = 0xcd;
-        a.asl_abx(0xab00);
+        a.bit_abx(0xab00);
         cpu.execute();
-        buster.assert.equals(8, mem.loadb(0xabcd));
+        buster.refute(cpu.n);
+        buster.assert(cpu.v);
     };
 
-    self["asl_zp"] = function() {
-        mem.storeb_zp(0xab, 4);
-        a.asl_zp(0xab);
+    self["bit_zp"] = function() {
+        mem.storeb(0xab, 64);
+        a.bit_zp(0xab);
         cpu.execute();
-        buster.assert.equals(8, mem.loadb_zp(0xab));
+        buster.refute(cpu.n);
+        buster.assert(cpu.v);
     };
 
-    self["asl_zpx"] = function() {
-        mem.storeb_zp(0xab, 4);
-        cpu.x = 0x0b;
-        a.asl_zpx(0xa0);
+    self["bit_zpx"] = function() {
+        mem.storeb(0xab, 64);
+        cpu.x = 0xb;
+        a.bit_zpx(0xa0);
         cpu.execute();
-        buster.assert.equals(8, mem.loadb_zp(0xab));
+        buster.refute(cpu.n);
+        buster.assert(cpu.v);
     };
 
     return self;

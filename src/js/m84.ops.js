@@ -158,6 +158,30 @@ m84.ops = m84.ops || function(spec) {
         flags(cpu, cpu.a);
     };
 
+    // ====== bit
+
+    var bit = function(cpu, value) {
+        cpu.z = (cpu.a & value) === 0;
+        cpu.n = (value & 128) !== 0;
+        cpu.v = (value & 64) !== 0;
+    };
+
+    var bit_abs = function(cpu, mem) {
+        bit(cpu, mem.loadb(cpu.fetchw()));
+    };
+
+    var bit_abx = function(cpu, mem) {
+        bit(cpu, mem.loadb_i(cpu.fetchw(), cpu.x));
+    };
+
+    var bit_zp = function(cpu, mem) {
+        bit(cpu, mem.loadb_zp(cpu.fetchb()));
+    };
+
+    var bit_zpx = function(cpu, mem) {
+        bit(cpu, mem.loadb_zpi(cpu.fetchb(), cpu.x));
+    };
+
     // ====== eor
 
     var eor_abs = function(cpu, mem) {
@@ -413,7 +437,7 @@ m84.ops = m84.ops || function(spec) {
         { name: "asl", mode: "abx", code: 0x1e, execute: asl_abx },
         { name: "asl", mode: "acc", code: 0x0a, execute: asl_acc },
         { name: "asl", mode: "zp",  code: 0x06, execute: asl_zp  },
-        { name: "asl", mode: "zpx", code: 0x34, execute: asl_zpx },
+        { name: "asl", mode: "zpx", code: 0x16, execute: asl_zpx },
 
         { name: "and", mode: "abs", code: 0x2d, execute: and_abs },
         { name: "and", mode: "abx", code: 0x3d, execute: and_abx },
@@ -423,6 +447,11 @@ m84.ops = m84.ops || function(spec) {
         { name: "and", mode: "izy", code: 0x31, execute: and_izy },
         { name: "and", mode: "zp",  code: 0x25, execute: and_zp  },
         { name: "and", mode: "zpx", code: 0x35, execute: and_zpx },
+
+        { name: "bit", mode: "abs", code: 0x2c, execute: bit_abs },
+        { name: "bit", mode: "abx", code: 0x3c, execute: bit_abx },
+        { name: "bit", mode: "zp",  code: 0x24, execute: bit_zp  },
+        { name: "bit", mode: "zpx", code: 0x34, execute: bit_zpx },
 
         { name: "eor", mode: "abs", code: 0x4d, execute: eor_abs },
         { name: "eor", mode: "abx", code: 0x5d, execute: eor_abx },
