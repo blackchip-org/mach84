@@ -83,6 +83,39 @@ m84.ops = m84.ops || function(spec) {
         adc(cpu, mem.loadb_zpi(cpu.fetchw(), cpu.x));
     };
 
+    // ====== asl
+
+    var asl = function(cpu, value) {
+        cpu.c = (value & 0x80) !== 0;
+        value = (value << 1) & 0xff;
+        flags(cpu, value);
+        return value;
+    };
+
+    var asl_abs = function(cpu, mem) {
+        var address = cpu.fetchw();
+        mem.storeb(address, asl(cpu, mem.loadb(address)));
+    };
+
+    var asl_abx = function(cpu, mem) {
+        var address = cpu.fetchw();
+        mem.storeb_i(address, cpu.x, asl(cpu, mem.loadb_i(address, cpu.x)));
+    };
+
+    var asl_acc = function(cpu, mem) {
+        cpu.a = asl(cpu, cpu.a);
+    };
+
+    var asl_zp = function(cpu, mem) {
+        var address = cpu.fetchb();
+        mem.storeb_zp(address, asl(cpu, mem.loadb_zp(address)));
+    };
+
+    var asl_zpx = function(cpu, mem) {
+        var address = cpu.fetchb();
+        mem.storeb_zpi(address, cpu.x, asl(cpu, mem.loadb_i(address, cpu.x)));
+    };
+
     // ====== and
 
     var and_abs = function(cpu, mem) {
@@ -375,6 +408,12 @@ m84.ops = m84.ops || function(spec) {
         { name: "adc", mode: "izy", code: 0x71, execute: adc_izy },
         { name: "adc", mode: "zp",  code: 0x65, execute: adc_zp  },
         { name: "adc", mode: "zpx", code: 0x75, execute: adc_zpx },
+
+        { name: "asl", mode: "abs", code: 0x0e, execute: asl_abs },
+        { name: "asl", mode: "abx", code: 0x1e, execute: asl_abx },
+        { name: "asl", mode: "acc", code: 0x0a, execute: asl_acc },
+        { name: "asl", mode: "zp",  code: 0x06, execute: asl_zp  },
+        { name: "asl", mode: "zpx", code: 0x34, execute: asl_zpx },
 
         { name: "and", mode: "abs", code: 0x2d, execute: and_abs },
         { name: "and", mode: "abx", code: 0x3d, execute: and_abx },

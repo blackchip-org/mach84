@@ -97,11 +97,11 @@ m84.mem = m84.mem || function(spec) {
     self.loadb_izy = function(address, index, value) {
         return mem[self.loadw_zp(address) + index];
     };
-    
+
     self.storeb_izy = function(address, index, value) {
         mem[self.loadw_zp(address) + index] = value;
     };
-    
+
     /**
      * Loads a word from memory.
      *
