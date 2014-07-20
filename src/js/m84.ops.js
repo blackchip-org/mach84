@@ -236,6 +236,75 @@ m84.ops = m84.ops || function(spec) {
         cpu.fetchb();
     };
 
+    // ====== cmp
+
+    var compare = function(cpu, a1, a2) {
+        var result = a1 - a2;
+        // c register set as if subraction. Clear if 'borrow', otherwise set
+        cpu.c = ( result >= 0 );
+        flags(cpu, result);
+    };
+
+    var cmp_abs = function(cpu, mem) {
+        compare(cpu, cpu.a, mem.loadb(cpu.fetchw()));
+    };
+
+    var cmp_abx = function(cpu, mem) {
+        compare(cpu, cpu.a, mem.loadb_i(cpu.fetchw(), cpu.x));
+    };
+
+    var cmp_aby = function(cpu, mem) {
+        compare(cpu, cpu.a, mem.loadb_i(cpu.fetchw(), cpu.y));
+    };
+
+    var cmp_imm = function(cpu, mem) {
+        compare(cpu, cpu.a, cpu.fetchb());
+    };
+
+    var cmp_izx = function(cpu, mem) {
+        compare(cpu, cpu.a, mem.loadb_izx(cpu.fetchb(), cpu.x));
+    };
+
+    var cmp_izy = function(cpu, mem) {
+        compare(cpu, cpu.a, mem.loadb_izy(cpu.fetchb(), cpu.y));
+    };
+
+    var cmp_zp = function(cpu, mem) {
+        compare(cpu, cpu.a, mem.loadb_zp(cpu.fetchb()));
+    };
+
+    var cmp_zpx = function(cpu, mem) {
+        compare(cpu, cpu.a, mem.loadb_zpi(cpu.fetchb(), cpu.x));
+    };
+
+    // ====== cpx
+
+    var cpx_abs = function(cpu, mem) {
+        compare(cpu, cpu.x, mem.loadb(cpu.fetchw()));
+    };
+
+    var cpx_imm = function(cpu, mem) {
+        compare(cpu, cpu.x, cpu.fetchb());
+    };
+
+    var cpx_zp = function(cpu, mem) {
+        compare(cpu, cpu.x, mem.loadb_zp(cpu.fetchb()));
+    };
+
+    // ====== cpy
+
+    var cpy_abs = function(cpu, mem) {
+        compare(cpu, cpu.y, mem.loadb(cpu.fetchw()));
+    };
+
+    var cpy_imm = function(cpu, mem) {
+        compare(cpu, cpu.y, cpu.fetchb());
+    };
+
+    var cpy_zp = function(cpu, mem) {
+        compare(cpu, cpu.y, mem.loadb_zp(cpu.fetchb()));
+    };
+
     // ====== eor
 
     var eor_abs = function(cpu, mem) {
@@ -519,6 +588,23 @@ m84.ops = m84.ops || function(spec) {
         { name: "bra", mode: "rel", code: 0x80, execute: bra },
         { name: "bvc", mode: "rel", code: 0x50, execute: bvc },
         { name: "bvs", mode: "rel", code: 0x70, execute: bvs },
+
+        { name: "cmp", mode: "abs", code: 0xcd, execute: cmp_abs },
+        { name: "cmp", mode: "abx", code: 0xdd, execute: cmp_abx },
+        { name: "cmp", mode: "aby", code: 0xd9, execute: cmp_aby },
+        { name: "cmp", mode: "imm", code: 0xc9, execute: cmp_imm },
+        { name: "cmp", mode: "izx", code: 0xc1, execute: cmp_izx },
+        { name: "cmp", mode: "izy", code: 0xd1, execute: cmp_izy },
+        { name: "cmp", mode: "zp",  code: 0xc5, execute: cmp_zp  },
+        { name: "cmp", mode: "zpx", code: 0xd5, execute: cmp_zpx },
+
+        { name: "cpx", mode: "abs", code: 0xec, execute: cpx_abs },
+        { name: "cpx", mode: "imm", code: 0xe0, execute: cpx_imm },
+        { name: "cpx", mode: "zp",  code: 0xe4, execute: cpx_zp  },
+
+        { name: "cpy", mode: "abs", code: 0xcc, execute: cpy_abs },
+        { name: "cpy", mode: "imm", code: 0xc0, execute: cpy_imm },
+        { name: "cpy", mode: "zp",  code: 0xc4, execute: cpy_zp  },
 
         { name: "eor", mode: "abs", code: 0x4d, execute: eor_abs },
         { name: "eor", mode: "abx", code: 0x5d, execute: eor_abx },
