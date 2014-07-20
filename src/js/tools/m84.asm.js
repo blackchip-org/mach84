@@ -48,10 +48,14 @@ m84.asm = m84.asm || function(spec) {
                 return;
             }
             var fname = op.name;
-            if ( op.mode !== "imp" ) {
+            if ( op.mode !== "imp" && op.mode !== "rel" ) {
                 fname += "_" + op.mode;
             }
-            self[fname] = assemblers[op.length](op);
+            if ( op.mode === "rel" ) {
+                self[fname] = rel(op);
+            } else {
+                self[fname] = assemblers[op.length](op);
+            }
         });
     };
 
@@ -72,6 +76,21 @@ m84.asm = m84.asm || function(spec) {
         return function(arg) {
             self.storeb(op.code);
             self.storew(arg);
+        };
+    };
+
+    var rel = function(op) {
+        return function(arg) {
+            // Branch is relative to pc after instruction has been consumed.
+            // Since we have not yet consumed it, the pc has to be adjusted
+            // by two (opcode and offset)
+            var displacement = arg - (self.pc + 2);
+            if ( displacement < -128 || displacement > 127 ) {
+                throw new Error("Invalid displacement " + displacement +
+                    " for address $" + m84.util.hexw(arg));
+            }
+            self.storeb(op.code);
+            self.storeb(displacement);
         };
     };
 

@@ -182,9 +182,54 @@ m84.ops = m84.ops || function(spec) {
         bit(cpu, mem.loadb_zpi(cpu.fetchb(), cpu.x));
     };
 
+    // ====== branches
+
+    var branch = function(cpu, flag) {
+        var displacement = cpu.fetchb();
+        if ( flag ) {
+            cpu.pc += m84.util.to_signed(displacement);
+        }
+    };
+
+    var bcc = function(cpu, mem) {
+        branch(cpu, !cpu.c);
+    };
+
+    var bcs = function(cpu, mem) {
+        branch(cpu, cpu.c);
+    };
+
+    var beq = function(cpu, mem) {
+        branch(cpu, cpu.z);
+    };
+
+    var bmi = function(cpu, mem) {
+        branch(cpu, cpu.n);
+    };
+
+    var bne = function(cpu, mem) {
+        branch(cpu, !cpu.z);
+    };
+
+    var bpl = function(cpu, mem) {
+        branch(cpu, !cpu.n);
+    };
+
+    var bra = function(cpu, mem) {
+        branch(cpu, true);
+    };
+
+    var bvc = function(cpu, mem) {
+        branch(cpu, !cpu.v);
+    };
+
+    var bvs = function(cpu, mem) {
+        branch(cpu, cpu.v);
+    };
+
     // ====== brk
 
-    var brk_imp = function(cpu, mem) {
+    var brk = function(cpu, mem) {
         cpu.b = true;
         cpu.exit = "break";
         // Gobble up next byte
@@ -462,7 +507,18 @@ m84.ops = m84.ops || function(spec) {
         { name: "bit", mode: "zp",  code: 0x24, execute: bit_zp  },
         { name: "bit", mode: "zpx", code: 0x34, execute: bit_zpx },
 
-        { name: "brk", mode: "imp", code: 0x00, execute: brk_imp },
+        { name: "brk", mode: "imp", code: 0x00, execute: brk },
+
+        // branches
+        { name: "bcc", mode: "rel", code: 0x90, execute: bcc },
+        { name: "bcs", mode: "rel", code: 0xb0, execute: bcs },
+        { name: "beq", mode: "rel", code: 0xf0, execute: beq },
+        { name: "bmi", mode: "rel", code: 0x30, execute: bmi },
+        { name: "bne", mode: "rel", code: 0xd0, execute: bne },
+        { name: "bpl", mode: "rel", code: 0x10, execute: bpl },
+        { name: "bra", mode: "rel", code: 0x80, execute: bra },
+        { name: "bvc", mode: "rel", code: 0x50, execute: bvc },
+        { name: "bvs", mode: "rel", code: 0x70, execute: bvs },
 
         { name: "eor", mode: "abs", code: 0x4d, execute: eor_abs },
         { name: "eor", mode: "abx", code: 0x5d, execute: eor_abx },
@@ -525,15 +581,16 @@ m84.ops = m84.ops || function(spec) {
         abs: 2,
         abx: 2,
         aby: 2,
+        acc: 0,
         ind: 2,
         imm: 1,
-        zp:  1,
-        zpx: 1,
-        zpy: 1,
+        imp: 0,
         izx: 1,
         izy: 1,
-        imp: 0,
-        acc: 0
+        rel: 1,
+        zp:  1,
+        zpx: 1,
+        zpy: 1
     };
 
     // Create a lookup table via opcode
