@@ -27,10 +27,11 @@ var m84 = m84 || {};
 
 m84.ops = m84.ops || function(spec) {
 
-    // ====== adc
+    // ====== adc: Add with carry
 
-    var adc = function(cpu, a2) {
+    var adc = function(cpu, load) {
         var a1 = cpu.a;
+        var a2 = load();
         var carry = ( cpu.c ) ? 1 : 0;
         if ( cpu.d ) {
             a1 = m84.util.from_bcd(a1);
@@ -51,39 +52,32 @@ m84.ops = m84.ops || function(spec) {
         flags(cpu, cpu.a);
     };
 
-    var adc_abs = function(cpu, mem) {
-        adc(cpu, mem.loadb(cpu.fetchw()));
+    var adc_abs = function(cpu) { adc(cpu, cpu.load_abs); };
+    var adc_abx = function(cpu) { adc(cpu, cpu.load_abx); };
+    var adc_aby = function(cpu) { adc(cpu, cpu.load_aby); };
+    var adc_imm = function(cpu) { adc(cpu, cpu.load_imm); };
+    var adc_izx = function(cpu) { adc(cpu, cpu.load_izx); };
+    var adc_izy = function(cpu) { adc(cpu, cpu.load_izy); };
+    var adc_zp  = function(cpu) { adc(cpu, cpu.load_zp);  };
+    var adc_zpx = function(cpu) { adc(cpu, cpu.load_zpx); };
+
+    // ====== and: And with accumulator
+
+    var and = function(cpu, load) {
+        cpu.a = cpu.a & load();
+        flags(cpu, cpu.a);
     };
 
-    var adc_abx = function(cpu, mem) {
-        adc(cpu, mem.loadb_i(cpu.fetchw(), cpu.x));
-    };
+    var and_abs = function(cpu) { and(cpu, cpu.load_abs); };
+    var and_abx = function(cpu) { and(cpu, cpu.load_abx); };
+    var and_aby = function(cpu) { and(cpu, cpu.load_aby); };
+    var and_imm = function(cpu) { and(cpu, cpu.load_imm); };
+    var and_izx = function(cpu) { and(cpu, cpu.load_izx); };
+    var and_izy = function(cpu) { and(cpu, cpu.load_izy); };
+    var and_zp  = function(cpu) { and(cpu, cpu.load_zp);  };
+    var and_zpx = function(cpu) { and(cpu, cpu.load_zpx); };
 
-    var adc_aby = function(cpu, mem) {
-        adc(cpu, mem.loadb_i(cpu.fetchw(), cpu.y));
-    };
-
-    var adc_imm = function(cpu, mem) {
-        adc(cpu, cpu.fetchb());
-    };
-
-    var adc_izx = function(cpu, mem) {
-        adc(cpu, mem.loadb_izx(cpu.fetchb(), cpu.x));
-    };
-
-    var adc_izy = function(cpu, mem) {
-        adc(cpu, mem.loadb_izy(cpu.fetchb(), cpu.y));
-    };
-
-    var adc_zp = function(cpu, mem) {
-        adc(cpu, mem.loadb_zp(cpu.fetchb()));
-    };
-
-    var adc_zpx = function(cpu, mem) {
-        adc(cpu, mem.loadb_zpi(cpu.fetchw(), cpu.x));
-    };
-
-    // ====== asl
+    // ====== asl: Arithmetic shift left
 
     var asl = function(cpu, value) {
         cpu.c = (value & 0x80) !== 0;
@@ -116,73 +110,21 @@ m84.ops = m84.ops || function(spec) {
         mem.storeb_zpi(address, cpu.x, asl(cpu, mem.loadb_i(address, cpu.x)));
     };
 
-    // ====== and
+    // ====== bit: Test bits
 
-    var and_abs = function(cpu, mem) {
-        cpu.a = cpu.a & mem.loadb(cpu.fetchw());
-        flags(cpu, cpu.a);
-    };
-
-    var and_abx = function(cpu, mem) {
-        cpu.a = cpu.a & mem.loadb_i(cpu.fetchw(), cpu.x);
-        flags(cpu, cpu.a);
-    };
-
-    var and_aby = function(cpu, mem) {
-        cpu.a = cpu.a & mem.loadb_i(cpu.fetchw(), cpu.y);
-        flags(cpu, cpu.a);
-    };
-
-    var and_imm = function(cpu, mem) {
-        cpu.a = cpu.a & cpu.fetchb();
-        flags(cpu, cpu.a);
-    };
-
-    var and_izx = function(cpu, mem) {
-        cpu.a = cpu.a & mem.loadb_izx(cpu.fetchb(), cpu.x);
-        flags(cpu, cpu.a);
-    };
-
-    var and_izy = function(cpu, mem) {
-        cpu.a = cpu.a & mem.loadb_izy(cpu.fetchb(), cpu.y);
-        flags(cpu, cpu.a);
-    };
-
-    var and_zp = function(cpu, mem) {
-        cpu.a = cpu.a & mem.loadb_zp(cpu.fetchb());
-        flags(cpu, cpu.a);
-    };
-
-    var and_zpx = function(cpu, mem) {
-        cpu.a = cpu.a & mem.loadb_zpi(cpu.fetchb(), cpu.x);
-        flags(cpu, cpu.a);
-    };
-
-    // ====== bit
-
-    var bit = function(cpu, value) {
+    var bit = function(cpu, load) {
+        value = load();
         cpu.z = (cpu.a & value) === 0;
         cpu.n = (value & 128) !== 0;
         cpu.v = (value & 64) !== 0;
     };
 
-    var bit_abs = function(cpu, mem) {
-        bit(cpu, mem.loadb(cpu.fetchw()));
-    };
+    var bit_abs = function(cpu) { bit(cpu, cpu.load_abs); };
+    var bit_abx = function(cpu) { bit(cpu, cpu.load_abx); };
+    var bit_zp  = function(cpu) { bit(cpu, cpu.load_zp);  };
+    var bit_zpx = function(cpu) { bit(cpu, cpu.load_zpx); };
 
-    var bit_abx = function(cpu, mem) {
-        bit(cpu, mem.loadb_i(cpu.fetchw(), cpu.x));
-    };
-
-    var bit_zp = function(cpu, mem) {
-        bit(cpu, mem.loadb_zp(cpu.fetchb()));
-    };
-
-    var bit_zpx = function(cpu, mem) {
-        bit(cpu, mem.loadb_zpi(cpu.fetchb(), cpu.x));
-    };
-
-    // ====== branches
+    // ====== Branches
 
     var branch = function(cpu, flag) {
         var displacement = cpu.fetchb();
@@ -191,43 +133,17 @@ m84.ops = m84.ops || function(spec) {
         }
     };
 
-    var bcc = function(cpu, mem) {
-        branch(cpu, !cpu.c);
-    };
+    var bcc = function(cpu) { branch(cpu, !cpu.c); }; // carry clear
+    var bcs = function(cpu) { branch(cpu, cpu.c);  }; // carry set
+    var beq = function(cpu) { branch(cpu, cpu.z);  }; // equal
+    var bmi = function(cpu) { branch(cpu, cpu.n);  }; // minus
+    var bne = function(cpu) { branch(cpu, !cpu.z); }; // not equal
+    var bpl = function(cpu) { branch(cpu, !cpu.n); }; // plus
+    var bra = function(cpu) { branch(cpu, true);   }; // always
+    var bvc = function(cpu) { branch(cpu, !cpu.v); }; // overflow clear
+    var bvs = function(cpu) { branch(cpu, cpu.v);  }; // overflow set
 
-    var bcs = function(cpu, mem) {
-        branch(cpu, cpu.c);
-    };
-
-    var beq = function(cpu, mem) {
-        branch(cpu, cpu.z);
-    };
-
-    var bmi = function(cpu, mem) {
-        branch(cpu, cpu.n);
-    };
-
-    var bne = function(cpu, mem) {
-        branch(cpu, !cpu.z);
-    };
-
-    var bpl = function(cpu, mem) {
-        branch(cpu, !cpu.n);
-    };
-
-    var bra = function(cpu, mem) {
-        branch(cpu, true);
-    };
-
-    var bvc = function(cpu, mem) {
-        branch(cpu, !cpu.v);
-    };
-
-    var bvs = function(cpu, mem) {
-        branch(cpu, cpu.v);
-    };
-
-    // ====== brk
+    // ====== brk: Break
 
     var brk = function(cpu, mem) {
         cpu.b = true;
@@ -236,308 +152,127 @@ m84.ops = m84.ops || function(spec) {
         cpu.fetchb();
     };
 
-    // ====== cmp
+    // ====== cmp, cpx, cpy: Compare
 
-    var compare = function(cpu, a1, a2) {
-        var result = a1 - a2;
+    var compare = function(cpu, register, load) {
+        var result = register - load();
         // c register set as if subraction. Clear if 'borrow', otherwise set
         cpu.c = ( result >= 0 );
         flags(cpu, result);
     };
 
-    var cmp_abs = function(cpu, mem) {
-        compare(cpu, cpu.a, mem.loadb(cpu.fetchw()));
-    };
+    var cmp_abs = function(cpu) { compare(cpu, cpu.a, cpu.load_abs); };
+    var cmp_abx = function(cpu) { compare(cpu, cpu.a, cpu.load_abx); };
+    var cmp_aby = function(cpu) { compare(cpu, cpu.a, cpu.load_aby); };
+    var cmp_imm = function(cpu) { compare(cpu, cpu.a, cpu.load_imm); };
+    var cmp_izx = function(cpu) { compare(cpu, cpu.a, cpu.load_izx); };
+    var cmp_izy = function(cpu) { compare(cpu, cpu.a, cpu.load_izy); };
+    var cmp_zp  = function(cpu) { compare(cpu, cpu.a, cpu.load_zp);  };
+    var cmp_zpx = function(cpu) { compare(cpu, cpu.a, cpu.load_zpx); };
 
-    var cmp_abx = function(cpu, mem) {
-        compare(cpu, cpu.a, mem.loadb_i(cpu.fetchw(), cpu.x));
-    };
+    var cpx_abs = function(cpu) { compare(cpu, cpu.x, cpu.load_abs); };
+    var cpx_imm = function(cpu) { compare(cpu, cpu.x, cpu.load_imm); };
+    var cpx_zp  = function(cpu) { compare(cpu, cpu.x, cpu.load_zp);  };
 
-    var cmp_aby = function(cpu, mem) {
-        compare(cpu, cpu.a, mem.loadb_i(cpu.fetchw(), cpu.y));
-    };
+    var cpy_abs = function(cpu) { compare(cpu, cpu.y, cpu.load_abs); };
+    var cpy_imm = function(cpu) { compare(cpu, cpu.y, cpu.load_imm); };
+    var cpy_zp  = function(cpu) { compare(cpu, cpu.y, cpu.load_zp);  };
 
-    var cmp_imm = function(cpu, mem) {
-        compare(cpu, cpu.a, cpu.fetchb());
-    };
+    // ====== eor: Exclusive or with accumulator
 
-    var cmp_izx = function(cpu, mem) {
-        compare(cpu, cpu.a, mem.loadb_izx(cpu.fetchb(), cpu.x));
-    };
-
-    var cmp_izy = function(cpu, mem) {
-        compare(cpu, cpu.a, mem.loadb_izy(cpu.fetchb(), cpu.y));
-    };
-
-    var cmp_zp = function(cpu, mem) {
-        compare(cpu, cpu.a, mem.loadb_zp(cpu.fetchb()));
-    };
-
-    var cmp_zpx = function(cpu, mem) {
-        compare(cpu, cpu.a, mem.loadb_zpi(cpu.fetchb(), cpu.x));
-    };
-
-    // ====== cpx
-
-    var cpx_abs = function(cpu, mem) {
-        compare(cpu, cpu.x, mem.loadb(cpu.fetchw()));
-    };
-
-    var cpx_imm = function(cpu, mem) {
-        compare(cpu, cpu.x, cpu.fetchb());
-    };
-
-    var cpx_zp = function(cpu, mem) {
-        compare(cpu, cpu.x, mem.loadb_zp(cpu.fetchb()));
-    };
-
-    // ====== cpy
-
-    var cpy_abs = function(cpu, mem) {
-        compare(cpu, cpu.y, mem.loadb(cpu.fetchw()));
-    };
-
-    var cpy_imm = function(cpu, mem) {
-        compare(cpu, cpu.y, cpu.fetchb());
-    };
-
-    var cpy_zp = function(cpu, mem) {
-        compare(cpu, cpu.y, mem.loadb_zp(cpu.fetchb()));
-    };
-
-    // ====== eor
-
-    var eor_abs = function(cpu, mem) {
-        cpu.a = cpu.a ^ mem.loadb(cpu.fetchw());
+    var eor = function(cpu, load) {
+        cpu.a = cpu.a ^ load();
         flags(cpu, cpu.a);
     };
 
-    var eor_abx = function(cpu, mem) {
-        cpu.a = cpu.a ^ mem.loadb_i(cpu.fetchw(), cpu.x);
+    var eor_abs = function(cpu) { eor(cpu, cpu.load_abs); };
+    var eor_abx = function(cpu) { eor(cpu, cpu.load_abx); };
+    var eor_aby = function(cpu) { eor(cpu, cpu.load_aby); };
+    var eor_imm = function(cpu) { eor(cpu, cpu.load_imm); };
+    var eor_izx = function(cpu) { eor(cpu, cpu.load_izx); };
+    var eor_izy = function(cpu) { eor(cpu, cpu.load_izy); };
+    var eor_zp  = function(cpu) { eor(cpu, cpu.load_zp);  };
+    var eor_zpx = function(cpu) { eor(cpu, cpu.load_zpx); };
+
+    // ====== lda: Load accumulator
+
+    var lda = function(cpu, load) {
+        cpu.a = load();
         flags(cpu, cpu.a);
     };
 
-    var eor_aby = function(cpu, mem) {
-        cpu.a = cpu.a ^ mem.loadb_i(cpu.fetchw(), cpu.y);
-        flags(cpu, cpu.a);
-    };
+    var lda_abs = function(cpu) { lda(cpu, cpu.load_abs); };
+    var lda_abx = function(cpu) { lda(cpu, cpu.load_abx); };
+    var lda_aby = function(cpu) { lda(cpu, cpu.load_aby); };
+    var lda_imm = function(cpu) { lda(cpu, cpu.load_imm); };
+    var lda_izx = function(cpu) { lda(cpu, cpu.load_izx); };
+    var lda_izy = function(cpu) { lda(cpu, cpu.load_izy); };
+    var lda_zp  = function(cpu) { lda(cpu, cpu.load_zp);  };
+    var lda_zpx = function(cpu) { lda(cpu, cpu.load_zpx); };
 
-    var eor_imm = function(cpu, mem) {
-        cpu.a = cpu.a ^ cpu.fetchb();
-        flags(cpu, cpu.a);
-    };
+    // ===== ldx: Load x register
 
-    var eor_izx = function(cpu, mem) {
-        cpu.a = cpu.a ^ mem.loadb_izx(cpu.fetchb(), cpu.x);
-        flags(cpu, cpu.a);
-    };
-
-    var eor_izy = function(cpu, mem) {
-        cpu.a = cpu.a ^ mem.loadb_izy(cpu.fetchb(), cpu.y);
-        flags(cpu, cpu.a);
-    };
-
-    var eor_zp = function(cpu, mem) {
-        cpu.a = cpu.a ^ mem.loadb_zp(cpu.fetchb());
-        flags(cpu, cpu.a);
-    };
-
-    var eor_zpx = function(cpu, mem) {
-        cpu.a = cpu.a ^ mem.loadb_zpi(cpu.fetchb(), cpu.x);
-        flags(cpu, cpu.a);
-    };
-
-    // ====== lda
-
-    var lda_abs = function(cpu, mem) {
-        cpu.a = mem.loadb(cpu.fetchw());
-        flags(cpu, cpu.a);
-    };
-
-    var lda_abx = function(cpu, mem) {
-        cpu.a = mem.loadb_i(cpu.fetchw(), cpu.x);
-        flags(cpu, cpu.a);
-    };
-
-    var lda_aby = function(cpu, mem) {
-        cpu.a = mem.loadb_i(cpu.fetchw(), cpu.y);
-        flags(cpu, cpu.a);
-    };
-
-    var lda_imm = function(cpu, mem) {
-        cpu.a = cpu.fetchb();
-        flags(cpu, cpu.a);
-    };
-
-    var lda_izx = function(cpu, mem) {
-        cpu.a = mem.loadb_izx(cpu.fetchb(), cpu.x);
-        flags(cpu, cpu.a);
-    };
-
-    var lda_izy = function(cpu, mem) {
-        cpu.a = mem.loadb_izy(cpu.fetchb(), cpu.y);
-        flags(cpu, cpu.a);
-    };
-
-    var lda_zp = function(cpu, mem) {
-        cpu.a = mem.loadb_zp(cpu.fetchb());
-        flags(cpu, cpu.a);
-    };
-
-    var lda_zpx = function(cpu, mem) {
-        cpu.a = mem.loadb_zpi(cpu.fetchb(), cpu.x);
-        flags(cpu, cpu.a);
-    };
-
-    // ===== ldx
-
-    var ldx_abs = function(cpu, mem) {
-        cpu.x = mem.loadb(cpu.fetchw());
+    var ldx = function(cpu, load) {
+        cpu.x = load();
         flags(cpu, cpu.x);
     };
 
-    var ldx_aby = function(cpu, mem) {
-        cpu.x = mem.loadb_i(cpu.fetchw(), cpu.y);
-        flags(cpu, cpu.x);
-    };
+    var ldx_abs = function(cpu) { ldx(cpu, cpu.load_abs); };
+    var ldx_aby = function(cpu) { ldx(cpu, cpu.load_aby); };
+    var ldx_imm = function(cpu) { ldx(cpu, cpu.load_imm); };
+    var ldx_zp  = function(cpu) { ldx(cpu, cpu.load_zp);  };
+    var ldx_zpy = function(cpu) { ldx(cpu, cpu.load_zpy); };
 
-    var ldx_imm = function(cpu, mem) {
-        cpu.x = cpu.fetchb();
-        flags(cpu, cpu.x);
-    };
+    // ===== ldy: Load y register
 
-    var ldx_zp = function(cpu, mem) {
-        cpu.x = mem.loadb_zp(cpu.fetchb());
-        flags(cpu, cpu.x);
-    };
-
-    var ldx_zpy = function(cpu, mem) {
-        cpu.x = mem.loadb_zpi(cpu.fetchb(), cpu.y);
-        flags(cpu, cpu.x);
-    };
-
-    // ===== ldy
-
-    var ldy_abs = function(cpu, mem) {
-        cpu.y = mem.loadb(cpu.fetchw());
+    var ldy = function(cpu, load) {
+        cpu.y = load();
         flags(cpu, cpu.y);
     };
 
-    var ldy_abx = function(cpu, mem) {
-        cpu.y = mem.loadb_i(cpu.fetchw(), cpu.x);
-        flags(cpu, cpu.y);
-    };
+    var ldy_abs = function(cpu) { ldy(cpu, cpu.load_abs); };
+    var ldy_abx = function(cpu) { ldy(cpu, cpu.load_abx); };
+    var ldy_imm = function(cpu) { ldy(cpu, cpu.load_imm); };
+    var ldy_zp  = function(cpu) { ldy(cpu, cpu.load_zp);  };
+    var ldy_zpx = function(cpu) { ldy(cpu, cpu.load_zpx); };
 
-    var ldy_imm = function(cpu, mem) {
-        cpu.y = cpu.fetchb();
-        flags(cpu, cpu.y);
-    };
+    // ====== ora: Or with accumulator
 
-    var ldy_zp = function(cpu, mem) {
-        cpu.y = mem.loadb_zp(cpu.fetchb());
-        flags(cpu, cpu.y);
-    };
-
-    var ldy_zpx = function(cpu, mem) {
-        cpu.y = mem.loadb_zpi(cpu.fetchb(), cpu.x);
-        flags(cpu, cpu.y);
-    };
-
-    // ====== ora
-
-    var ora_abs = function(cpu, mem) {
-        cpu.a = cpu.a | mem.loadb(cpu.fetchw());
+    var ora = function(cpu, load) {
+        cpu.a = cpu.a | load();
         flags(cpu, cpu.a);
     };
 
-    var ora_abx = function(cpu, mem) {
-        cpu.a = cpu.a | mem.loadb_i(cpu.fetchw(), cpu.x);
-        flags(cpu, cpu.a);
-    };
+    var ora_abs = function(cpu) { ora(cpu, cpu.load_abs); };
+    var ora_abx = function(cpu) { ora(cpu, cpu.load_abx); };
+    var ora_aby = function(cpu) { ora(cpu, cpu.load_aby); };
+    var ora_imm = function(cpu) { ora(cpu, cpu.load_imm); };
+    var ora_izx = function(cpu) { ora(cpu, cpu.load_izx); };
+    var ora_izy = function(cpu) { ora(cpu, cpu.load_izy); };
+    var ora_zp  = function(cpu) { ora(cpu, cpu.load_zp);  };
+    var ora_zpx = function(cpu) { ora(cpu, cpu.load_zpx); };
 
-    var ora_aby = function(cpu, mem) {
-        cpu.a = cpu.a | mem.loadb_i(cpu.fetchw(), cpu.y);
-        flags(cpu, cpu.a);
-    };
+    // ===== sta: Store accumlator
 
-    var ora_imm = function(cpu, mem) {
-        cpu.a = cpu.a | cpu.fetchb();
-        flags(cpu, cpu.a);
-    };
+    var sta_abs = function(cpu) { cpu.store_abs(cpu.a); };
+    var sta_abx = function(cpu) { cpu.store_abx(cpu.a); };
+    var sta_aby = function(cpu) { cpu.store_aby(cpu.a); };
+    var sta_izx = function(cpu) { cpu.store_izx(cpu.a); };
+    var sta_izy = function(cpu) { cpu.store_izy(cpu.a); };
+    var sta_zp  = function(cpu) { cpu.store_zp (cpu.a); };
+    var sta_zpx = function(cpu) { cpu.store_zpx(cpu.a); };
 
-    var ora_izx = function(cpu, mem) {
-        cpu.a = cpu.a | mem.loadb_izx(cpu.fetchb(), cpu.x);
-        flags(cpu, cpu.a);
-    };
+    // ===== stx: Store x register
 
-    var ora_izy = function(cpu, mem) {
-        cpu.a = cpu.a | mem.loadb_izy(cpu.fetchb(), cpu.y);
-        flags(cpu, cpu.a);
-    };
+    var stx_abs = function(cpu) { cpu.store_abs(cpu.x); };
+    var stx_zp  = function(cpu) { cpu.store_zp (cpu.x); };
+    var stx_zpy = function(cpu) { cpu.store_zpy(cpu.x); };
 
-    var ora_zp = function(cpu, mem) {
-        cpu.a = cpu.a | mem.loadb_zp(cpu.fetchb());
-        flags(cpu, cpu.a);
-    };
+    // ===== sty: Store y register
 
-    var ora_zpx = function(cpu, mem) {
-        cpu.a = cpu.a | mem.loadb_zpi(cpu.fetchb(), cpu.x);
-        flags(cpu, cpu.a);
-    };
-
-    // ===== sta
-
-    var sta_abs = function(cpu, mem) {
-        mem.storeb(cpu.fetchw(), cpu.a);
-    };
-
-    var sta_abx = function(cpu, mem) {
-        mem.storeb_i(cpu.fetchw(), cpu.x, cpu.a);
-    };
-
-    var sta_aby = function(cpu, mem) {
-        mem.storeb_i(cpu.fetchw(), cpu.y, cpu.a);
-    };
-
-    var sta_izx = function(cpu, mem) {
-        mem.storeb_izx(cpu.fetchb(), cpu.x, cpu.a);
-    };
-
-    var sta_izy = function(cpu, mem) {
-        mem.storeb_izy(cpu.fetchb(), cpu.y, cpu.a);
-    };
-
-    var sta_zp = function(cpu, mem) {
-        mem.storeb_zp(cpu.fetchb(), cpu.a);
-    };
-
-    var sta_zpx = function(cpu, mem) {
-        mem.storeb_zpi(cpu.fetchb(), cpu.x, cpu.a);
-    };
-
-    var stx_abs = function(cpu, mem) {
-        mem.storeb(cpu.fetchw(), cpu.x);
-    };
-
-    var stx_zp = function(cpu, mem) {
-        mem.storeb_zp(cpu.fetchb(), cpu.x);
-    };
-
-    var stx_zpy = function(cpu, mem) {
-        mem.storeb_zpi(cpu.fetchb(), cpu.y, cpu.x);
-    };
-
-    var sty_abs = function(cpu, mem) {
-        mem.storeb(cpu.fetchw(), cpu.y);
-    };
-
-    var sty_zp = function(cpu, mem) {
-        mem.storeb_zp(cpu.fetchb(), cpu.y);
-    };
-
-    var sty_zpx = function(cpu, mem) {
-        mem.storeb_zpi(cpu.fetchb(), cpu.x, cpu.y);
-    };
+    var sty_abs = function(cpu) { cpu.store_abs(cpu.y); };
+    var sty_zp  = function(cpu) { cpu.store_zp (cpu.y); };
+    var sty_zpx = function(cpu) { cpu.store_zpx(cpu.y); };
 
     // Helper functions
     var flags = function(cpu, value) {
@@ -556,12 +291,6 @@ m84.ops = m84.ops || function(spec) {
         { name: "adc", mode: "zp",  code: 0x65, execute: adc_zp  },
         { name: "adc", mode: "zpx", code: 0x75, execute: adc_zpx },
 
-        { name: "asl", mode: "abs", code: 0x0e, execute: asl_abs },
-        { name: "asl", mode: "abx", code: 0x1e, execute: asl_abx },
-        { name: "asl", mode: "acc", code: 0x0a, execute: asl_acc },
-        { name: "asl", mode: "zp",  code: 0x06, execute: asl_zp  },
-        { name: "asl", mode: "zpx", code: 0x16, execute: asl_zpx },
-
         { name: "and", mode: "abs", code: 0x2d, execute: and_abs },
         { name: "and", mode: "abx", code: 0x3d, execute: and_abx },
         { name: "and", mode: "aby", code: 0x39, execute: and_aby },
@@ -570,6 +299,12 @@ m84.ops = m84.ops || function(spec) {
         { name: "and", mode: "izy", code: 0x31, execute: and_izy },
         { name: "and", mode: "zp",  code: 0x25, execute: and_zp  },
         { name: "and", mode: "zpx", code: 0x35, execute: and_zpx },
+
+        { name: "asl", mode: "abs", code: 0x0e, execute: asl_abs },
+        { name: "asl", mode: "abx", code: 0x1e, execute: asl_abx },
+        { name: "asl", mode: "acc", code: 0x0a, execute: asl_acc },
+        { name: "asl", mode: "zp",  code: 0x06, execute: asl_zp  },
+        { name: "asl", mode: "zpx", code: 0x16, execute: asl_zpx },
 
         { name: "bit", mode: "abs", code: 0x2c, execute: bit_abs },
         { name: "bit", mode: "abx", code: 0x3c, execute: bit_abx },

@@ -106,6 +106,78 @@ m84.cpu = m84.cpu || function(spec) {
             bit(self.c);
     };
 
+    self.load_abs = function() {
+        return mem.loadb(self.fetchw());
+    };
+
+    self.load_abx = function() {
+        return mem.loadb_i(self.fetchw(), self.x);
+    };
+
+    self.load_aby = function() {
+        return mem.loadb_i(self.fetchw(), self.y);
+    };
+
+    self.load_acc = function() {
+        return self.a;
+    };
+
+    self.load_imm = function() {
+        return self.fetchb();
+    };
+
+    self.load_izx = function() {
+        return mem.loadb_izx(self.fetchb(), self.x);
+    };
+
+    self.load_izy = function() {
+        return mem.loadb_izy(self.fetchb(), self.y);
+    };
+
+    self.load_zp = function() {
+        return mem.loadb_zp(self.fetchb());
+    };
+
+    self.load_zpx = function() {
+        return mem.loadb_zpi(self.fetchb(), self.x);
+    };
+
+    self.load_zpy = function() {
+        return mem.loadb_zpi(self.fetchb(), self.y);
+    };
+
+    self.store_abs = function(value) {
+        mem.storeb(self.fetchw(), value);
+    };
+
+    self.store_abx = function(value) {
+        mem.storeb_i(self.fetchw(), self.x, value);
+    };
+
+    self.store_aby = function(value) {
+        mem.storeb_i(self.fetchw(), self.y, value);
+    };
+
+    self.store_izx = function(value) {
+        mem.storeb_izx(self.fetchb(), self.x, value);
+    };
+
+    self.store_izy = function(value) {
+        mem.storeb_izy(self.fetchb(), self.y, value);
+    };
+
+    self.store_zp = function(value) {
+        mem.storeb_zp(self.fetchb(), value);
+    };
+
+    self.store_zpx = function(value) {
+        mem.storeb_zpi(self.fetchb(), self.x, value);
+    };
+
+    self.store_zpy = function(value) {
+        mem.storeb_zpi(self.fetchb(), self.y, value);
+    };
+
     init();
     return self;
 };

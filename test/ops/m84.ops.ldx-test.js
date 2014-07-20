@@ -75,26 +75,6 @@ buster.testCase("m84.ops.ldx", (function() {
         buster.refute(cpu.n);
     };
 
-    self["ldx_aby, zero"] = function() {
-        mem.storeb(0x5432, 0x00);
-        cpu.y = 2;
-        a.ldx_aby(0x5430);
-        cpu.execute();
-        buster.assert.equals(cpu.x, 0x00);
-        buster.assert(cpu.z);
-        buster.refute(cpu.n);
-    };
-
-    self["ldx_aby, signed"] = function() {
-        mem.storeb(0x5432, 0xff);
-        cpu.y = 2;
-        a.ldx_aby(0x5430);
-        cpu.execute();
-        buster.assert.equals(cpu.x, 0xff);
-        buster.refute(cpu.z);
-        buster.assert(cpu.n);
-    };
-
     self["ldx_aby, wrap"] = function() {
         mem.storeb(0x01, 0x12);
         cpu.y = 2;
@@ -111,22 +91,6 @@ buster.testCase("m84.ops.ldx", (function() {
         buster.refute(cpu.n);
     };
 
-    self["ldx_imm, zero"] = function() {
-        a.ldx_imm(0x00);
-        cpu.execute();
-        buster.assert.equals(cpu.x, 0x00);
-        buster.assert(cpu.z);
-        buster.refute(cpu.n);
-    };
-
-    self["ldx_imm, signed"] = function() {
-        a.ldx_imm(0xff);
-        cpu.execute();
-        buster.assert.equals(cpu.x, 0xff);
-        buster.refute(cpu.z);
-        buster.assert(cpu.n);
-    };
-
     self["ldx_zp"] = function() {
         mem.storeb(0x12, 0x34);
         a.ldx_zp(0x12);
@@ -134,24 +98,6 @@ buster.testCase("m84.ops.ldx", (function() {
         buster.assert.equals(cpu.x, 0x34);
         buster.refute(cpu.z);
         buster.refute(cpu.n);
-    };
-
-    self["ldx_zp, zero"] = function() {
-        mem.storeb(0x12, 0x00);
-        a.ldx_zp(0x12);
-        cpu.execute();
-        buster.assert.equals(cpu.x, 0x00);
-        buster.assert(cpu.z);
-        buster.refute(cpu.n);
-    };
-
-    self["ldx_zp, signed"] = function() {
-        mem.storeb(0x12, 0xff);
-        a.ldx_zp(0x12);
-        cpu.execute();
-        buster.assert.equals(cpu.x, 0xff);
-        buster.refute(cpu.z);
-        buster.assert(cpu.n);
     };
 
     self["ldx_zpy"] = function() {
@@ -162,26 +108,6 @@ buster.testCase("m84.ops.ldx", (function() {
         buster.assert.equals(cpu.x, 0x34);
         buster.refute(cpu.z);
         buster.refute(cpu.n);
-    };
-
-    self["ldx_zpy, zero"] = function() {
-        mem.storeb(0x14, 0x00);
-        cpu.y = 2;
-        a.ldx_zpy(0x12);
-        cpu.execute();
-        buster.assert.equals(cpu.x, 0x00);
-        buster.assert(cpu.z);
-        buster.refute(cpu.n);
-    };
-
-    self["ldx_zpy, signed"] = function() {
-        mem.storeb(0x14, 0xff);
-        cpu.y = 2;
-        a.ldx_zpy(0x12);
-        cpu.execute();
-        buster.assert.equals(cpu.x, 0xff);
-        buster.refute(cpu.z);
-        buster.assert(cpu.n);
     };
 
     self["ldx_zpy, wrap"] = function() {

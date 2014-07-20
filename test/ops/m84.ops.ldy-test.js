@@ -75,48 +75,12 @@ buster.testCase("m84.ops.ldy", (function() {
         buster.refute(cpu.n);
     };
 
-    self["ldy_abx, zero"] = function() {
-        mem.storeb(0x5432, 0x00);
-        cpu.x = 2;
-        a.ldy_abx(0x5430);
-        cpu.execute();
-        buster.assert.equals(cpu.y, 0x00);
-        buster.assert(cpu.z);
-        buster.refute(cpu.n);
-    };
-
-    self["ldy_abx, signed"] = function() {
-        mem.storeb(0x5432, 0xff);
-        cpu.x = 2;
-        a.ldy_abx(0x5430);
-        cpu.execute();
-        buster.assert.equals(cpu.y, 0xff);
-        buster.refute(cpu.z);
-        buster.assert(cpu.n);
-    };
-
     self["ldy_imm"] = function() {
         a.ldy_imm(0x12);
         cpu.execute();
         buster.assert.equals(cpu.y, 0x12);
         buster.refute(cpu.z);
         buster.refute(cpu.n);
-    };
-
-    self["ldy_imm, zero"] = function() {
-        a.ldy_imm(0x00);
-        cpu.execute();
-        buster.assert.equals(cpu.y, 0x00);
-        buster.assert(cpu.z);
-        buster.refute(cpu.n);
-    };
-
-    self["ldy_imm, signed"] = function() {
-        a.ldy_imm(0xff);
-        cpu.execute();
-        buster.assert.equals(cpu.y, 0xff);
-        buster.refute(cpu.z);
-        buster.assert(cpu.n);
     };
 
     self["ldy_zp"] = function() {
@@ -128,24 +92,6 @@ buster.testCase("m84.ops.ldy", (function() {
         buster.refute(cpu.n);
     };
 
-    self["ldy_zp, zero"] = function() {
-        mem.storeb(0x12, 0x00);
-        a.ldy_zp(0x12);
-        cpu.execute();
-        buster.assert.equals(cpu.y, 0x00);
-        buster.assert(cpu.z);
-        buster.refute(cpu.n);
-    };
-
-    self["ldy_zp, signed"] = function() {
-        mem.storeb(0x12, 0xff);
-        a.ldy_zp(0x12);
-        cpu.execute();
-        buster.assert.equals(cpu.y, 0xff);
-        buster.refute(cpu.z);
-        buster.assert(cpu.n);
-    };
-
     self["ldy_zpx"] = function() {
         mem.storeb(0x14, 0x34);
         cpu.x = 2;
@@ -154,26 +100,6 @@ buster.testCase("m84.ops.ldy", (function() {
         buster.assert.equals(cpu.y, 0x34);
         buster.refute(cpu.z);
         buster.refute(cpu.n);
-    };
-
-    self["ldy_zpx, zero"] = function() {
-        mem.storeb(0x14, 0x00);
-        cpu.x = 2;
-        a.ldy_zpx(0x12);
-        cpu.execute();
-        buster.assert.equals(cpu.y, 0x00);
-        buster.assert(cpu.z);
-        buster.refute(cpu.n);
-    };
-
-    self["ldy_zpx, signed"] = function() {
-        mem.storeb(0x14, 0xff);
-        cpu.x = 2;
-        a.ldy_zpx(0x12);
-        cpu.execute();
-        buster.assert.equals(cpu.y, 0xff);
-        buster.refute(cpu.z);
-        buster.assert(cpu.n);
     };
 
     self["ldy_zpx, wrap"] = function() {
