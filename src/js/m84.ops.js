@@ -79,36 +79,20 @@ m84.ops = m84.ops || function(spec) {
 
     // ====== asl: Arithmetic shift left
 
-    var asl = function(cpu, value) {
+    var asl = function(cpu, load) {
+        var from = {};
+        var value = load(from);
         cpu.c = (value & 0x80) !== 0;
         value = (value << 1) & 0xff;
         flags(cpu, value);
-        return value;
+        from.store(value);
     };
 
-    var asl_abs = function(cpu, mem) {
-        var address = cpu.fetchw();
-        mem.storeb(address, asl(cpu, mem.loadb(address)));
-    };
-
-    var asl_abx = function(cpu, mem) {
-        var address = cpu.fetchw();
-        mem.storeb_i(address, cpu.x, asl(cpu, mem.loadb_i(address, cpu.x)));
-    };
-
-    var asl_acc = function(cpu, mem) {
-        cpu.a = asl(cpu, cpu.a);
-    };
-
-    var asl_zp = function(cpu, mem) {
-        var address = cpu.fetchb();
-        mem.storeb_zp(address, asl(cpu, mem.loadb_zp(address)));
-    };
-
-    var asl_zpx = function(cpu, mem) {
-        var address = cpu.fetchb();
-        mem.storeb_zpi(address, cpu.x, asl(cpu, mem.loadb_i(address, cpu.x)));
-    };
+    var asl_abs = function(cpu) { asl(cpu, cpu.load_abs); };
+    var asl_abx = function(cpu) { asl(cpu, cpu.load_abx); };
+    var asl_acc = function(cpu) { asl(cpu, cpu.load_acc); };
+    var asl_zp  = function(cpu) { asl(cpu, cpu.load_zp);  };
+    var asl_zpx = function(cpu) { asl(cpu, cpu.load_zpx); };
 
     // ====== bit: Test bits
 
@@ -178,7 +162,7 @@ m84.ops = m84.ops || function(spec) {
     var cpy_imm = function(cpu) { compare(cpu, cpu.y, cpu.load_imm); };
     var cpy_zp  = function(cpu) { compare(cpu, cpu.y, cpu.load_zp);  };
 
-    // ====== eor: Exclusive or with accumulator
+    // ===== eor: Exclusive or with accumulator
 
     var eor = function(cpu, load) {
         cpu.a = cpu.a ^ load();

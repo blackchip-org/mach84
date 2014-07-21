@@ -106,19 +106,42 @@ m84.cpu = m84.cpu || function(spec) {
             bit(self.c);
     };
 
-    self.load_abs = function() {
-        return mem.loadb(self.fetchw());
+    self.load_abs = function(from) {
+        var address = self.fetchw();
+        if ( from ) {
+            from.store = function(value) {
+                mem.storeb(address, value);
+            };
+        }
+        return mem.loadb(address);
     };
 
-    self.load_abx = function() {
-        return mem.loadb_i(self.fetchw(), self.x);
+    self.load_abx = function(from) {
+        var address = self.fetchw();
+        if ( from ) {
+            from.store = function(value) {
+                mem.storeb_i(address, self.x, value);
+            };
+        }
+        return mem.loadb_i(address, self.x);
     };
 
-    self.load_aby = function() {
-        return mem.loadb_i(self.fetchw(), self.y);
+    self.load_aby = function(from) {
+        var address = self.fetchw();
+        if ( from ) {
+            from.store = function(value) {
+                mem.storeb_i(address, self.y, value);
+            };
+        }
+        return mem.loadb_i(address, self.y);
     };
 
-    self.load_acc = function() {
+    self.load_acc = function(from) {
+        if ( from ) {
+            from.store = function(value) {
+                self.a = value;
+            };
+        }
         return self.a;
     };
 
@@ -126,24 +149,54 @@ m84.cpu = m84.cpu || function(spec) {
         return self.fetchb();
     };
 
-    self.load_izx = function() {
-        return mem.loadb_izx(self.fetchb(), self.x);
+    self.load_izx = function(from) {
+        var address = self.fetchb();
+        if ( from ) {
+            from.store = function(value) {
+                mem.storeb_izx(address, self.x, value);
+            };
+        }
+        return mem.loadb_izx(address, self.x);
     };
 
-    self.load_izy = function() {
-        return mem.loadb_izy(self.fetchb(), self.y);
+    self.load_izy = function(from) {
+        var address = self.fetchb();
+        if ( from ) {
+            from.store = function(value) {
+                mem.storeb_izy(address, self.y);
+            };
+        }
+        return mem.loadb_izy(address, self.y);
     };
 
-    self.load_zp = function() {
-        return mem.loadb_zp(self.fetchb());
+    self.load_zp = function(from) {
+        var address = self.fetchb();
+        if ( from ) {
+            from.store = function(value) {
+                mem.storeb_zp(address, value);
+            };
+        }
+        return mem.loadb_zp(address);
     };
 
-    self.load_zpx = function() {
-        return mem.loadb_zpi(self.fetchb(), self.x);
+    self.load_zpx = function(from) {
+        var address = self.fetchb();
+        if ( from ) {
+            from.store = function(value) {
+                mem.storeb_zpi(address, self.x, value);
+            };
+        }
+        return mem.loadb_zpi(address, self.x);
     };
 
-    self.load_zpy = function() {
-        return mem.loadb_zpi(self.fetchb(), self.y);
+    self.load_zpy = function(from) {
+        var address = self.fetchb();
+        if ( from ) {
+            from.store = function(value) {
+                mem.storeb_zpi(address, self.y, value);
+            };
+        }
+        return mem.loadb_zpi(address, self.y);
     };
 
     self.store_abs = function(value) {
