@@ -176,6 +176,16 @@ m84.ops = m84.ops || function(spec) {
     var dec_zp  = function(cpu) { dec(cpu, cpu.load_zp ); };
     var dec_zpx = function(cpu) { dec(cpu, cpu.load_zpx); };
 
+    // ===== flags
+
+    var clc = function(cpu) { cpu.c = false; }; // clear carry
+    var cld = function(cpu) { cpu.d = false; }; // clear decimal mode (bcd)
+    var cli = function(cpu) { cpu.i = false; }; // clear interrupt disable
+    var clv = function(cpu) { cpu.v = false; }; // clear overflow
+    var sec = function(cpu) { cpu.c = true;  }; // set carry
+    var sed = function(cpu) { cpu.d = true;  }; // set decimal mode (bcd)
+    var sei = function(cpu) { cpu.i = true;  }; // set interrupt disable
+
     // ===== eor: Exclusive or with accumulator
 
     var eor = function(cpu, load) {
@@ -352,6 +362,15 @@ m84.ops = m84.ops || function(spec) {
         { name: "eor", mode: "izy", code: 0x51, execute: eor_izy },
         { name: "eor", mode: "zp",  code: 0x45, execute: eor_zp  },
         { name: "eor", mode: "zpx", code: 0x55, execute: eor_zpx },
+
+        // Flags
+        { name: "clc", mode: "imp", code: 0x18, execute: clc },
+        { name: "cld", mode: "imp", code: 0xd8, execute: cld },
+        { name: "cli", mode: "imp", code: 0x58, execute: cli },
+        { name: "clv", mode: "imp", code: 0xb8, execute: clv },
+        { name: "sec", mode: "imp", code: 0x38, execute: sec },
+        { name: "sed", mode: "imp", code: 0xf8, execute: sed },
+        { name: "sei", mode: "imp", code: 0x78, execute: sei },
 
         { name: "lda", mode: "abs", code: 0xad, execute: lda_abs },
         { name: "lda", mode: "abx", code: 0xbd, execute: lda_abx },
