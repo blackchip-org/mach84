@@ -162,6 +162,20 @@ m84.ops = m84.ops || function(spec) {
     var cpy_imm = function(cpu) { compare(cpu, cpu.y, cpu.load_imm); };
     var cpy_zp  = function(cpu) { compare(cpu, cpu.y, cpu.load_zp);  };
 
+    // ===== dec: Decrement
+
+    var dec = function(cpu, load) {
+        var from = {};
+        var value = (load(from) - 1) & 0xff;
+        from.store(value);
+        flags(cpu, value);
+    };
+
+    var dec_abs = function(cpu) { dec(cpu, cpu.load_abs); };
+    var dec_abx = function(cpu) { dec(cpu, cpu.load_abx); };
+    var dec_zp  = function(cpu) { dec(cpu, cpu.load_zp ); };
+    var dec_zpx = function(cpu) { dec(cpu, cpu.load_zpx); };
+
     // ===== eor: Exclusive or with accumulator
 
     var eor = function(cpu, load) {
@@ -316,6 +330,11 @@ m84.ops = m84.ops || function(spec) {
         { name: "cmp", mode: "izy", code: 0xd1, execute: cmp_izy },
         { name: "cmp", mode: "zp",  code: 0xc5, execute: cmp_zp  },
         { name: "cmp", mode: "zpx", code: 0xd5, execute: cmp_zpx },
+
+        { name: "dec", mode: "abs", code: 0xce, execute: dec_abs },
+        { name: "dec", mode: "abx", code: 0xde, execute: dec_abx },
+        { name: "dec", mode: "zp",  code: 0xc6, execute: dec_zp  },
+        { name: "dec", mode: "zpx", code: 0xd6, execute: dec_zpx },
 
         { name: "cpx", mode: "abs", code: 0xec, execute: cpx_abs },
         { name: "cpx", mode: "imm", code: 0xe0, execute: cpx_imm },
