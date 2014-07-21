@@ -140,7 +140,7 @@ m84.ops = m84.ops || function(spec) {
 
     var compare = function(cpu, register, load) {
         var result = register - load();
-        // c register set as if subraction. Clear if 'borrow', otherwise set
+        // c register set as if subtraction. Clear if 'borrow', otherwise set
         cpu.c = ( result >= 0 );
         flags(cpu, result);
     };
