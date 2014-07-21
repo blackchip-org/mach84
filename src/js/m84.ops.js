@@ -202,6 +202,20 @@ m84.ops = m84.ops || function(spec) {
     var eor_zp  = function(cpu) { eor(cpu, cpu.load_zp);  };
     var eor_zpx = function(cpu) { eor(cpu, cpu.load_zpx); };
 
+    // ===== inc: Increment
+
+    var inc = function(cpu, load) {
+        var from = {};
+        var value = (load(from) + 1) & 0xff;
+        from.store(value);
+        flags(cpu, value);
+    };
+
+    var inc_abs = function(cpu) { inc(cpu, cpu.load_abs); };
+    var inc_abx = function(cpu) { inc(cpu, cpu.load_abx); };
+    var inc_zp  = function(cpu) { inc(cpu, cpu.load_zp ); };
+    var inc_zpx = function(cpu) { inc(cpu, cpu.load_zpx); };
+
     // ====== lda: Load accumulator
 
     var lda = function(cpu, load) {
@@ -371,6 +385,11 @@ m84.ops = m84.ops || function(spec) {
         { name: "sec", mode: "imp", code: 0x38, execute: sec },
         { name: "sed", mode: "imp", code: 0xf8, execute: sed },
         { name: "sei", mode: "imp", code: 0x78, execute: sei },
+
+        { name: "inc", mode: "abs", code: 0xee, execute: inc_abs },
+        { name: "inc", mode: "abx", code: 0xfe, execute: inc_abx },
+        { name: "inc", mode: "zp",  code: 0xe6, execute: inc_zp  },
+        { name: "inc", mode: "zpx", code: 0xf6, execute: inc_zpx },
 
         { name: "lda", mode: "abs", code: 0xad, execute: lda_abs },
         { name: "lda", mode: "abx", code: 0xbd, execute: lda_abx },
