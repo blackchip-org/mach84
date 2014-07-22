@@ -288,6 +288,10 @@ m84.ops = m84.ops || function(spec) {
     var lsr_zp  = function(cpu) { lsr(cpu, cpu.load_zp);  };
     var lsr_zpx = function(cpu) { lsr(cpu, cpu.load_zpx); };
 
+    // ===== nop: No operation
+
+    var nop     = function() {};
+
     // ===== ora: Or with accumulator
 
     var ora = function(cpu, load) {
@@ -452,6 +456,8 @@ m84.ops = m84.ops || function(spec) {
         { name: "lsr", mode: "acc", code: 0x4a, execute: lsr_acc },
         { name: "lsr", mode: "zp",  code: 0x46, execute: lsr_zp  },
         { name: "lsr", mode: "zpx", code: 0x56, execute: lsr_zpx },
+
+        { name: "nop", mode: "imp", code: 0xea, execute: nop },
 
         { name: "ora", mode: "abs", code: 0x0d, execute: ora_abs },
         { name: "ora", mode: "abx", code: 0x1d, execute: ora_abx },
