@@ -372,6 +372,13 @@ m84.ops = m84.ops || function(spec) {
     var ror_zp  = function(cpu) { ror(cpu, cpu.load_zp);  };
     var ror_zpx = function(cpu) { ror(cpu, cpu.load_zpx); };
 
+    // ===== rti: Return from interrupt
+    
+    var rti = function(cpu) {
+        cpu.sr(cpu.pullb());
+        cpu.pc = cpu.pullw() - 1;
+    };
+    
     // ===== rts: Return from subroutine
 
     var rts = function(cpu) { cpu.pc = cpu.pullw(); };
@@ -628,6 +635,7 @@ m84.ops = m84.ops || function(spec) {
         { name: "ror", mode: "zpx", code: 0x76, execute: ror_zpx },
 
         { name: "rts", mode: "imp", code: 0x60, execute: rts },
+        { name: "rti", mode: "imp", code: 0x40, execute: rti },
 
         { name: "sbc", mode: "abs", code: 0xed, execute: sbc_abs },
         { name: "sbc", mode: "abx", code: 0xfd, execute: sbc_abx },
