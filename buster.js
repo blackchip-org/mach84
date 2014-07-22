@@ -34,7 +34,9 @@ config["mach84"] = {
         "src/lib/**/*.js"
     ],
     src: [
-        "src/js/**/*.js"
+        "src/js/**/*.js",
+        "!src/js/m84.main.js",
+        "!src/js/devices/m84.video.js"
     ],
     tests: [
         "test/**/*.js"
