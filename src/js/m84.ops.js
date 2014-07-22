@@ -365,6 +365,42 @@ m84.ops = m84.ops || function(spec) {
     var txa = function(cpu) { cpu.a = cpu.x; flags(cpu, cpu.a); }; // x to a
     var tya = function(cpu) { cpu.a = cpu.y; flags(cpu, cpu.a); }; // y to a
 
+    // ===== rol: Rotate left
+
+    var rol = function(cpu, load) {
+        var from = {};
+        var value = load(from);
+        var rotate = ( cpu.c ) ? 1 : 0;
+        cpu.c = (value & 0x80) !== 0;
+        value = ((value << 1) & 0xff) + rotate;
+        flags(cpu, value);
+        from.store(value);
+    };
+
+    var rol_abs = function(cpu) { rol(cpu, cpu.load_abs); };
+    var rol_abx = function(cpu) { rol(cpu, cpu.load_abx); };
+    var rol_acc = function(cpu) { rol(cpu, cpu.load_acc); };
+    var rol_zp  = function(cpu) { rol(cpu, cpu.load_zp);  };
+    var rol_zpx = function(cpu) { rol(cpu, cpu.load_zpx); };
+
+    // ===== ror: Rotate right
+
+    var ror = function(cpu, load) {
+        var from = {};
+        var value = load(from);
+        var rotate = ( cpu.c ) ? 0x80 : 0;
+        cpu.c = (value & 0x01) !== 0;
+        value = ((value >> 1) & 0xff) + rotate;
+        flags(cpu, value);
+        from.store(value);
+    };
+
+    var ror_abs = function(cpu) { ror(cpu, cpu.load_abs); };
+    var ror_abx = function(cpu) { ror(cpu, cpu.load_abx); };
+    var ror_acc = function(cpu) { ror(cpu, cpu.load_acc); };
+    var ror_zp  = function(cpu) { ror(cpu, cpu.load_zp);  };
+    var ror_zpx = function(cpu) { ror(cpu, cpu.load_zpx); };
+
     // Helper functions
     var flags = function(cpu, value) {
         cpu.z = value === 0;
@@ -508,6 +544,18 @@ m84.ops = m84.ops || function(spec) {
         { name: "ora", mode: "izy", code: 0x11, execute: ora_izy },
         { name: "ora", mode: "zp",  code: 0x05, execute: ora_zp  },
         { name: "ora", mode: "zpx", code: 0x15, execute: ora_zpx },
+
+        { name: "rol", mode: "abs", code: 0x2e, execute: rol_abs },
+        { name: "rol", mode: "abx", code: 0x3e, execute: rol_abx },
+        { name: "rol", mode: "acc", code: 0x2a, execute: rol_acc },
+        { name: "rol", mode: "zp",  code: 0x26, execute: rol_zp  },
+        { name: "rol", mode: "zpx", code: 0x36, execute: rol_zpx },
+
+        { name: "ror", mode: "abs", code: 0x6e, execute: ror_abs },
+        { name: "ror", mode: "abx", code: 0x7e, execute: ror_abx },
+        { name: "ror", mode: "acc", code: 0x6a, execute: ror_acc },
+        { name: "ror", mode: "zp",  code: 0x66, execute: ror_zp  },
+        { name: "ror", mode: "zpx", code: 0x76, execute: ror_zpx },
 
         { name: "sta", mode: "abs", code: 0x8d, execute: sta_abs },
         { name: "sta", mode: "abx", code: 0x9d, execute: sta_abx },

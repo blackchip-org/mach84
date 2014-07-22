@@ -25,7 +25,7 @@
 
 /* jshint sub: true */
 
-buster.testCase("m84.ops.nop", (function() {
+buster.testCase("m84.ops.ror", (function() {
 
     var self = {};
     var mem;
@@ -34,15 +34,59 @@ buster.testCase("m84.ops.nop", (function() {
 
     self.setUp = function() {
         mem = m84.mem();
-        cpu = m84.cpu({mem: mem, debug: true});
+        cpu = m84.cpu({mem: mem});
         a = m84.asm({mem: mem});
     };
 
-    // Just check to see that an illegal instruction error isn't thrown
-    self["nop"] = function() {
-        a.nop();
+    self["ror_acc"] = function() {
+        cpu.a = 4;
+        a.ror_acc();
         cpu.execute();
-        buster.assert(true);
+        buster.assert.equals(2, cpu.a);
+        buster.refute(cpu.z);
+        buster.refute(cpu.n);
+        buster.refute(cpu.c);
+    };
+
+    self["ror_acc, rotate"] = function() {
+        cpu.a = 1;
+        cpu.c = true;
+        a.ror_acc();
+        cpu.execute();
+        buster.assert.equals(0x80, cpu.a);
+        buster.refute(cpu.z);
+        buster.assert(cpu.n);
+        buster.assert(cpu.c);
+    };
+
+    self["ror_abs"] = function() {
+        mem.storeb(0xabcd, 4);
+        a.ror_abs(0xabcd);
+        cpu.execute();
+        buster.assert.equals(2, mem.loadb(0xabcd));
+    };
+
+    self["ror_abx"] = function() {
+        mem.storeb(0xabcd, 4);
+        cpu.x = 0xcd;
+        a.ror_abx(0xab00);
+        cpu.execute();
+        buster.assert.equals(2, mem.loadb(0xabcd));
+    };
+
+    self["lsr_zp"] = function() {
+        mem.storeb_zp(0xab, 4);
+        a.ror_zp(0xab);
+        cpu.execute();
+        buster.assert.equals(2, mem.loadb_zp(0xab));
+    };
+
+    self["ror_zpx"] = function() {
+        mem.storeb_zp(0xab, 4);
+        cpu.x = 0x0b;
+        a.ror_zpx(0xa0);
+        cpu.execute();
+        buster.assert.equals(2, mem.loadb_zp(0xab));
     };
 
     return self;
