@@ -48,7 +48,7 @@ m84.asm = m84.asm || function(spec) {
                 return;
             }
             var fname = op.name;
-            if ( op.mode !== "imp" && op.mode !== "rel" ) {
+            if ( op.mode !== "imp" && op.mode !== "rel" && op.name !== "jsr" ) {
                 fname += "_" + op.mode;
             }
             if ( op.mode === "rel" ) {

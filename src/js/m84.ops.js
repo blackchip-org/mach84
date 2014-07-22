@@ -221,7 +221,15 @@ m84.ops = m84.ops || function(spec) {
     var jmp_abs = function(cpu) { cpu.pc = cpu.fetchw() - 1; };
     var jmp_ind = function(cpu, mem) { cpu.pc = mem.loadw(cpu.fetchw()) - 1; };
 
-    // ====== lda: Load accumulator
+    // ===== jsr: Jump to subroutine
+
+    var jsr = function(cpu) {
+        var address = cpu.fetchw();
+        cpu.pushw(cpu.pc);
+        cpu.pc = address - 1;
+    };
+
+    // ===== lda: Load accumulator
 
     var lda = function(cpu, load) {
         cpu.a = load();
@@ -398,6 +406,8 @@ m84.ops = m84.ops || function(spec) {
 
         { name: "jmp", mode: "abs", code: 0x4c, execute: jmp_abs },
         { name: "jmp", mode: "ind", code: 0x6c, execute: jmp_ind },
+
+        { name: "jsr", mode: "abs", code: 0x20, execute: jsr },
 
         { name: "lda", mode: "abs", code: 0xad, execute: lda_abs },
         { name: "lda", mode: "abx", code: 0xbd, execute: lda_abx },
