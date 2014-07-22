@@ -162,7 +162,7 @@ m84.ops = m84.ops || function(spec) {
     var cpy_imm = function(cpu) { compare(cpu, cpu.y, cpu.load_imm); };
     var cpy_zp  = function(cpu) { compare(cpu, cpu.y, cpu.load_zp);  };
 
-    // ===== dec: Decrement
+    // ===== dec: Decrement memory
 
     var dec = function(cpu, load) {
         var from = {};
@@ -176,7 +176,21 @@ m84.ops = m84.ops || function(spec) {
     var dec_zp  = function(cpu) { dec(cpu, cpu.load_zp ); };
     var dec_zpx = function(cpu) { dec(cpu, cpu.load_zpx); };
 
-    // ===== flags
+    // ==== dex: Decrement X register
+
+    var dex = function(cpu) {
+        cpu.x = (cpu.x - 1) & 0xff;
+        flags(cpu, cpu.x);
+    };
+
+    // ===== dey: Decrement Y register
+
+    var dey = function(cpu) {
+        cpu.y = (cpu.y - 1) & 0xff;
+        flags(cpu, cpu.y);
+    };
+
+    // ==== Flags
 
     var clc = function(cpu) { cpu.c = false; }; // clear carry
     var cld = function(cpu) { cpu.d = false; }; // clear decimal mode (bcd)
@@ -202,7 +216,7 @@ m84.ops = m84.ops || function(spec) {
     var eor_zp  = function(cpu) { eor(cpu, cpu.load_zp);  };
     var eor_zpx = function(cpu) { eor(cpu, cpu.load_zpx); };
 
-    // ===== inc: Increment
+    // ===== inc: Increment memory
 
     var inc = function(cpu, load) {
         var from = {};
@@ -215,6 +229,20 @@ m84.ops = m84.ops || function(spec) {
     var inc_abx = function(cpu) { inc(cpu, cpu.load_abx); };
     var inc_zp  = function(cpu) { inc(cpu, cpu.load_zp ); };
     var inc_zpx = function(cpu) { inc(cpu, cpu.load_zpx); };
+
+    // ==== inx: Increment X register
+
+    var inx = function(cpu) {
+        cpu.x = (cpu.x + 1) & 0xff;
+        flags(cpu, cpu.x);
+    };
+
+    // ===== iny: Increment Y register
+
+    var iny = function(cpu) {
+        cpu.y = (cpu.y + 1) & 0xff;
+        flags(cpu, cpu.y);
+    };
 
     // ===== jmp: Jump
 
@@ -376,7 +404,7 @@ m84.ops = m84.ops || function(spec) {
 
         { name: "brk", mode: "imp", code: 0x00, execute: brk },
 
-        // branches
+        // Branches
         { name: "bcc", mode: "rel", code: 0x90, execute: bcc },
         { name: "bcs", mode: "rel", code: 0xb0, execute: bcs },
         { name: "beq", mode: "rel", code: 0xf0, execute: beq },
@@ -400,6 +428,9 @@ m84.ops = m84.ops || function(spec) {
         { name: "dec", mode: "abx", code: 0xde, execute: dec_abx },
         { name: "dec", mode: "zp",  code: 0xc6, execute: dec_zp  },
         { name: "dec", mode: "zpx", code: 0xd6, execute: dec_zpx },
+
+        { name: "dex", mode: "imp", code: 0xca, execute: dex },
+        { name: "dey", mode: "imp", code: 0x88, execute: dey },
 
         { name: "cpx", mode: "abs", code: 0xec, execute: cpx_abs },
         { name: "cpx", mode: "imm", code: 0xe0, execute: cpx_imm },
@@ -431,6 +462,9 @@ m84.ops = m84.ops || function(spec) {
         { name: "inc", mode: "abx", code: 0xfe, execute: inc_abx },
         { name: "inc", mode: "zp",  code: 0xe6, execute: inc_zp  },
         { name: "inc", mode: "zpx", code: 0xf6, execute: inc_zpx },
+
+        { name: "inx", mode: "imp", code: 0xe8, execute: inx },
+        { name: "iny", mode: "imp", code: 0xc8, execute: iny },
 
         { name: "jmp", mode: "abs", code: 0x4c, execute: jmp_abs },
         { name: "jmp", mode: "ind", code: 0x6c, execute: jmp_ind },
