@@ -216,6 +216,11 @@ m84.ops = m84.ops || function(spec) {
     var inc_zp  = function(cpu) { inc(cpu, cpu.load_zp ); };
     var inc_zpx = function(cpu) { inc(cpu, cpu.load_zpx); };
 
+    // ===== jmp: Jump
+
+    var jmp_abs = function(cpu) { cpu.pc = cpu.fetchw() - 1; };
+    var jmp_ind = function(cpu, mem) { cpu.pc = mem.loadw(cpu.fetchw()) - 1; };
+
     // ====== lda: Load accumulator
 
     var lda = function(cpu, load) {
@@ -390,6 +395,9 @@ m84.ops = m84.ops || function(spec) {
         { name: "inc", mode: "abx", code: 0xfe, execute: inc_abx },
         { name: "inc", mode: "zp",  code: 0xe6, execute: inc_zp  },
         { name: "inc", mode: "zpx", code: 0xf6, execute: inc_zpx },
+
+        { name: "jmp", mode: "abs", code: 0x4c, execute: jmp_abs },
+        { name: "jmp", mode: "ind", code: 0x6c, execute: jmp_ind },
 
         { name: "lda", mode: "abs", code: 0xad, execute: lda_abs },
         { name: "lda", mode: "abx", code: 0xbd, execute: lda_abx },
