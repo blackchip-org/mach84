@@ -23,28 +23,22 @@
  * DEALINGS IN THE SOFTWARE.
  */
  
- var m84x = {};
- 
- $(function() {
-     
-    var mem = m84.mem();
-    var cpu = m84.cpu({mem: mem});
-    var mach = m84.mach({
-        mem: mem,
-        cpu: cpu
-    });
+var m84 = m84 || {};
 
-    $("#video").dialog();
+m84.video = m84.video || function(spec) {
 
-    var video = m84.video({
-        mem: mem
-    });
-    m84x = {
-        mem: mem,
-        cpu: cpu,
-        mach: mach,
-        video: video
+    var $canvas;
+    var g;
+    
+    var init = function() {
+        $canvas = $("#video canvas");
+        $canvas.width(100);
+        $canvas.height(100);
+        g = $canvas.get(0).getContext("2d");
+        g.fillStyle = "#f00";
+        g.fillRect(0, 0, 100, 100);
     };
     
- });
- 
+    init();
+    return self;
+};
