@@ -405,13 +405,50 @@ m84.ops = m84.ops || function(spec) {
 
     var rts = function(cpu) { cpu.pc = cpu.pullw(); };
 
+    // ====== sbc: Subtract with carry
+
+    var sbc = function(cpu, load) {
+        var a1 = cpu.a;
+        var a2 = load();
+        var carry = ( cpu.c ) ? 0 : 1; // Borrow if c is clear
+        if ( cpu.d ) {
+            a1 = m84.util.from_bcd(a1);
+            a2 = m84.util.from_bcd(a2);
+        }
+        var total = a1 - a2 - carry;
+        cpu.c = total >= 0;
+        if ( cpu.d ) {
+            if ( total < 0 ) {
+                total += 100;
+            }
+            total = m84.util.to_bcd(total);
+        } else {
+            var signed =
+                m84.util.to_signed(a1) -
+                m84.util.to_signed(a2) -
+                carry;
+            cpu.v = signed < -128 || signed > 127;
+        }
+        cpu.a = total & 0xff;
+        flags(cpu, cpu.a);
+    };
+
+    var sbc_abs = function(cpu) { sbc(cpu, cpu.load_abs); };
+    var sbc_abx = function(cpu) { sbc(cpu, cpu.load_abx); };
+    var sbc_aby = function(cpu) { sbc(cpu, cpu.load_aby); };
+    var sbc_imm = function(cpu) { sbc(cpu, cpu.load_imm); };
+    var sbc_izx = function(cpu) { sbc(cpu, cpu.load_izx); };
+    var sbc_izy = function(cpu) { sbc(cpu, cpu.load_izy); };
+    var sbc_zp  = function(cpu) { sbc(cpu, cpu.load_zp);  };
+    var sbc_zpx = function(cpu) { sbc(cpu, cpu.load_zpx); };
+
     // Helper functions
     var flags = function(cpu, value) {
         cpu.z = value === 0;
         cpu.n = (value & 128) !== 0;
     };
 
-    // Information about each instruction
+    // Instruction table
     var ops = spec.ops || [
         { name: "adc", mode: "abs", code: 0x6d, execute: adc_abs },
         { name: "adc", mode: "abx", code: 0x7d, execute: adc_abx },
@@ -563,6 +600,15 @@ m84.ops = m84.ops || function(spec) {
 
         { name: "rts", mode: "imp", code: 0x60, execute: rts },
 
+        { name: "sbc", mode: "abs", code: 0xed, execute: sbc_abs },
+        { name: "sbc", mode: "abx", code: 0xfd, execute: sbc_abx },
+        { name: "sbc", mode: "aby", code: 0xf9, execute: sbc_aby },
+        { name: "sbc", mode: "imm", code: 0xe9, execute: sbc_imm },
+        { name: "sbc", mode: "izx", code: 0xe1, execute: sbc_izx },
+        { name: "sbc", mode: "izy", code: 0xf1, execute: sbc_izy },
+        { name: "sbc", mode: "zp",  code: 0xe5, execute: sbc_zp  },
+        { name: "sbc", mode: "zpx", code: 0xf5, execute: sbc_zpx },
+
         { name: "sta", mode: "abs", code: 0x8d, execute: sta_abs },
         { name: "sta", mode: "abx", code: 0x9d, execute: sta_abx },
         { name: "sta", mode: "aby", code: 0x99, execute: sta_aby },
@@ -587,6 +633,7 @@ m84.ops = m84.ops || function(spec) {
     ];
 
     // Length of arguments depending on addressing mode
+
     var lengths = {
         abs: 2,
         abx: 2,
