@@ -30,7 +30,8 @@ buster.testCase("m84.cpu", (function() {
     var cpu;
 
     self.setUp = function() {
-        cpu = m84.cpu();
+        mem = m84.mem();
+        cpu = m84.cpu({mem: mem});
     };
 
     self["Set C flag"] = function() {
@@ -120,6 +121,50 @@ buster.testCase("m84.cpu", (function() {
         buster.assert.equals(cpu.status(),
             " pc  sr ac xr yr sp  n v - b d i z c\n" +
             "0123 ff 45 67 89 ab  * * * * * * * *");
+    };
+
+    self["Push byte on stack"] = function() {
+        cpu.pushb(0x12);
+        buster.assert.equals(0x12, mem.loadb(0x01ff));
+        buster.assert.equals(0xfe, cpu.sp);
+    };
+
+    self["Push word on stack"] = function() {
+        cpu.pushw(0x1234);
+        buster.assert.equals(0x12, mem.loadb(0x01ff));
+        buster.assert.equals(0x34, mem.loadb(0x01fe));
+        buster.assert.equals(0xfd, cpu.sp);
+    };
+
+    self["Push word on stack, overflow"] = function() {
+        cpu.sp = 0x00;
+        cpu.pushw(0x1234);
+        buster.assert.equals(0x12, mem.loadb(0x0100));
+        buster.assert.equals(0x34, mem.loadb(0x01ff));
+        buster.assert.equals(0xfe, cpu.sp);
+    };
+
+    self["Pull byte from stack"] = function() {
+        mem.storeb(0x01ff, 0x12);
+        cpu.sp = 0xfe;
+        buster.assert.equals(0x12, cpu.pullb());
+        buster.assert.equals(0xff, cpu.sp);
+    };
+
+    self["Pull word from stack"] = function() {
+        mem.storeb(0x01fe, 0x34);
+        mem.storeb(0x01ff, 0x12);
+        cpu.sp = 0xfd;
+        buster.assert.equals(0x1234, cpu.pullw());
+        buster.assert.equals(0xff, cpu.sp);
+    };
+
+    self["Pull word from stack, underflow"] = function() {
+        mem.storeb(0x01ff, 0x34);
+        mem.storeb(0x0100, 0x12);
+        cpu.sp = 0xfe;
+        buster.assert.equals(0x1234, cpu.pullw());
+        buster.assert.equals(0x00, cpu.sp);
     };
 
     return self;

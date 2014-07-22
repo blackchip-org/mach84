@@ -32,6 +32,7 @@ m84.map = m84.map || function(spec) {
 
     var self = {};
 
+    self.STACK = 0x0100;
     self.PROGRAM = 0x4000;
 
     return self;

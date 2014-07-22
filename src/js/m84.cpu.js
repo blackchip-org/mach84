@@ -44,7 +44,7 @@ m84.cpu = m84.cpu || function(spec) {
     self.a = 0;
     self.x = 0;
     self.y = 0;
-    self.sp = 0;
+    self.sp = 0xff;
     self.c = false;
     self.z = false;
     self.i = false;
@@ -83,6 +83,25 @@ m84.cpu = m84.cpu || function(spec) {
     self.reset = function() {
         // FIXME: Vector to warm start
         self.pc = map.PROGRAM - 1;
+    };
+
+    self.pushb = function(value) {
+        mem.storeb(self.sp + map.STACK, value);
+        self.sp = (self.sp - 1) & 0xff;
+    };
+
+    self.pushw = function(value) {
+        self.pushb((value & 0xff00) >> 8);
+        self.pushb(value & 0x00ff);
+    };
+
+    self.pullb = function() {
+        self.sp = (self.sp + 1) & 0xff;
+        return mem.loadb(self.sp + map.STACK);
+    };
+
+    self.pullw = function() {
+        return self.pullb() | (self.pullb() << 8);
     };
 
     self.status = function() {
