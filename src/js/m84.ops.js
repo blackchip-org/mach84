@@ -271,7 +271,24 @@ m84.ops = m84.ops || function(spec) {
     var ldy_zp  = function(cpu) { ldy(cpu, cpu.load_zp);  };
     var ldy_zpx = function(cpu) { ldy(cpu, cpu.load_zpx); };
 
-    // ====== ora: Or with accumulator
+    // ===== lsr: Logical shift right
+
+    var lsr = function(cpu, load) {
+        var from = {};
+        var value = load(from);
+        cpu.c = (value & 0x01) !== 0;
+        value = (value >> 1) & 0xff;
+        flags(cpu, value);
+        from.store(value);
+    };
+
+    var lsr_abs = function(cpu) { lsr(cpu, cpu.load_abs); };
+    var lsr_abx = function(cpu) { lsr(cpu, cpu.load_abx); };
+    var lsr_acc = function(cpu) { lsr(cpu, cpu.load_acc); };
+    var lsr_zp  = function(cpu) { lsr(cpu, cpu.load_zp);  };
+    var lsr_zpx = function(cpu) { lsr(cpu, cpu.load_zpx); };
+
+    // ===== ora: Or with accumulator
 
     var ora = function(cpu, load) {
         cpu.a = cpu.a | load();
@@ -429,6 +446,12 @@ m84.ops = m84.ops || function(spec) {
         { name: "ldy", mode: "imm", code: 0xa0, execute: ldy_imm },
         { name: "ldy", mode: "zp",  code: 0xa4, execute: ldy_zp  },
         { name: "ldy", mode: "zpx", code: 0xb4, execute: ldy_zpx },
+
+        { name: "lsr", mode: "abs", code: 0x4e, execute: lsr_abs },
+        { name: "lsr", mode: "abx", code: 0x5e, execute: lsr_abx },
+        { name: "lsr", mode: "acc", code: 0x4a, execute: lsr_acc },
+        { name: "lsr", mode: "zp",  code: 0x46, execute: lsr_zp  },
+        { name: "lsr", mode: "zpx", code: 0x56, execute: lsr_zpx },
 
         { name: "ora", mode: "abs", code: 0x0d, execute: ora_abs },
         { name: "ora", mode: "abx", code: 0x1d, execute: ora_abx },
