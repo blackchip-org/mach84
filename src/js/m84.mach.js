@@ -23,22 +23,41 @@
  * DEALINGS IN THE SOFTWARE.
  */
  
- var m84x = {};
+var m84 = m84 || {};
  
- $(function() {
-     
-    var mem = m84.mem();
-    var cpu = m84.cpu({mem: mem});
-    var mach = m84.mach({
-        mem: mem,
-        cpu: cpu
-    });
+m84.mach = m84.mach || function(spec) {
     
-    m84x = {
-        mem: mem,
-        cpu: cpu,
-        mach: mach
+    spec = spec || {};
+    var self = {};
+    
+    self.mem = spec.mem;
+    self.cpu = spec.cpu;
+    self.frame_cycles = spec.frame_cycles || 100;
+    self.halt = true;
+    self.exception = undefined;
+    
+    self.run = function() {
+        self.halt = false;
+        self.cpu.exit = undefined;
+        requestAnimationFrame(service);
     };
     
- });
+    var service = function() {
+        var cycles = 0;
+        try {
+            while ( cycles < self.frame_cycles && !self.cpu.exit ) {
+                self.cpu.execute();
+                cycles += 1;
+            }
+        } catch ( error ) {
+            self.cpu.exit = "trap";
+            self.exception = error;
+        }
+        if ( !self.halt ) {
+            requestAnimationFrame(service);
+        }
+    };
+    
+    return self;
+};
  
