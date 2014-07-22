@@ -336,35 +336,6 @@ m84.ops = m84.ops || function(spec) {
     var ora_zp  = function(cpu) { ora(cpu, cpu.load_zp);  };
     var ora_zpx = function(cpu) { ora(cpu, cpu.load_zpx); };
 
-    // ===== sta: Store accumlator
-
-    var sta_abs = function(cpu) { cpu.store_abs(cpu.a); };
-    var sta_abx = function(cpu) { cpu.store_abx(cpu.a); };
-    var sta_aby = function(cpu) { cpu.store_aby(cpu.a); };
-    var sta_izx = function(cpu) { cpu.store_izx(cpu.a); };
-    var sta_izy = function(cpu) { cpu.store_izy(cpu.a); };
-    var sta_zp  = function(cpu) { cpu.store_zp (cpu.a); };
-    var sta_zpx = function(cpu) { cpu.store_zpx(cpu.a); };
-
-    // ===== stx: Store x register
-
-    var stx_abs = function(cpu) { cpu.store_abs(cpu.x); };
-    var stx_zp  = function(cpu) { cpu.store_zp (cpu.x); };
-    var stx_zpy = function(cpu) { cpu.store_zpy(cpu.x); };
-
-    // ===== sty: Store y register
-
-    var sty_abs = function(cpu) { cpu.store_abs(cpu.y); };
-    var sty_zp  = function(cpu) { cpu.store_zp (cpu.y); };
-    var sty_zpx = function(cpu) { cpu.store_zpx(cpu.y); };
-
-    // ===== Transfers
-
-    var tax = function(cpu) { cpu.x = cpu.a; flags(cpu, cpu.x); }; // a to x
-    var tay = function(cpu) { cpu.y = cpu.a; flags(cpu, cpu.y); }; // a to y
-    var txa = function(cpu) { cpu.a = cpu.x; flags(cpu, cpu.a); }; // x to a
-    var tya = function(cpu) { cpu.a = cpu.y; flags(cpu, cpu.a); }; // y to a
-
     // ===== rol: Rotate left
 
     var rol = function(cpu, load) {
@@ -441,6 +412,64 @@ m84.ops = m84.ops || function(spec) {
     var sbc_izy = function(cpu) { sbc(cpu, cpu.load_izy); };
     var sbc_zp  = function(cpu) { sbc(cpu, cpu.load_zp);  };
     var sbc_zpx = function(cpu) { sbc(cpu, cpu.load_zpx); };
+    
+    // ===== sta: Store accumlator
+
+    var sta_abs = function(cpu) { cpu.store_abs(cpu.a); };
+    var sta_abx = function(cpu) { cpu.store_abx(cpu.a); };
+    var sta_aby = function(cpu) { cpu.store_aby(cpu.a); };
+    var sta_izx = function(cpu) { cpu.store_izx(cpu.a); };
+    var sta_izy = function(cpu) { cpu.store_izy(cpu.a); };
+    var sta_zp  = function(cpu) { cpu.store_zp (cpu.a); };
+    var sta_zpx = function(cpu) { cpu.store_zpx(cpu.a); };
+
+    // ===== Stack instructions
+    
+    var pha = function(cpu) { cpu.pushb(cpu.a); };    // push a
+    var php = function(cpu) { cpu.pushb(cpu.sr()); }; // push sr
+    var phx = function(cpu) { cpu.pushb(cpu.x); };    // push x
+    var phy = function(cpu) { cpu.pushb(cpu.y); };    // push y
+
+    var pla = function(cpu) { // pull a                        
+        cpu.a = cpu.pullb(); 
+        flags(cpu, cpu.a); 
+    };
+    
+    var plp = function(cpu) { // pull sp
+        cpu.sr(cpu.pullb()); 
+    };
+     
+    var plx = function(cpu) { // pull a                        
+        cpu.x = cpu.pullb(); 
+        flags(cpu, cpu.x); 
+    };
+    
+    var ply = function(cpu) { // pull a                        
+        cpu.y = cpu.pullb(); 
+        flags(cpu, cpu.y); 
+    };
+
+    var tsx = function(cpu) { cpu.x = cpu.sp; }; // sp to x
+    var txs = function(cpu) { cpu.sp = cpu.x; }; // x to sp
+    
+    // ===== stx: Store x register
+
+    var stx_abs = function(cpu) { cpu.store_abs(cpu.x); };
+    var stx_zp  = function(cpu) { cpu.store_zp (cpu.x); };
+    var stx_zpy = function(cpu) { cpu.store_zpy(cpu.x); };
+
+    // ===== sty: Store y register
+
+    var sty_abs = function(cpu) { cpu.store_abs(cpu.y); };
+    var sty_zp  = function(cpu) { cpu.store_zp (cpu.y); };
+    var sty_zpx = function(cpu) { cpu.store_zpx(cpu.y); };
+
+    // ===== Transfers
+
+    var tax = function(cpu) { cpu.x = cpu.a; flags(cpu, cpu.x); }; // a to x
+    var tay = function(cpu) { cpu.y = cpu.a; flags(cpu, cpu.y); }; // a to y
+    var txa = function(cpu) { cpu.a = cpu.x; flags(cpu, cpu.a); }; // x to a
+    var tya = function(cpu) { cpu.a = cpu.y; flags(cpu, cpu.a); }; // y to a
 
     // Helper functions
     var flags = function(cpu, value) {
@@ -488,7 +517,7 @@ m84.ops = m84.ops || function(spec) {
         { name: "bmi", mode: "rel", code: 0x30, execute: bmi },
         { name: "bne", mode: "rel", code: 0xd0, execute: bne },
         { name: "bpl", mode: "rel", code: 0x10, execute: bpl },
-        { name: "bra", mode: "rel", code: 0x80, execute: bra },
+        { name: "bra", mode: "rel", code: 0x80, execute: bra, extra: true },
         { name: "bvc", mode: "rel", code: 0x50, execute: bvc },
         { name: "bvs", mode: "rel", code: 0x70, execute: bvs },
 
@@ -617,6 +646,18 @@ m84.ops = m84.ops || function(spec) {
         { name: "sta", mode: "zp",  code: 0x85, execute: sta_zp  },
         { name: "sta", mode: "zpx", code: 0x95, execute: sta_zpx },
 
+        // Stack instructions
+        { name: "pha", mode: "imp", code: 0x48, execute: pha },
+        { name: "php", mode: "imp", code: 0x08, execute: php },
+        { name: "phx", mode: "imp", code: 0xda, execute: phx, extra: true },
+        { name: "phy", mode: "imp", code: 0x5a, execute: phy, extra: true },
+        { name: "pla", mode: "imp", code: 0x68, execute: pla },
+        { name: "plp", mode: "imp", code: 0x28, execute: plp },
+        { name: "plx", mode: "imp", code: 0xfa, execute: plx, extra: true },
+        { name: "ply", mode: "imp", code: 0x7a, execute: ply, extra: true },
+        { name: "tsx", mode: "imp", code: 0xba, execute: tsx },
+        { name: "txs", mode: "imp", code: 0x9a, execute: txs },
+
         { name: "stx", mode: "abs", code: 0x8e, execute: stx_abs },
         { name: "stx", mode: "zp",  code: 0x86, execute: stx_zp  },
         { name: "stx", mode: "zpy", code: 0x96, execute: stx_zpy },
@@ -629,7 +670,7 @@ m84.ops = m84.ops || function(spec) {
         { name: "tax", mode: "imp", code: 0xaa, execute: tax },
         { name: "tay", mode: "imp", code: 0xa8, execute: tay },
         { name: "txa", mode: "imp", code: 0x8a, execute: txa },
-        { name: "tya", mode: "imp", code: 0x9a, execute: tya }
+        { name: "tya", mode: "imp", code: 0x98, execute: tya }
     ];
 
     // Length of arguments depending on addressing mode
