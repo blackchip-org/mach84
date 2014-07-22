@@ -330,6 +330,13 @@ m84.ops = m84.ops || function(spec) {
     var sty_zp  = function(cpu) { cpu.store_zp (cpu.y); };
     var sty_zpx = function(cpu) { cpu.store_zpx(cpu.y); };
 
+    // ===== Transfers
+
+    var tax = function(cpu) { cpu.x = cpu.a; flags(cpu, cpu.x); }; // a to x
+    var tay = function(cpu) { cpu.y = cpu.a; flags(cpu, cpu.y); }; // a to y
+    var txa = function(cpu) { cpu.a = cpu.x; flags(cpu, cpu.a); }; // x to a
+    var tya = function(cpu) { cpu.a = cpu.y; flags(cpu, cpu.a); }; // y to a
+
     // Helper functions
     var flags = function(cpu, value) {
         cpu.z = value === 0;
@@ -482,7 +489,13 @@ m84.ops = m84.ops || function(spec) {
 
         { name: "sty", mode: "abs", code: 0x8c, execute: sty_abs },
         { name: "sty", mode: "zp",  code: 0x84, execute: sty_zp  },
-        { name: "sty", mode: "zpx", code: 0x94, execute: sty_zpx }
+        { name: "sty", mode: "zpx", code: 0x94, execute: sty_zpx },
+
+        // Transfers
+        { name: "tax", mode: "imp", code: 0xaa, execute: tax },
+        { name: "tay", mode: "imp", code: 0xa8, execute: tay },
+        { name: "txa", mode: "imp", code: 0x8a, execute: txa },
+        { name: "tya", mode: "imp", code: 0x9a, execute: tya }
     ];
 
     // Length of arguments depending on addressing mode
