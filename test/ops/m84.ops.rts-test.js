@@ -35,7 +35,7 @@ buster.testCase("m84.ops.brk", (function() {
     self.setUp = function() {
         mem = m84.mem();
         cpu = m84.cpu({mem: mem});
-        a = m84.asm({mem: mem});
+        a = test.asm({mem: mem});
     };
 
     self["rts"] = function() {

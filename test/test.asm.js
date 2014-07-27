@@ -23,15 +23,9 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-/**
- * @module m84
- */
-var m84 = m84 || {};
+var test = test || {};
 
-/**
- * @class m84.asm
- */
-m84.asm = m84.asm || function(spec) {
+test.asm = test.asm || function(spec) {
 
     var mem = spec.mem || m84.mem(spec);
     var ops = spec.ops || m84.ops(spec);

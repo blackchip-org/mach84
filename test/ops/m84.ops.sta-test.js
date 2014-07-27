@@ -37,7 +37,7 @@ buster.testCase("m84.ops.sta", (function() {
         mem = m84.mem();
         cpu = m84.cpu({mem: mem});
         map = m84.map();
-        a = m84.asm({mem: mem});
+        a = test.asm({mem: mem});
     };
 
     self["sta_abs"] = function() {

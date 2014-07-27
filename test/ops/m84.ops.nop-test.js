@@ -35,7 +35,7 @@ buster.testCase("m84.ops.nop", (function() {
     self.setUp = function() {
         mem = m84.mem();
         cpu = m84.cpu({mem: mem, debug: true});
-        a = m84.asm({mem: mem});
+        a = test.asm({mem: mem});
     };
 
     // Just check to see that an illegal instruction error isn't thrown
