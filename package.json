@@ -8,15 +8,16 @@
         "url": "https://github.com/blackchip-org/mach84"
     },
     "scripts": {
-        "test": "grunt test lint",
-        "prepublish": "virtualenv python; python/bin/pip install sphinx"
+        "test": "grunt test lint"
     },
     "devDependencies": {
         "buster": "0.7.x",
         "grunt": "0.4.x",
         "grunt-buster": "0.3.x",
         "grunt-contrib-jshint": "0.10.x",
-        "phantomjs": "1.9.x",
-        "jshint": "2.5.x"
+        "grunt-jison": "git+https://github.com/mike-mcgann/grunt-jison.git#jison-fix",
+        "jison": "git+https://github.com/mike-mcgann/jison.git#namespace",
+        "jshint": "2.5.x",
+        "phantomjs": "1.9.x"
     }
 }

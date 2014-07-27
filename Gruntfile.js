@@ -29,6 +29,19 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
 
+        jison: {
+            assembler: {
+                options: {
+                    moduleType: "js",
+                    moduleName: "m84.tools.asm"
+                },
+                files: {
+                    "web/js/tools/m84.tools.asm.js":
+                        "src/js/tools/m84.tools.asm.jison"
+                }
+            }
+        },
+
         jshint: {
             main: [
                 "src/js/**/*.js",
@@ -43,8 +56,9 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks("grunt-buster");
     grunt.loadNpmTasks("grunt-contrib-jshint");
+    grunt.loadNpmTasks("grunt-jison");
 
-    grunt.registerTask("default", ["jshint"]);
+    grunt.registerTask("default", ["jison"]);
     grunt.registerTask("lint", ["jshint"]);
     grunt.registerTask("test", ["buster:console"]);
 };

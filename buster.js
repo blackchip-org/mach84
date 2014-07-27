@@ -31,11 +31,12 @@ config["mach84"] = {
     rootPath: "./",
     environment: "browser",
     libs: [
-        "src/lib/**/*.js"
+        "web/lib/**/*.js"
     ],
     src: [
-        "src/js/**/*.js",
-        "!src/js/m84.main.js",
+        "web/js/tools/m84.tools.js",
+        "web/js/**/*.js",
+        "!web/js/m84.main.js",
     ],
     tests: [
         "test/**/*.js"

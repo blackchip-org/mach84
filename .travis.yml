@@ -1,8 +1,7 @@
-language: python
+language: node_js
 python:
-  - "2.7"
+    - "0.20"
 before_install:
     - npm install -g grunt-cli
-    - pip install virtualenv 
 install: npm install
 script: npm test

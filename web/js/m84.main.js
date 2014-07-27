@@ -40,7 +40,4 @@
         mach: mach
     };
 
-    var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/pastel_on_dark");
-    
  });
