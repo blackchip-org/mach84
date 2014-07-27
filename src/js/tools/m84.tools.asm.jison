@@ -1,15 +1,30 @@
-/* description: Parses end evaluates mathematical expressions. */
-
 /* lexical grammar */
 %lex
 %%
 [ \t]+                {/* skip whitespace */}
-\n                    {return 'EOLN';}
-"adc"                 {return 'OP';}
-<<EOF>>               {return 'EOF';}
+\n                    {return "EOLN";}
+"+"                   {return "+";}
+"-"                   {return "-";}
+"*"                   {return "*";}
+"/"                   {return "/";}
+"&"                   {return "&";}
+"|"                   {return "|";}
+"^"                   {return "^";}
+"adc"                 {return "ADC";}
+\%[01]+\b             {return "BINARY_INTEGER";}
+[0-9]+\b              {return "DECIMAL_INTEGER";}
+\$[0-9a-fA-F]+\b      {return "HEXADECIMAL_INTEGER";}
+<<EOF>>               {return "EOF";}
 
 /lex
 
+%{
+    ;
+%}
+
+%left "+" "-"
+%left "*" "/"
+%left "&" "|" "^"
 
 %start program
 
@@ -27,6 +42,7 @@ statements
 statement
     : line EOLN
     | line EOF
+        { return bytes; }
     ;
 
 line
@@ -35,13 +51,46 @@ line
     ;
 
 assembly
-    : OP
+    : ADC abs { ; }
     ;
 
-%%
+abs
+    : address
+        { $$ = $1; }
+    ;
 
-/*
-parser.parseError = function(msg) {
-    console.error("Yeah", msg);
-};
-*/
+address
+    : expression
+        { $$ = $1; }
+    ;
+
+expression
+    : expression "+" expression
+        { $$ = $1 + $3; }
+    | expression "-" expression
+        { $$ = $1 + $3; }
+    | expression "*" expression
+        { $$ = $1 + $3; }
+    | expression "/" expression
+        { $$ = Math.floor($1 / $3); }
+    | expression "&" expression
+        { $$ = $1 & $3; }
+    | expression "|" expression
+        { $$ = $1 | $3; }
+    | expression "^" expression
+        { $$ = $1 ^ $3; }
+    | integer
+        { $$ = $1; }
+    ;
+
+integer
+    : BINARY_INTEGER
+        { $$ = parseInt(yytext.substring(1), 2); }
+    | DECIMAL_INTEGER
+        { $$ = parseInt(yytext, 10); }
+    | HEXADECIMAL_INTEGER
+        { $$ = parseInt(yytext.substring(1), 16); }
+    ;
+
+
+%%
