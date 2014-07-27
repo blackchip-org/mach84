@@ -74,14 +74,14 @@ var Assembly6502HighlightRules = function() {
          { token: 'variable.assembly',
            regex: '(?:\\*|\\-+|\\++)'}
          ],
-    }
+    };
 
     this.normalizeRules();
 };
 
 Assembly6502HighlightRules.metaData = { fileTypes: [ 'asm' ],
       name: 'Assembly 6502',
-      scopeName: 'source.assembly' }
+      scopeName: 'source.assembly' };
 
 
 oop.inherits(Assembly6502HighlightRules, TextHighlightRules);
