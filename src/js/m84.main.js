@@ -22,11 +22,11 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
- 
+
  var m84x = {};
- 
+
  $(function() {
-     
+
     var mem = m84.mem();
     var cpu = m84.cpu({mem: mem});
     var mach = m84.mach({
@@ -34,17 +34,13 @@
         cpu: cpu
     });
 
-    $("#video").dialog();
-
-    var video = m84.video({
-        mem: mem
-    });
     m84x = {
         mem: mem,
         cpu: cpu,
-        mach: mach,
-        video: video
+        mach: mach
     };
+
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/pastel_on_dark");
     
  });
- 

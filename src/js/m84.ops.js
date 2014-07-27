@@ -373,12 +373,12 @@ m84.ops = m84.ops || function(spec) {
     var ror_zpx = function(cpu) { ror(cpu, cpu.load_zpx); };
 
     // ===== rti: Return from interrupt
-    
+
     var rti = function(cpu) {
         cpu.sr(cpu.pullb());
         cpu.pc = cpu.pullw() - 1;
     };
-    
+
     // ===== rts: Return from subroutine
 
     var rts = function(cpu) { cpu.pc = cpu.pullw(); };
@@ -419,7 +419,7 @@ m84.ops = m84.ops || function(spec) {
     var sbc_izy = function(cpu) { sbc(cpu, cpu.load_izy); };
     var sbc_zp  = function(cpu) { sbc(cpu, cpu.load_zp);  };
     var sbc_zpx = function(cpu) { sbc(cpu, cpu.load_zpx); };
-    
+
     // ===== sta: Store accumlator
 
     var sta_abs = function(cpu) { cpu.store_abs(cpu.a); };
@@ -431,34 +431,34 @@ m84.ops = m84.ops || function(spec) {
     var sta_zpx = function(cpu) { cpu.store_zpx(cpu.a); };
 
     // ===== Stack instructions
-    
+
     var pha = function(cpu) { cpu.pushb(cpu.a); };    // push a
     var php = function(cpu) { cpu.pushb(cpu.sr()); }; // push sr
     var phx = function(cpu) { cpu.pushb(cpu.x); };    // push x
     var phy = function(cpu) { cpu.pushb(cpu.y); };    // push y
 
-    var pla = function(cpu) { // pull a                        
-        cpu.a = cpu.pullb(); 
-        flags(cpu, cpu.a); 
+    var pla = function(cpu) { // pull a
+        cpu.a = cpu.pullb();
+        flags(cpu, cpu.a);
     };
-    
+
     var plp = function(cpu) { // pull sp
-        cpu.sr(cpu.pullb()); 
+        cpu.sr(cpu.pullb());
     };
-     
-    var plx = function(cpu) { // pull a                        
-        cpu.x = cpu.pullb(); 
-        flags(cpu, cpu.x); 
+
+    var plx = function(cpu) { // pull a
+        cpu.x = cpu.pullb();
+        flags(cpu, cpu.x);
     };
-    
-    var ply = function(cpu) { // pull a                        
-        cpu.y = cpu.pullb(); 
-        flags(cpu, cpu.y); 
+
+    var ply = function(cpu) { // pull a
+        cpu.y = cpu.pullb();
+        flags(cpu, cpu.y);
     };
 
     var tsx = function(cpu) { cpu.x = cpu.sp; }; // sp to x
     var txs = function(cpu) { cpu.sp = cpu.x; }; // x to sp
-    
+
     // ===== stx: Store x register
 
     var stx_abs = function(cpu) { cpu.store_abs(cpu.x); };
