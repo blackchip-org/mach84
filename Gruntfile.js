@@ -33,11 +33,11 @@ module.exports = function(grunt) {
             assembler: {
                 options: {
                     moduleType: "js",
-                    moduleName: "m84.tools.asm"
+                    moduleName: "m84.asm"
                 },
                 files: {
-                    "web/js/tools/m84.tools.asm.js":
-                        "src/js/tools/m84.tools.asm.jison"
+                    "web/js/m84.asm.js":
+                        "src/m84.asm.jison"
                 }
             }
         },

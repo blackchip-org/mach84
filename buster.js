@@ -34,7 +34,6 @@ config["mach84"] = {
         "web/lib/**/*.js"
     ],
     src: [
-        "web/js/tools/m84.tools.js",
         "web/js/**/*.js",
         "!web/js/m84.main.js",
     ],

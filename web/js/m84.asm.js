@@ -71,7 +71,7 @@
     recoverable: (boolean: TRUE when the parser has a error recovery rule available for this particular error)
   }
 */
-m84.tools.asm = (function(){
+m84.asm = (function(){
 var parser = {trace: function trace() { },
 yy: {},
 symbols_: {"error":2,"program":3,"statements":4,"statement":5,"line":6,"EOLN":7,"EOF":8,"assembly":9,"ADC":10,"abs":11,"address":12,"expression":13,"+":14,"-":15,"*":16,"/":17,"&":18,"|":19,"^":20,"integer":21,"BINARY_INTEGER":22,"DECIMAL_INTEGER":23,"HEXADECIMAL_INTEGER":24,"$accept":0,"$end":1},
