@@ -1,27 +1,3 @@
-/* lexical grammar */
-%lex
-%%
-[ \t]+                {/* skip whitespace */}
-\n                    {return "EOLN";}
-"+"                   {return "+";}
-"-"                   {return "-";}
-"*"                   {return "*";}
-"/"                   {return "/";}
-"&"                   {return "&";}
-"|"                   {return "|";}
-"^"                   {return "^";}
-"adc"                 {return "ADC";}
-\%[01]+\b             {return "BINARY_INTEGER";}
-[0-9]+\b              {return "DECIMAL_INTEGER";}
-\$[0-9a-fA-F]+\b      {return "HEXADECIMAL_INTEGER";}
-<<EOF>>               {return "EOF";}
-
-/lex
-
-%{
-    ;
-%}
-
 %left "+" "-"
 %left "*" "/"
 %left "&" "|" "^"
@@ -42,7 +18,7 @@ statements
 statement
     : line EOLN
     | line EOF
-        { return bytes; }
+        { return []; }
     ;
 
 line
@@ -91,6 +67,5 @@ integer
     | HEXADECIMAL_INTEGER
         { $$ = parseInt(yytext.substring(1), 16); }
     ;
-
-
+    
 %%
