@@ -28,7 +28,7 @@ line
 
 instruction
     : INSTRUCTION addressing_mode {
-        console.log($1, $2);
+        ;
     }
     ;
 

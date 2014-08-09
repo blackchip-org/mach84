@@ -14,7 +14,6 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
- *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,43 +23,49 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-module.exports = function(grunt) {
+var m84 = m84 || {};
+m84.symbols = m84.symbols || function() {
 
-    grunt.initConfig({
-        pkg: grunt.file.readJSON("package.json"),
+    var self = {};
+    var scopes = [{}];
 
-        jison: {
-            assembler: {
-                options: {
-                    moduleType: "js",
-                    moduleName: "asm"
-                },
-                files: {
-                    "web/js/asm/asm.js": [
-                        "src/asm/asm.parser.jison",
-                        "src/asm/asm.lexer.jison"
-                    ]
-                }
+    self.has = function(symbol) {
+        var result = false;
+        _.each(scopes, function(scope) {
+            if ( _.has(scope, symbol) ) {
+                result = true;
+                return false;
             }
-        },
+        });
+        return result;
+    }
 
-        jshint: {
-            main: [
-                "src/js/**/*.js",
-                "test/**/*.js"
-            ]
-        },
+    self.find = function(symbol) {
+        var result;
+        _.each(scopes, function(scope) {
+            if ( _.has(scope, symbol) ) {
+                result = scope[symbol];
+                return false;
+            }
+        });
+        return result;
+    };
 
-        buster: {
-            console: {}
+    self.define = function(symbol, value) {
+        if ( self.has(symbol) ) {
+            throw new Error("Symbol already defined: " + symbol);
         }
-    });
+        scopes[0][symbol] = value;
+    };
 
-    grunt.loadNpmTasks("grunt-buster");
-    grunt.loadNpmTasks("grunt-contrib-jshint");
-    grunt.loadNpmTasks("grunt-jison");
+    self.begin = function() {
+        scopes.unshift({});
+    };
 
-    grunt.registerTask("default", ["jison"]);
-    grunt.registerTask("lint", ["jshint"]);
-    grunt.registerTask("test", ["jison", "buster:console"]);
+    self.end = function() {
+        scopes.shift();
+    };
+
+    return self;
+
 };

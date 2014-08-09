@@ -24,43 +24,40 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-module.exports = function(grunt) {
+/* jshint sub: true */
 
-    grunt.initConfig({
-        pkg: grunt.file.readJSON("package.json"),
+buster.testCase("m84.symbols", (function() {
 
-        jison: {
-            assembler: {
-                options: {
-                    moduleType: "js",
-                    moduleName: "asm"
-                },
-                files: {
-                    "web/js/asm/asm.js": [
-                        "src/asm/asm.parser.jison",
-                        "src/asm/asm.lexer.jison"
-                    ]
-                }
-            }
-        },
+    var self = {};
+    var t;
 
-        jshint: {
-            main: [
-                "src/js/**/*.js",
-                "test/**/*.js"
-            ]
-        },
+    self.setUp = function() {
+        t = m84.symbols();
+    };
 
-        buster: {
-            console: {}
-        }
-    });
+    self["Define symbol"] = function() {
+        t.define("foo", 0xab);
+        buster.assert.equals(0xab, t.find("foo"));
+    };
 
-    grunt.loadNpmTasks("grunt-buster");
-    grunt.loadNpmTasks("grunt-contrib-jshint");
-    grunt.loadNpmTasks("grunt-jison");
+    self["Duplicate symbol"] = function() {
+        t.define("foo", 0xab);
+        buster.assert.exception(function() {
+            t.define("foo", 0xcd);
+        });
+    };
 
-    grunt.registerTask("default", ["jison"]);
-    grunt.registerTask("lint", ["jshint"]);
-    grunt.registerTask("test", ["jison", "buster:console"]);
-};
+    self["Scope"] = function() {
+        t.define("foo", 0xab);
+        t.begin();
+        t.define("bar", 0xcd);
+        buster.assert.equals(0xab, t.find("foo"));
+        buster.assert.equals(0xcd, t.find("bar"));
+        t.end();
+        buster.assert.equals(0xab, t.find("foo"));
+        buster.refute(t.has("bar"));
+    };
+
+    return self;
+
+})());

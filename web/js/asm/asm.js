@@ -85,7 +85,7 @@ switch (yystate) {
 case 5: return []; 
 break;
 case 8:
-        console.log($$[$0-1], $$[$0]);
+        ;
     
 break;
 case 18: this.$ = $$[$0]; 

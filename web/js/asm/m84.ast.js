@@ -14,7 +14,6 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
- *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,43 +23,37 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-module.exports = function(grunt) {
+var m84 = m84 || {};
+m84.ast = m84.ast || (function() {
 
-    grunt.initConfig({
-        pkg: grunt.file.readJSON("package.json"),
+    var self = {};
 
-        jison: {
-            assembler: {
-                options: {
-                    moduleType: "js",
-                    moduleName: "asm"
-                },
-                files: {
-                    "web/js/asm/asm.js": [
-                        "src/asm/asm.parser.jison",
-                        "src/asm/asm.lexer.jison"
-                    ]
+    self.evaluate = function(ast, symbols) {
+        var _eval = function(node) {
+            if ( node.symbol ) {
+                if ( !symbols ) {
+                    throw new Error("No symbol table");
                 }
+                var value = symbols.find(node.symbol);
+                if ( _.isUndefined(value) ) {
+                    throw new Error("Undefined reference: " + node.symbol);
+                }
+                return value;
             }
-        },
+            if ( !node.op ) {
+                return node;
+            }
+            v = node.val;
+            switch ( node.op ) {
+                case "+": return _eval(v[0]) + _eval(v[1]);
+                case "-": return _eval(v[0]) - _eval(v[1]);
+                case "*": return _eval(v[0]) * _eval(v[1]);
+                case "/": return _eval(v[0]) / _eval(v[1]);
+            }
+        };
+        return _eval(ast);
+    };
 
-        jshint: {
-            main: [
-                "src/js/**/*.js",
-                "test/**/*.js"
-            ]
-        },
+    return self;
 
-        buster: {
-            console: {}
-        }
-    });
-
-    grunt.loadNpmTasks("grunt-buster");
-    grunt.loadNpmTasks("grunt-contrib-jshint");
-    grunt.loadNpmTasks("grunt-jison");
-
-    grunt.registerTask("default", ["jison"]);
-    grunt.registerTask("lint", ["jshint"]);
-    grunt.registerTask("test", ["jison", "buster:console"]);
-};
+ })();
