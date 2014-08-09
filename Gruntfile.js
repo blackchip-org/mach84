@@ -62,5 +62,5 @@ module.exports = function(grunt) {
 
     grunt.registerTask("default", ["jison"]);
     grunt.registerTask("lint", ["jshint"]);
-    grunt.registerTask("test", ["buster:console"]);
+    grunt.registerTask("test", ["jison", "buster:console"]);
 };

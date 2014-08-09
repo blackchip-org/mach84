@@ -24,10 +24,12 @@
   * DEALINGS IN THE SOFTWARE.
   */
 
+/* jshint sub: true */
+
  buster.testCase("asm.mode", (function() {
 
     var self = {};
-    var al
+    var a;
 
     self.setUp = function() {
         a = m84.asm();
