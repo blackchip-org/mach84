@@ -22,20 +22,71 @@ statement
     ;
 
 line
-    : assembly
+    : instruction
     |
     ;
 
-assembly
-    : ADC abs { ; }
+instruction
+    : INSTRUCTION addressing_mode {
+        console.log($1, $2);
+    }
     ;
 
-abs
+addressing_mode
     : address
-        { $$ = $1; }
+    | address_x
+    | address_y
+    | accumulator
+    | indirect
+    | immediate
+    | implied
+    | indexed_indirect
+    | indirect_indexed
     ;
 
 address
+    : value
+        { $$ = $1; }
+    ;
+
+address_x
+    : value "," "X"
+        { $$ = $1; }
+    ;
+
+address_y
+    : value "," "Y"
+        { $$ = $1; }
+    ;
+
+accumulator
+    : "A"
+    ;
+
+indirect
+    : "(" value ")"
+        { $$ = $2; }
+    ;
+
+immediate
+    : "#" value
+        { $$ = $2; }
+    ;
+
+implied:
+    ;
+
+indexed_indirect
+    : "(" value "," "X" ")"
+        { $$ = $2; }
+    ;
+
+indirect_indexed
+    : "(" value ")" "," "Y"
+        { $$ = $2; }
+    ;
+
+value
     : expression
         { $$ = $1; }
     ;
@@ -67,5 +118,5 @@ integer
     | HEXADECIMAL_INTEGER
         { $$ = parseInt(yytext.substring(1), 16); }
     ;
-    
+
 %%

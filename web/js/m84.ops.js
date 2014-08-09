@@ -28,7 +28,7 @@ var m84 = m84 || {};
 m84.ops = m84.ops || function(spec) {
 
     spec = spec || {};
-    
+
     // ====== adc: Add with carry
 
     var adc = function(cpu, load) {

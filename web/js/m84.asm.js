@@ -25,10 +25,23 @@
 
 var m84 = m84 || {};
 m84.asm = m84.asm || function(spec) {
-    
+
     spec = spec || {};
     var parser = new asm.Parser();
+
     parser.yy.ops = spec.ops || m84.ops();
-    
-    return parser; 
+    parser.yy.code = [];
+
+    lookup = {};
+    _.each(parser.yy.ops, function(op) {
+        if ( op.illegal ) {
+            return;
+        }
+        lookup[op.name] = lookup[op.name] || {};
+        lookup[op.name][op.mode] = op.code;
+    });
+    parser.yy.lookup = lookup;
+    parser.yy.symbols = {};
+
+    return parser;
 };
