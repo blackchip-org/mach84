@@ -28,6 +28,14 @@ m84.ast = m84.ast || (function() {
 
     var self = {};
 
+    var raise = function(symbol) {
+        throw {
+            name: "Undefined reference",
+            message: "Undefined reference: " + symbol,
+            symbol: symbol
+        };
+    };
+
     self.evaluate = function(ast, symbols) {
         var _eval = function(node) {
             if ( node.symbol ) {
@@ -36,7 +44,7 @@ m84.ast = m84.ast || (function() {
                 }
                 var value = symbols.find(node.symbol);
                 if ( _.isUndefined(value) ) {
-                    throw new Error("Undefined reference: " + node.symbol);
+                    throw raise(node.symbol);
                 }
                 return value;
             }
@@ -49,6 +57,10 @@ m84.ast = m84.ast || (function() {
                 case "-": return _eval(v[0]) - _eval(v[1]);
                 case "*": return _eval(v[0]) * _eval(v[1]);
                 case "/": return _eval(v[0]) / _eval(v[1]);
+                case "&": return _eval(v[0]) & _eval(v[1]);
+                case "|": return _eval(v[0]) | _eval(v[1]);
+                case "^": return _eval(v[0]) ^ _eval(v[1]);
+                case "floor": return Math.floor(_eval(v));
             }
         };
         return _eval(ast);

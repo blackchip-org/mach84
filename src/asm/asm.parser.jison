@@ -87,25 +87,34 @@ indirect_indexed
     ;
 
 value
-    : expression
-        { $$ = $1; }
+    : expression {
+        try {
+            $$ = m84.ast.evaluate($1);
+        } catch ( err ) {
+            if ( err.symbol ) {
+                $$ = 0;
+            } else {
+                throw err;
+            }
+        }
+    }
     ;
 
 expression
     : expression "+" expression
-        { $$ = $1 + $3; }
+        { $$ = { op: "+", val: [$1, $3] }; }
     | expression "-" expression
-        { $$ = $1 + $3; }
+        { $$ = { op: "-", val: [$1, $3] }; }
     | expression "*" expression
-        { $$ = $1 + $3; }
+        { $$ = { op: "*", val: [$1, $3] }; }
     | expression "/" expression
-        { $$ = Math.floor($1 / $3); }
+        { $$ = { op: "floor", val: { op: "/", val: [$1, $3] } }; }
     | expression "&" expression
-        { $$ = $1 & $3; }
+        { $$ = { op: "&", val: [$1, $3] }; }
     | expression "|" expression
-        { $$ = $1 | $3; }
+        { $$ = { op: "|", val: [$1, $3] }; }
     | expression "^" expression
-        { $$ = $1 ^ $3; }
+        { $$ = { op: "^", val: [$1, $3] }; }
     | integer
         { $$ = $1; }
     ;

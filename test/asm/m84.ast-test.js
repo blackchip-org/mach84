@@ -56,6 +56,26 @@ buster.testCase("m84.ast", (function() {
         buster.assert.equals(3, m84.ast.evaluate(ast));
     };
 
+    self["And"] = function() {
+        ast = { op: "&", val: [0x0f, 0xf0] };
+        buster.assert.equals(0x00, m84.ast.evaluate(ast));
+    };
+
+    self["Or"] = function() {
+        ast = { op: "|", val: [0x0f, 0xf0] };
+        buster.assert.equals(0xff, m84.ast.evaluate(ast));
+    };
+
+    self["Exclusive or"] = function() {
+        ast = { op: "^", val: [0xff, 0xff] };
+        buster.assert.equals(0x00, m84.ast.evaluate(ast));
+    };
+
+    self["Floor"] = function() {
+        ast = { op: "floor", val: 1.3 };
+        buster.assert.equals(1, m84.ast.evaluate(ast));
+    };
+
     self["Precedence"] = function() {
         ast = { op: "*", val: [2, { op: "-", val: [3, 1] }] };
         buster.assert.equals(4, m84.ast.evaluate(ast));

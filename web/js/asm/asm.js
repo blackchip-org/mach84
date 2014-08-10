@@ -102,21 +102,31 @@ case 25: this.$ = $$[$0-3];
 break;
 case 26: this.$ = $$[$0-3]; 
 break;
-case 27: this.$ = $$[$0]; 
+case 27:
+        try {
+            this.$ = m84.ast.evaluate($$[$0]);
+        } catch ( err ) {
+            if ( err.symbol ) {
+                this.$ = 0;
+            } else {
+                throw err;
+            }
+        }
+    
 break;
-case 28: this.$ = $$[$0-2] + $$[$0]; 
+case 28: this.$ = { op: "+", val: [$$[$0-2], $$[$0]] }; 
 break;
-case 29: this.$ = $$[$0-2] + $$[$0]; 
+case 29: this.$ = { op: "-", val: [$$[$0-2], $$[$0]] }; 
 break;
-case 30: this.$ = $$[$0-2] + $$[$0]; 
+case 30: this.$ = { op: "*", val: [$$[$0-2], $$[$0]] }; 
 break;
-case 31: this.$ = Math.floor($$[$0-2] / $$[$0]); 
+case 31: this.$ = { op: "floor", val: { op: "/", val: [$$[$0-2], $$[$0]] } }; 
 break;
-case 32: this.$ = $$[$0-2] & $$[$0]; 
+case 32: this.$ = { op: "&", val: [$$[$0-2], $$[$0]] }; 
 break;
-case 33: this.$ = $$[$0-2] | $$[$0]; 
+case 33: this.$ = { op: "|", val: [$$[$0-2], $$[$0]] }; 
 break;
-case 34: this.$ = $$[$0-2] ^ $$[$0]; 
+case 34: this.$ = { op: "^", val: [$$[$0-2], $$[$0]] }; 
 break;
 case 35: this.$ = $$[$0]; 
 break;
