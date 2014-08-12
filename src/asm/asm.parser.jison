@@ -1,103 +1,134 @@
+%{
+
+var assert_mode = function(lookup, op, mode) {
+    var modes = lookup[op];
+    if ( !modes[mode] ) {
+        throw new Error("Invalid addressing mode for " + op + ": " + mode);
+    }
+};
+
+%}
+
 %left "+" "-"
 %left "*" "/"
 %left "&" "|" "^"
 
 %start program
 
-%% /* language grammar */
+%%
 
 program
     : statements
+        { return $1; }
     ;
 
 statements
     : statements statement
+        { $$ = $1.concat($2); }
     | statement
+        { $$ = [$1]; }
+    | line_error
     ;
 
 statement
     : line EOLN
+        { $$ = $1; }
     | line EOF
-        { return []; }
+        { $$ = $1; }
+    ;
+
+line_error
+    : error EOLN
+        { console.error($1); }
+    | error EOF
     ;
 
 line
     : instruction
+        { $$ = $1; }
     |
     ;
 
 instruction
     : INSTRUCTION addressing_mode {
-        ;
+        assert_mode(yy.lookup, $1, $2.mode);
+        $$ = {
+            op: $1,
+            mode: $2.mode,
+            arg: $2.arg
+        };
     }
     ;
 
 addressing_mode
-    : address
-    | address_x
-    | address_y
-    | accumulator
-    | indirect
-    | immediate
-    | implied
-    | indexed_indirect
-    | indirect_indexed
+    : abs
+        { $$ = $1; }
+    | abx
+        { $$ = $1; }
+    | aby
+        { $$ = $1; }
+    | acc
+        { $$ = $1; }
+    | ind
+        { $$ = $1; }
+    | imm
+        { $$ = $1; }
+    | imp
+        { $$ = $1; }
+    | izx
+        { $$ = $1; }
+    | izy
+        { $$ = $1; }
     ;
 
-address
+abs
     : value
-        { $$ = $1; }
+        { $$ = { mode: "abs", arg: $1 }; }
     ;
 
-address_x
+abx
     : value "," "X"
-        { $$ = $1; }
+        { $$ = { mode: "abx", arg: $1 }; }
     ;
 
-address_y
+aby
     : value "," "Y"
-        { $$ = $1; }
+        { $$ = { mode: "aby", arg: $1 }; }
     ;
 
-accumulator
+acc
     : "A"
+        { $$ = { mode: "acc" }; }
     ;
 
-indirect
+ind
     : "(" value ")"
-        { $$ = $2; }
+        { $$ = { mode: "ind", arg: $2 }; }
     ;
 
-immediate
+imm
     : "#" value
-        { $$ = $2; }
+        { $$ = { mode: "imm", arg: $2 }; }
     ;
 
-implied:
+imp
+    :
+        { $$ = { mode: "imp" }; }
     ;
 
-indexed_indirect
+izx
     : "(" value "," "X" ")"
-        { $$ = $2; }
+        { $$ = { mode: "izx", arg: $2 }; }
     ;
 
-indirect_indexed
+izy
     : "(" value ")" "," "Y"
-        { $$ = $2; }
+        { $$ = { mode: "izy", arg: $2 }; }
     ;
 
 value
-    : expression {
-        try {
-            $$ = m84.ast.evaluate($1);
-        } catch ( err ) {
-            if ( err.symbol ) {
-                $$ = 0;
-            } else {
-                throw err;
-            }
-        }
-    }
+    : expression
+        { $$ = $1; }
     ;
 
 expression

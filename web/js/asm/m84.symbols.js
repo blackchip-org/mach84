@@ -29,17 +29,6 @@ m84.symbols = m84.symbols || function() {
     var self = {};
     var scopes = [{}];
 
-    self.has = function(symbol) {
-        var result = false;
-        _.each(scopes, function(scope) {
-            if ( _.has(scope, symbol) ) {
-                result = true;
-                return false;
-            }
-        });
-        return result;
-    }
-
     self.find = function(symbol) {
         var result;
         _.each(scopes, function(scope) {
@@ -49,6 +38,10 @@ m84.symbols = m84.symbols || function() {
             }
         });
         return result;
+    };
+
+    self.has = function(symbol) {
+        return !_.isUndefined(self.find(symbol));
     };
 
     self.define = function(symbol, value) {

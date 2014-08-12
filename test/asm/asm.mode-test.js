@@ -31,14 +31,16 @@
     var self = {};
     var a;
 
+    /*
     self.setUp = function() {
-        a = m84.asm();
+        a = m84.asm;
     };
 
     self["abs"] = function() {
         a.parse("adc $1234");
         buster.assert(true);
     };
+    */
 
     return self;
 

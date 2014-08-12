@@ -28,25 +28,33 @@ m84.ast = m84.ast || (function() {
 
     var self = {};
 
-    var raise = function(symbol) {
-        throw {
-            name: "Undefined reference",
-            message: "Undefined reference: " + symbol,
-            symbol: symbol
+    var find_undefined = function(ast, symbols) {
+        var symbols = [];
+        var _eval = function(node) {
+            if ( node.symbol ) {
+                if ( !symbols.has(node.symbol) ) {
+                    symbols.push(node.symbol);
+                }
+            } else {
+                if ( node.val && node.val.length ) {
+                    _.each(node.val, function(val) {
+                        _eval(val, symbols);
+                    });
+                }
+            }
         };
+        _eval(ast);
+        return symbols;
     };
 
     self.evaluate = function(ast, symbols) {
+        var missing = find_undefined(ast, symbols);
+        if ( missing.length > 0 ) {
+            return { ast: ast, symbols: missing };
+        }
         var _eval = function(node) {
             if ( node.symbol ) {
-                if ( !symbols ) {
-                    throw new Error("No symbol table");
-                }
-                var value = symbols.find(node.symbol);
-                if ( _.isUndefined(value) ) {
-                    throw raise(node.symbol);
-                }
-                return value;
+                return symbols.find(node.symbol);
             }
             if ( !node.op ) {
                 return node;
