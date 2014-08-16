@@ -31,17 +31,96 @@
     var self = {};
     var a;
 
-    /*
     self.setUp = function() {
-        a = m84.asm;
+        a = m84.asm().parse;
     };
 
     self["abs"] = function() {
-        a.parse("adc $1234");
-        buster.assert(true);
+        var result = a("adc 1234");
+        var i = result.ast[0];
+        buster.assert.equals(i.op, "adc");
+        buster.assert.equals(i.mode, "abs");
+        buster.assert.equals(i.arg, 1234);
+        buster.assert.equals(result.errors.length, 0);
+    };
+
+    self["abx"] = function() {
+        var result = a("adc 1234, x");
+        var i = result.ast[0];
+        buster.assert.equals(i.op, "adc");
+        buster.assert.equals(i.mode, "abx");
+        buster.assert.equals(i.arg, 1234);
+        buster.assert.equals(result.errors.length, 0);
+    };
+
+    self["aby"] = function() {
+        var result = a("adc 1234, y");
+        var i = result.ast[0];
+        buster.assert.equals(i.op, "adc");
+        buster.assert.equals(i.mode, "aby");
+        buster.assert.equals(i.arg, 1234);
+        buster.assert.equals(result.errors.length, 0);
+    };
+
+    self["acc"] = function() {
+        var result = a("asl a");
+        var i = result.ast[0];
+        buster.assert.equals(i.op, "asl");
+        buster.assert.equals(i.mode, "acc");
+        buster.assert.equals(result.errors.length, 0);
+    };
+
+    self["imm"] = function() {
+        var result = a("adc #12");
+        var i = result.ast[0];
+        buster.assert.equals(i.op, "adc");
+        buster.assert.equals(i.mode, "imm");
+        buster.assert.equals(i.arg, 12);
+        buster.assert.equals(result.errors.length, 0);
+    };
+
+    self["imp"] = function() {
+        var result = a("brk");
+        var i = result.ast[0];
+        buster.assert.equals(i.op, "brk");
+        buster.assert.equals(i.mode, "imp");
+        buster.assert.equals(result.errors.length, 0);
+    };
+
+    self["ind"] = function() {
+        var result = a("jmp (1234)");
+        var i = result.ast[0];
+        buster.assert.equals(i.op, "jmp");
+        buster.assert.equals(i.mode, "ind");
+        buster.assert.equals(i.arg, 1234);
+        buster.assert.equals(result.errors.length, 0);
+    };
+
+    self["izx"] = function() {
+        var result = a("adc (12, x)");
+        var i = result.ast[0];
+        buster.assert.equals(i.op, "adc");
+        buster.assert.equals(i.mode, "izx");
+        buster.assert.equals(i.arg, 12);
+        buster.assert.equals(result.errors.length, 0);
+    };
+
+    self["izy"] = function() {
+        var result = a("adc (12), y");
+        var i = result.ast[0];
+        buster.assert.equals(i.op, "adc");
+        buster.assert.equals(i.mode, "izy");
+        buster.assert.equals(i.arg, 12);
+        buster.assert.equals(result.errors.length, 0);
+    };
+
+    /*
+    self["Invalid mode"] = function() {
+        var result = a("adc a");
+        buster.assert.equals(results.errors.length, 1);
     };
     */
-
+    
     return self;
 
 })());

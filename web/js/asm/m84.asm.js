@@ -24,12 +24,18 @@
  */
 
 var m84 = m84 || {};
-m84.asm = m84.asm || (function() {
+m84.asm = m84.asm || function(spec) {
 
-    /*
-    var parser = asm;
+    spec = spec || {};
+    var self = {};
+    var parser = new asm.Parser();
+    var errors = [];
 
-    parser.yy.ops = m84.ops();
+    parser.trace = function(err, hash) {
+        errors.push(err);
+    };
+
+    parser.yy.ops = spec.ops || m84.ops();
     lookup = {};
     _.each(parser.yy.ops, function(op) {
         if ( op.illegal ) {
@@ -40,6 +46,11 @@ m84.asm = m84.asm || (function() {
     });
     parser.yy.lookup = lookup;
 
-    return parser;
-    */
-}());
+    self.parse = function(text) {
+        errors = [];
+        var ast = parser.parse(text);
+        return { ast: ast, errors: errors };
+    };
+
+    return self;
+};

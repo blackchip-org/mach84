@@ -2,8 +2,10 @@
 
 var assert_mode = function(lookup, op, mode) {
     var modes = lookup[op];
-    if ( !modes[mode] ) {
-        throw new Error("Invalid addressing mode for " + op + ": " + mode);
+    if ( _.isUndefined(modes[mode]) ) {
+        var expected = _.keys(modes).join(", ");
+        throw new Error("Invalid addressing mode for " + op + ": " + mode +
+            "\nExpected " + expected);
     }
 };
 
@@ -28,6 +30,7 @@ statements
     | statement
         { $$ = [$1]; }
     | line_error
+        { $$ = [{error: true}]; }
     ;
 
 statement
@@ -39,7 +42,6 @@ statement
 
 line_error
     : error EOLN
-        { console.error($1); }
     | error EOF
     ;
 
@@ -69,11 +71,11 @@ addressing_mode
         { $$ = $1; }
     | acc
         { $$ = $1; }
-    | ind
-        { $$ = $1; }
     | imm
         { $$ = $1; }
     | imp
+        { $$ = $1; }
+    | ind
         { $$ = $1; }
     | izx
         { $$ = $1; }
@@ -101,11 +103,6 @@ acc
         { $$ = { mode: "acc" }; }
     ;
 
-ind
-    : "(" value ")"
-        { $$ = { mode: "ind", arg: $2 }; }
-    ;
-
 imm
     : "#" value
         { $$ = { mode: "imm", arg: $2 }; }
@@ -114,6 +111,11 @@ imm
 imp
     :
         { $$ = { mode: "imp" }; }
+    ;
+
+ind
+    : "(" value ")"
+        { $$ = { mode: "ind", arg: $2 }; }
     ;
 
 izx
