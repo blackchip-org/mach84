@@ -23,35 +23,13 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-var m84 = m84 || {};
-m84.asm = m84.asm || function(spec) {
+(function() {
 
-    spec = spec || {};
-    var self = {};
-    var parser = new asm.Parser();
-    var errors = [];
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/contains
+    if ( !String.prototype.contains ) {
+        String.prototype.contains = function() {
+            return String.prototype.indexOf.apply( this, arguments ) !== -1;
+        };
+    }
 
-    parser.trace = function(err, hash) {
-        errors.push(err);
-    };
-
-    parser.yy.ops = spec.ops || m84.ops();
-    lookup = {};
-    _.each(parser.yy.ops, function(op) {
-        if ( op.illegal ) {
-            return;
-        }
-        lookup[op.name] = lookup[op.name] || {};
-        lookup[op.name][op.mode] = op.code;
-    });
-    parser.yy.lookup = lookup;
-    parser.yy.errors = errors;
-
-    self.parse = function(text) {
-        errors.length = 0;
-        var ast = parser.parse(text);
-        return { ast: ast, errors: errors };
-    };
-
-    return self;
-};
+})();
