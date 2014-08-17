@@ -63,7 +63,16 @@ line_error
 line
     : instruction
         { $$ = $1; }
+    | label instruction
+        { $2.label = $1; $$ = $2; }
+    | label
+        { $$ = { label: $1 }; }
     |
+    ;
+
+label
+    : SYMBOL ":"
+        { $$ = $1; }
     ;
 
 instruction
