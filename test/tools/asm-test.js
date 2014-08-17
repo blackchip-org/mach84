@@ -47,6 +47,11 @@ buster.testCase("asm", (function() {
         buster.assert.equals(i.label, "foo");
     };
 
+    self["Exported label"] = function() {
+        var result = a(".export foo: lda #12");
+        console.log(result);
+        buster.assert(result.exports.foo);
+    };
 
     return self;
 

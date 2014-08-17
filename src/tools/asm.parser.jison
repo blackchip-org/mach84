@@ -73,6 +73,8 @@ line
 label
     : SYMBOL ":"
         { $$ = $1; }
+    | EXPORT SYMBOL ":"
+        { yy.exports[$2] = true; $$ = $2; }
     ;
 
 instruction

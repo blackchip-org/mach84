@@ -110,6 +110,7 @@
 "tya"               { return "INSTRUCTION"; }
 
 ".export"           { return "EXPORT"; }
+
 \%[01]+\b           { return "BINARY_INTEGER"; }
 [0-9]+\b            { return "DECIMAL_INTEGER"; }
 \$[0-9a-fA-F]+\b    { return "HEXADECIMAL_INTEGER"; }

@@ -30,6 +30,7 @@ m84.asm = m84.asm || function(spec) {
     var self = {};
     var parser = new asm.Parser();
     var errors = [];
+    var exports = {};
 
     parser.trace = function(err, hash) {
         errors.push(err);
@@ -46,11 +47,13 @@ m84.asm = m84.asm || function(spec) {
     });
     parser.yy.lookup = lookup;
     parser.yy.errors = errors;
+    parser.yy.exports = exports;
 
     self.parse = function(text) {
         errors.length = 0;
+        exports.length = 0;
         var ast = parser.parse(text);
-        return { ast: ast, errors: errors };
+        return { ast: ast, errors: errors, exports: exports };
     };
 
     return self;
