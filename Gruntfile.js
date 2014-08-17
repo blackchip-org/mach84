@@ -36,9 +36,9 @@ module.exports = function(grunt) {
                     moduleName: "asm"
                 },
                 files: {
-                    "web/js/asm/asm.js": [
-                        "src/asm/asm.parser.jison",
-                        "src/asm/asm.lexer.jison"
+                    "web/js/tools/asm.js": [
+                        "src/tools/asm.parser.jison",
+                        "src/tools/asm.lexer.jison"
                     ]
                 }
             }
