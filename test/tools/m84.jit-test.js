@@ -14,6 +14,7 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,29 +24,26 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-var m84 = m84 || {};
-m84.jit = m84.jit || function(spec) {
+/* jshint sub: true */
 
-    spec = spec || {};
+buster.testCase("m84.jit", (function() {
 
     var self = {};
-    var ops = spec.ops || m84.ops().instructions;
-    var mem = spec.mem || m84.mem();
-    var seg = {
-        text: m84.pc({}, {mem: mem}),
-        data: m84.pc({}, {mem: mem})
-    };
-    var text = seg.text;
+    var a;
+    var mem;
 
-    self.compile = function(asm) {
-        _.each(asm.ast, function(node) {
-            var op = node.op;
-            var mode = node.mode;
-            var opcode = ops[op][mode];
-            text.storeb(opcode);
-        });
+    self.setUp = function() {
+        mem = m84.mem();
+        a = m84.asm().parse;
+        c = m84.jit({mem: mem}).compile;
+    };
+
+    self["Test"] = function() {
+        var asm = a("adc $1234");
+        c(asm);
+        buster.assert.equals(mem.loadb(0), 0x6d);
     };
 
     return self;
 
-};
+})());
