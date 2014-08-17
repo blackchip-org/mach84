@@ -117,7 +117,6 @@
     self["Invalid mode"] = function() {
         var result = a("adc a");
         buster.assert.equals(result.errors.length, 1);
-        console.log(result.errors[0]);
         buster.assert(result.errors[0].contains("addressing mode"));
     };
 

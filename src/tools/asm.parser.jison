@@ -172,6 +172,8 @@ expression
         { $$ = { op: "|", val: [$1, $3] }; }
     | expression "^" expression
         { $$ = { op: "^", val: [$1, $3] }; }
+    | "[" expression "]"
+        { $$ = $2; }
     | integer
         { $$ = $1; }
     ;

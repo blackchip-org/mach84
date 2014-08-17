@@ -94,7 +94,7 @@ buster.testCase("m84.ast", (function() {
         buster.assert.equals("bar", result.references[1].symbol);
     };
     */
-    
+
     return self;
 
 })());
