@@ -36,16 +36,7 @@ m84.asm = m84.asm || function(spec) {
         errors.push(err);
     };
 
-    parser.yy.ops = spec.ops || m84.ops();
-    lookup = {};
-    _.each(parser.yy.ops, function(op) {
-        if ( op.illegal ) {
-            return;
-        }
-        lookup[op.name] = lookup[op.name] || {};
-        lookup[op.name][op.mode] = op.code;
-    });
-    parser.yy.lookup = lookup;
+    parser.yy.lookup = spec.ops || m84.ops().instructions;
     parser.yy.errors = errors;
     parser.yy.exports = exports;
 

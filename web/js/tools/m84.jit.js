@@ -14,7 +14,6 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
- *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,34 +23,22 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-/* jshint sub: true */
-
-buster.testCase("asm", (function() {
+var m84 = m84 || {};
+m84.jit = m84.jit || function(spec) {
 
     var self = {};
-    var a;
-
-    self.setUp = function() {
-        a = m84.asm().parse;
+    self.mem = spec.mem || m84.mem();
+    self.seg = {
+        text: m84.pc({}, {mem: mem}),
+        data: m84.pc({}, {mem: mem})
     };
 
-    self["Label"] = function() {
-        var result = a("foo:");
-        var i = result.ast[0];
-        buster.assert.equals(i.label, "foo");
-    };
-
-    self["Label with instruction"] = function() {
-        var result = a("foo: lda #12");
-        var i = result.ast[0];
-        buster.assert.equals(i.label, "foo");
-    };
-
-    self["Exported label"] = function() {
-        var result = a(".export foo: lda #12");
-        buster.assert(result.exports.foo);
+    self.compile = function(ast) {
+        _.each(ast, function(node) {
+            
+        });
     };
 
     return self;
 
-})());
+};

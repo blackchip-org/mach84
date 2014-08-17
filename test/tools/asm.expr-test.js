@@ -136,7 +136,6 @@ buster.testCase("asm.expr", (function() {
 
     self["Symbol"] = function() {
         var result = a("jsr k.primm");
-        console.log(result);
         var arg = result.ast[0].arg;
         buster.assert.equals(arg.symbol, "k.primm");
         buster.assert.equals(result.errors.length, 0);

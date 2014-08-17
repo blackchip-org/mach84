@@ -38,7 +38,7 @@ buster.testCase("m84.ops", (function() {
         var ops = [
             { name: "lda", mode: "imm", code: 0x89, execute: executor }
         ];
-        var lookup = m84.ops({ops: ops});
+        var lookup = m84.ops({ops: ops}).opcodes;
         var i = lookup[0x89];
         buster.assert(i);
         buster.assert.equals(i.name, "lda");
@@ -68,7 +68,7 @@ buster.testCase("m84.ops", (function() {
     };
 
     self["Illegal instruction"] = function() {
-        var lookup = m84.ops({ops: []});
+        var lookup = m84.ops({ops: []}).opcodes;
         var i = lookup[0xab];
         buster.assert(i);
         buster.assert.equals(i.name, "?ab");
@@ -79,14 +79,14 @@ buster.testCase("m84.ops", (function() {
     };
 
     self["No-op on illegal instruction"] = function() {
-        var lookup = m84.ops({ops: []});
+        var lookup = m84.ops({ops: []}).opcodes;
         var i = lookup[0xab];
         i.execute();
         buster.assert(true);
     };
 
     self["Exception on illegal instruction"] = function() {
-        var lookup = m84.ops({ops: [], debug: true});
+        var lookup = m84.ops({ops: [], debug: true}).opcodes;
         var i = lookup[0xab];
         buster.assert.exception(function() {
             i.execute();

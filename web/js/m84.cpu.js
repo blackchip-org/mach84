@@ -29,7 +29,7 @@ m84.cpu = m84.cpu || function(spec) {
 
     spec = spec || {};
     var mem = spec.mem || m84.mem(spec);
-    var ops = spec.ops || m84.ops(spec);
+    var ops = spec.ops || m84.ops(spec).opcodes;
     var map = spec.map || m84.map(spec);
 
     var self = {};

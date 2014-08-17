@@ -486,7 +486,7 @@ m84.ops = m84.ops || function(spec) {
         cpu.n = (value & 128) !== 0;
     };
 
-    // Instruction table
+    // Instruction opcodes
     var ops = spec.ops || [
         { name: "adc", mode: "abs", code: 0x6d, execute: adc_abs },
         { name: "adc", mode: "abx", code: 0x7d, execute: adc_abx },
@@ -702,11 +702,11 @@ m84.ops = m84.ops || function(spec) {
     };
 
     // Create a lookup table via opcode
-    var table = {};
+    var opcodes = {};
 
     _.each(ops, function(i) {
         // Make sure an opcode isn't duplicated by accident
-        if ( table[i.code] ) {
+        if ( opcodes[i.code] ) {
             throw new Error("Duplicate opcode " + m84.util.hexb(i.code));
         }
 
@@ -717,7 +717,7 @@ m84.ops = m84.ops || function(spec) {
                     "opcode " + m84.util.hexb(i.code));
         }
         i.length = length;
-        table[i.code] = i;
+        opcodes[i.code] = i;
     });
 
     // For any opcodes not filled in, create either a no-op exectuor or
@@ -730,14 +730,14 @@ m84.ops = m84.ops || function(spec) {
     var noop = function() {};
 
     for ( var opcode = 0; opcode <= 0xff; opcode++ ) {
-        if ( !table[opcode] ) {
+        if ( !opcodes[opcode] ) {
             var executor;
             if ( spec.debug || spec.debug_illegal_instruction ) {
                 executor = illegal_instruction(opcode);
             } else {
                 executor = noop;
             }
-            table[opcode] = {
+            opcodes[opcode] = {
                 name: "?" + m84.util.hexb(opcode),
                 mode: "imp",
                 code: opcode,
@@ -748,5 +748,15 @@ m84.ops = m84.ops || function(spec) {
         }
     }
 
-    return table;
+    // Create a lookup table by instruction name
+    var instructions = {};
+    _.each(opcodes, function(op) {
+        if ( op.illegal ) {
+            return;
+        }
+        instructions[op.name] = instructions[op.name] || {};
+        instructions[op.name][op.mode] = op.code;
+    });
+
+    return { opcodes: opcodes, instructions: instructions };
 };
