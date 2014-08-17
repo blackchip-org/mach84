@@ -25,7 +25,7 @@
 
 /* jshint sub: true */
 
-buster.testCase("m84.ops.adc", (function() {
+buster.testCase("m84.ops.branches", (function() {
 
     var self = {};
     var mem;
@@ -152,9 +152,11 @@ buster.testCase("m84.ops.adc", (function() {
     };
 
     self["bra, backwards"] = function() {
-        a.bra(0x7ff1);
+        cpu.pc = 5;
+        a.pc = 6;
+        a.bra(4);
         cpu.execute();
-        buster.assert.equals(0x7ff0, cpu.pc);
+        buster.assert.equals(3, cpu.pc);
     };
 
     return self;

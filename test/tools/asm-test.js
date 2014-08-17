@@ -52,6 +52,35 @@ buster.testCase("asm", (function() {
         buster.assert(result.exports.foo);
     };
 
+    self["Empty"] = function() {
+        var result = a("");
+        buster.assert.equals(result.ast.length, 0);
+        buster.assert.equals(result.errors.length, 0);
+    };
+
+    self["Empty with new lines"] = function() {
+        var result = a("\n\n\n\n\n");
+        buster.assert.equals(result.ast.length, 0);
+        buster.assert.equals(result.errors.length, 0);
+    };
+
+    self["Line numbers"] = function() {
+        var result = a("nop \n\n nop \n\n nop");
+        buster.assert.equals(result.ast.length, 3);
+        buster.assert.equals(result.ast[0].line, 1);
+        buster.assert.equals(result.ast[1].line, 3);
+        buster.assert.equals(result.ast[2].line, 5);
+        buster.assert.equals(result.errors.length, 0);
+    };
+
+    self["Line numbers, end with blank line"] = function() {
+        var result = a("nop \n\n nop \n");
+        buster.assert.equals(result.ast.length, 2);
+        buster.assert.equals(result.ast[0].line, 1);
+        buster.assert.equals(result.ast[1].line, 3);
+        buster.assert.equals(result.errors.length, 0);
+    };
+
     return self;
 
 })());

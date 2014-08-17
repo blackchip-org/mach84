@@ -76,6 +76,11 @@ buster.testCase("m84.ast", (function() {
         buster.assert.equals(1, m84.ast.evaluate(ast));
     };
 
+    self["Negate"] = function() {
+        ast = { op: "negate", val: 2 };
+        buster.assert.equals(-2, m84.ast.evaluate(ast));
+    };
+    
     self["Precedence"] = function() {
         ast = { op: "*", val: [2, { op: "-", val: [3, 1] }] };
         buster.assert.equals(4, m84.ast.evaluate(ast));

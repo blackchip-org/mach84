@@ -100,14 +100,34 @@ buster.testCase("asm.expr", (function() {
         buster.assert.equals(result.errors.length, 0);
     };
 
+    self["Negative integer"] = function() {
+        var result = a("lda #-12");
+        buster.assert.equals(result.ast[0].arg, -12);
+        buster.assert.equals(result.errors.length, 0);
+    };
+
     self["Binary integer"] = function() {
         var result = a("lda #%101010");
         buster.assert.equals(result.ast[0].arg, parseInt("101010", 2));
+        buster.assert.equals(result.errors.length, 0);
+    };
+
+    self["Binary integer, negative"] = function() {
+        var result = a("lda #%-1");
+        buster.assert.equals(result.ast[0].arg, -1);
+        buster.assert.equals(result.errors.length, 0);
     };
 
     self["Hexadecimal integer"] = function() {
         var result = a("lda #$abcd");
         buster.assert.equals(result.ast[0].arg, parseInt("abcd", 16));
+        buster.assert.equals(result.errors.length, 0);
+    };
+
+    self["Hexadecimal integer, negative"] = function() {
+        var result = a("lda #$-1");
+        buster.assert.equals(result.ast[0].arg, -1);
+        buster.assert.equals(result.errors.length, 0);
     };
 
     self["Implicit precedence"] = function() {

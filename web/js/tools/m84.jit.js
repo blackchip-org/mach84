@@ -39,6 +39,8 @@ m84.jit = m84.jit || function(spec) {
         data: m84.pc({}, {mem: mem})
     };
     var text = seg.text;
+    var line;
+    var name;
     var errors = [];
 
     var zp = {
@@ -53,9 +55,18 @@ m84.jit = m84.jit || function(spec) {
         lengths = o.lengths;
     };
 
+    var error = function(message) {
+        errors.push({
+            name: name,
+            line: line,
+            message: message
+        });
+    };
+
     var storew = function(value) {
-        if ( value > 0xffff || value < -Math.pow(2, 16 - 1) ) {
-            errors.push("Word overflow: $" + value.toString(16));
+        // The only word arguments are addresses, so force to be non-negative
+        if ( value > 0xffff || value < 0 ) {
+            error("Word overflow: $" + value.toString(16) + " (" + value + ")");
             text.storew(0);
         } else {
             text.storew(value & 0xffff);
@@ -64,19 +75,35 @@ m84.jit = m84.jit || function(spec) {
 
     var storeb = function(value) {
         if ( value > 0xff || value < -Math.pow(2, 8 - 1) ) {
-            errors.push("Byte overflow: $" + value.toString(16));
+            error("Byte overflow: $" + value.toString(16) + " (" + value + ")");
             text.storeb(0);
         } else {
             text.storeb(value & 0xff);
         }
     };
 
+    var storer = function(value) {
+        // Branch is relative to PC after instruction has been consumed.
+        // Since we have consumed the opcode but not the relative address,
+        // the PC has to be adjusted by one
+        var abs = value;
+        var rel = abs - (text.pc + 1);
+        if ( rel < -Math.pow(2, 8 - 1) || rel > Math.pow(2, 8-1) - 1) {
+            error("Branch out of range");
+            text.storeb(0);
+        } else {
+            text.storeb(rel & 0xff);
+        }
+    };
+
     self.compile = function(asm) {
+        name = asm.name;
         if ( asm.errors.length > 0 ) {
             throw new Error(asm.errors.join("\n"));
         }
         errors.length = 0;
         _.each(asm.ast, function(node) {
+            line = node.line;
             var op = node.op;
             var mode = node.mode;
             var opcode = ops[op][mode];
@@ -86,12 +113,16 @@ m84.jit = m84.jit || function(spec) {
                     break;
                 case 1:
                     storeb(opcode);
-                    storeb(m84.ast.evaluate(node.arg));
+                    if ( mode === "rel" ) {
+                        storer(m84.ast.evaluate(node.arg));
+                    } else {
+                        storeb(m84.ast.evaluate(node.arg));
+                    }
                     break;
                 case 2:
                     var value = m84.ast.evaluate(node.arg);
                     if ( mode === "abs" || mode === "aby" || mode == "abx" ) {
-                        if ( value >= -Math.pow(2, 8 - 1) && value <= 0xff ) {
+                        if ( value >= 0 && value <= 0xff ) {
                             mode = zp[mode];
                             opcode = ops[op][mode];
                             storeb(opcode);

@@ -44,7 +44,12 @@ m84.asm = m84.asm || function(spec) {
         errors.length = 0;
         exports.length = 0;
         var ast = parser.parse(text);
-        return { ast: ast, errors: errors, exports: exports };
+        return {
+            name: spec.name,
+            ast: ast,
+            errors: errors,
+            exports: exports
+        };
     };
 
     return self;

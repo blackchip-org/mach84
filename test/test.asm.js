@@ -84,7 +84,7 @@ test.asm = test.asm || function(spec) {
                     " for address $" + m84.util.hexw(arg));
             }
             self.storeb(op.code);
-            self.storeb(displacement);
+            self.storeb(displacement & 0xff);
         };
     };
 

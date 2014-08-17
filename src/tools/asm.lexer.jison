@@ -33,7 +33,6 @@
 "]"                 { return "]"; }
 ":"                 { return ":"; }
 "+"                 { return "+"; }
-"-"                 { return "-"; }
 "*"                 { return "*"; }
 "/"                 { return "/"; }
 "&"                 { return "&"; }
@@ -111,9 +110,11 @@
 
 ".export"           { return "EXPORT"; }
 
-\%[01]+\b           { return "BINARY_INTEGER"; }
-[0-9]+\b            { return "DECIMAL_INTEGER"; }
-\$[0-9a-fA-F]+\b    { return "HEXADECIMAL_INTEGER"; }
+\%\-?[01]+\b          { return "BINARY_INTEGER"; }
+\-?[0-9]+\b           { return "DECIMAL_INTEGER"; }
+\$\-?[0-9a-fA-F]+\b   { return "HEXADECIMAL_INTEGER"; }
+
+"-"                 { return "-"; }
 
 [a-zA-z\._][a-zA-Z\._0-9]*
                     { return "SYMBOL"; }

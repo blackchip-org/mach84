@@ -69,6 +69,7 @@ m84.ast = m84.ast || (function() {
                 case "|": return _eval(v[0]) | _eval(v[1]);
                 case "^": return _eval(v[0]) ^ _eval(v[1]);
                 case "floor": return Math.floor(_eval(v));
+                case "negate": return -_eval(v);
             }
         };
         return _eval(ast);

@@ -26,9 +26,12 @@
 %{
 %}
 
+%left "|"
+%left "^"
+%left "&"
 %left "+" "-"
 %left "*" "/"
-%left "&" "|" "^"
+%left UMINUS
 
 %start program
 
@@ -36,28 +39,34 @@
 
 program
     : statements
-        { return $1; }
+        { if ( $1 ) { return $1; } else { return []; } }
     ;
 
 statements
-    : statements statement
-        { $$ = $1.concat($2); }
+    : statements statement {
+        if ( $2 ) {
+            $$ = $1.concat($2);
+        } else {
+            $$ = $1;
+        }
+    }
     | statement
-        { $$ = [$1]; }
-    | line_error
-        { $$ = [{error: true}]; }
+        { if ( $1 ) { $$ = [$1]; } }
     ;
 
 statement
     : line EOLN
-        { $$ = $1; }
+        { $1.line = yylineno; $$ = $1; }
     | line EOF
-        { $$ = $1; }
-    ;
-
-line_error
-    : error EOLN
+        { $1.line = yylineno + 1; $$ = $1; }
+    | EOLN
+        { $$ = false; }
+    | EOF
+        { $$ = false; }
+    | error EOLN
+        { $$ = {error: true, line: yylineno}; }
     | error EOF
+        { $$ = {error: true, line: yylineno}; }
     ;
 
 line
@@ -67,7 +76,6 @@ line
         { $2.label = $1; $$ = $2; }
     | label
         { $$ = { label: $1 }; }
-    |
     ;
 
 label
@@ -82,6 +90,11 @@ instruction
         var op = $1;
         var mode = $2.mode;
         var modes = yy.lookup[op];
+        // If the instruction supports relative addressing, it only
+        // supports relative addressing
+        if ( mode === "abs" && modes.rel ) {
+            mode = "rel";
+        }
         if ( _.isUndefined(modes[mode]) ) {
             var expected = _.keys(modes).join(", ");
             yy.errors.push("Invalid addressing mode for " + op + ": " + mode +
@@ -183,6 +196,8 @@ expression
         { $$ = { op: "|", val: [$1, $3] }; }
     | expression "^" expression
         { $$ = { op: "^", val: [$1, $3] }; }
+    | "-" expression %prec UMINUS
+        { $$ = { op: "negate", val: $2 }; }
     | "[" expression "]"
         { $$ = $2; }
     | integer
@@ -193,11 +208,11 @@ expression
 
 integer
     : BINARY_INTEGER
-        { $$ = parseInt(yytext.substring(1), 2); }
+        { $$ = parseInt($1.substring(1), 2); }
     | DECIMAL_INTEGER
-        { $$ = parseInt(yytext, 10); }
+        { $$ = parseInt($1, 10); }
     | HEXADECIMAL_INTEGER
-        { $$ = parseInt(yytext.substring(1), 16); }
+        { $$ = parseInt($1.substring(1), 16); }
     ;
 
 %%

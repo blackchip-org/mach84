@@ -31,7 +31,8 @@ config["mach84"] = {
     rootPath: "./",
     environment: "browser",
     libs: [
-        "web/lib/**/*.js"
+        "web/lib/**/*.js",
+        "test/test.asm.js"
     ],
     src: [
         "web/js/**/*.js",

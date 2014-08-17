@@ -79,6 +79,13 @@ buster.testCase("m84.jit", (function() {
         buster.assert.equals(result.errors.length, 0);
     };
 
+    self["ind"] = function() {
+        var asm = a("jmp ($1234) \n nop");
+        var result = c(asm);
+        buster.assert.equals(result.code, [0x6c, 0x34, 0x12, 0xea]);
+        buster.assert.equals(result.errors.length, 0);
+    };
+
     self["imp"] = function() {
         var asm = a("clc \n nop");
         var result = c(asm);
@@ -97,6 +104,13 @@ buster.testCase("m84.jit", (function() {
         var asm = a("adc ($12), y \n nop");
         var result = c(asm);
         buster.assert.equals(result.code, [0x71, 0x12, 0xea]);
+        buster.assert.equals(result.errors.length, 0);
+    };
+
+    self["rel"] = function() {
+        var asm = a("bra $0000 \n nop");
+        var result = c(asm);
+        buster.assert.equals(result.code, [0x80, 0xfe, 0xea]);
         buster.assert.equals(result.errors.length, 0);
     };
 
@@ -119,6 +133,42 @@ buster.testCase("m84.jit", (function() {
         var result = c(asm);
         buster.assert.equals(result.code, [0xb6, 0x12, 0xea]);
         buster.assert.equals(result.errors.length, 0);
+    };
+
+    self["Word overflow"] = function() {
+        var asm = a("lda $10000");
+        var result = c(asm);
+        buster.assert.equals(result.errors.length, 1);
+        var error = result.errors[0];
+        buster.assert.equals(error.message, "Word overflow: $10000 (65536)");
+        buster.assert.equals(error.line, 1);
+    };
+
+    self["Word overflow, negative"] = function() {
+        var asm = a("lda $-1");
+        var result = c(asm);
+        buster.assert.equals(result.errors.length, 1);
+        var error = result.errors[0];
+        buster.assert.equals(error.message, "Word overflow: $-1 (-1)");
+        buster.assert.equals(error.line, 1);
+    };
+
+    self["Byte overflow"] = function() {
+        var asm = a("lda #$100");
+        var result = c(asm);
+        buster.assert.equals(result.errors.length, 1);
+        var error = result.errors[0];
+        buster.assert.equals(error.message, "Byte overflow: $100 (256)");
+        buster.assert.equals(error.line, 1);
+    };
+
+    self["Byte overflow, negative"] = function() {
+        var asm = a("lda #-129");
+        var result = c(asm);
+        buster.assert.equals(result.errors.length, 1);
+        var error = result.errors[0];
+        buster.assert.equals(error.message, "Byte overflow: $-81 (-129)");
+        buster.assert.equals(error.line, 1);
     };
 
     return self;
