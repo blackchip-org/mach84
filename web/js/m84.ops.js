@@ -758,5 +758,9 @@ m84.ops = m84.ops || function(spec) {
         instructions[op.name][op.mode] = op.code;
     });
 
-    return { opcodes: opcodes, instructions: instructions };
+    return {
+        opcodes: opcodes,
+        instructions: instructions,
+        lengths: lengths
+    };
 };

@@ -23,18 +23,12 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-/**
- * @module m84.debug
- */
 var m84 = m84 || {};
 m84.debug = m84.debug || {};
 
-/**
- * Debugging program counter.
- */
 m84.debug.pc = m84.debug.pc || function(parent) {
 
-    var self = {};
+    var self = _.cloneDeep(parent);
 
     self.fetchb = function() {
         m84.util.assertw(self.pc + 1);

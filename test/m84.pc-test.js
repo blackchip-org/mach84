@@ -40,8 +40,22 @@ buster.testCase("m84.pc", (function() {
         buster.assert.equals(it.fetchb(), 0x12);
     };
 
+    self["Fetch byte, offset"] = function() {
+        it.pc = 0x4001;
+        it.offset = 0x4000;
+        buster.assert.equals(it.fetchb(), 0x34);
+        buster.assert.equals(it.fetchb(), 0x12);
+    };
+
     self["Fetch word"] = function() {
         it.pc = 1;
+        buster.assert.equals(it.fetchw(), 0x1234);
+        buster.assert.equals(it.fetchw(), 0x5678);
+    };
+
+    self["Fetch word, offset"] = function() {
+        it.pc = 0x4001;
+        it.offset = 0x4000;
         buster.assert.equals(it.fetchw(), 0x1234);
         buster.assert.equals(it.fetchw(), 0x5678);
     };
@@ -52,8 +66,22 @@ buster.testCase("m84.pc", (function() {
         buster.assert.equals(it.nextb(), 0x12);
     };
 
+    self["Next byte, offset"] = function() {
+        it.pc = 0x4002;
+        it.offset = 0x4000;
+        buster.assert.equals(it.nextb(), 0x34);
+        buster.assert.equals(it.nextb(), 0x12);
+    };
+
     self["Next word"] = function() {
         it.pc = 2;
+        buster.assert.equals(it.nextw(), 0x1234);
+        buster.assert.equals(it.nextw(), 0x5678);
+    };
+
+    self["Next word, offset"] = function() {
+        it.pc = 0x4002;
+        it.offset = 0x4000;
         buster.assert.equals(it.nextw(), 0x1234);
         buster.assert.equals(it.nextw(), 0x5678);
     };
@@ -66,8 +94,28 @@ buster.testCase("m84.pc", (function() {
         buster.assert.equals(array[3], 0xaa);
     };
 
+    self["Store byte, offset"] = function() {
+        it.pc = 0x4002;
+        it.offset = 0x4000;
+        it.storeb(0xbb);
+        it.storeb(0xaa);
+        buster.assert.equals(array[2], 0xbb);
+        buster.assert.equals(array[3], 0xaa);
+    };
+
     self["Store word"] = function() {
         it.pc = 2;
+        it.storew(0xaabb);
+        it.storew(0xccdd);
+        buster.assert.equals(array[2], 0xbb);
+        buster.assert.equals(array[3], 0xaa);
+        buster.assert.equals(array[4], 0xdd);
+        buster.assert.equals(array[5], 0xcc);
+    };
+
+    self["Store word, offset"] = function() {
+        it.pc = 0x4002;
+        it.offset = 0x4000;
         it.storew(0xaabb);
         it.storew(0xccdd);
         buster.assert.equals(array[2], 0xbb);

@@ -29,23 +29,85 @@ m84.jit = m84.jit || function(spec) {
     spec = spec || {};
 
     var self = {};
-    var ops = spec.ops || m84.ops().instructions;
-    var mem = spec.mem || m84.mem();
+    var ops;
+    var lengths;
+
+    var mem = m84.mem();
+    var origin = spec.origin || 0;
     var seg = {
-        text: m84.pc({}, {mem: mem}),
+        text: m84.pc({}, {mem: mem, origin: origin, offset: origin}),
         data: m84.pc({}, {mem: mem})
     };
     var text = seg.text;
+    var errors = [];
+
+    var zp = {
+        abs: "zp",
+        abx: "zpx",
+        aby: "zpy"
+    };
+
+    var init = function() {
+        var o = spec.ops || m84.ops();
+        ops = o.instructions;
+        lengths = o.lengths;
+    };
+
+    var storew = function(value) {
+        if ( value > 0xffff || value < -Math.pow(2, 16 - 1) ) {
+            errors.push("Word overflow: $" + value.toString(16));
+            text.storew(0);
+        } else {
+            text.storew(value & 0xffff);
+        }
+    };
+
+    var storeb = function(value) {
+        if ( value > 0xff || value < -Math.pow(2, 8 - 1) ) {
+            errors.push("Byte overflow: $" + value.toString(16));
+            text.storeb(0);
+        } else {
+            text.storeb(value & 0xff);
+        }
+    };
 
     self.compile = function(asm) {
+        if ( asm.errors.length > 0 ) {
+            throw new Error(asm.errors.join("\n"));
+        }
+        errors.length = 0;
         _.each(asm.ast, function(node) {
             var op = node.op;
             var mode = node.mode;
             var opcode = ops[op][mode];
-            text.storeb(opcode);
+            switch ( lengths[mode] ) {
+                case 0:
+                    storeb(opcode);
+                    break;
+                case 1:
+                    storeb(opcode);
+                    storeb(m84.ast.evaluate(node.arg));
+                    break;
+                case 2:
+                    var value = m84.ast.evaluate(node.arg);
+                    if ( mode === "abs" || mode === "aby" || mode == "abx" ) {
+                        if ( value >= -Math.pow(2, 8 - 1) && value <= 0xff ) {
+                            mode = zp[mode];
+                            opcode = ops[op][mode];
+                            storeb(opcode);
+                            storeb(value);
+                            break;
+                        }
+                    }
+                    storeb(opcode);
+                    storew(value);
+                    break;
+            }
         });
+        return { code: mem.array, errors: errors };
     };
 
+    init();
     return self;
 
 };

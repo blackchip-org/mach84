@@ -31,36 +31,37 @@ m84.pc = m84.pc || function(self, spec) {
     var mem = spec.mem || m84.mem(spec);
     self = self || {};
 
-    self.pc = 0;
+    self.pc = spec.origin || 0;
+    self.offset = spec.offset || 0;
 
     self.fetchb = function() {
         self.pc += 1;
-        return mem.loadb(self.pc);
+        return mem.loadb(self.pc - self.offset);
     };
 
     self.fetchw = function() {
         self.pc += 2;
-        return mem.loadw(self.pc - 1);
+        return mem.loadw(self.pc - 1 - self.offset);
     };
 
     self.nextb = function() {
         self.pc += 1;
-        return mem.loadb(self.pc - 1);
+        return mem.loadb(self.pc - 1 - self.offset);
     };
 
     self.nextw = function() {
         self.pc += 2;
-        return mem.loadw(self.pc - 2);
+        return mem.loadw(self.pc - 2 - self.offset);
     };
 
     self.storeb = function(value) {
         self.pc += 1;
-        mem.storew(self.pc - 1, value);
+        mem.storeb(self.pc - 1 - self.offset, value);
     };
 
     self.storew = function(value) {
         self.pc += 2;
-        mem.storew(self.pc - 2, value);
+        mem.storew(self.pc - 2 - self.offset, value);
     };
 
     if ( spec.debug || spec.debug_pc ) {

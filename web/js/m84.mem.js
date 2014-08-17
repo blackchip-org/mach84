@@ -30,6 +30,7 @@ m84.mem = m84.mem || function(spec) {
     spec = spec || {};
     mem = spec.array || [];
     var self = {};
+    self.array = mem;
 
     self.loadb = function(address) {
         return mem[address] || 0;
