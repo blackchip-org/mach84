@@ -187,6 +187,8 @@ expression
         { $$ = $2; }
     | integer
         { $$ = $1; }
+    | SYMBOL
+        { $$ = { symbol: $1}; }
     ;
 
 integer

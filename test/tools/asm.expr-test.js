@@ -35,7 +35,7 @@ buster.testCase("asm.expr", (function() {
         a = m84.asm().parse;
     };
 
-    self["add"] = function() {
+    self["Add"] = function() {
         var result = a("lda 12 + 34");
         var arg = result.ast[0].arg;
         buster.assert.equals(arg.op, "+");
@@ -44,7 +44,7 @@ buster.testCase("asm.expr", (function() {
         buster.assert.equals(result.errors.length, 0);
     };
 
-    self["subtract"] = function() {
+    self["Subtract"] = function() {
         var result = a("lda 12 - 34");
         var arg = result.ast[0].arg;
         buster.assert.equals(arg.op, "-");
@@ -53,7 +53,7 @@ buster.testCase("asm.expr", (function() {
         buster.assert.equals(result.errors.length, 0);
     };
 
-    self["multiply"] = function() {
+    self["Multiply"] = function() {
         var result = a("lda 12 * 34");
         var arg = result.ast[0].arg;
         buster.assert.equals(arg.op, "*");
@@ -62,7 +62,7 @@ buster.testCase("asm.expr", (function() {
         buster.assert.equals(result.errors.length, 0);
     };
 
-    self["divide"] = function() {
+    self["Divide"] = function() {
         var result = a("lda 12 / 34");
         var arg = result.ast[0].arg;
         buster.assert.equals(arg.op, "floor");
@@ -131,6 +131,14 @@ buster.testCase("asm.expr", (function() {
         buster.assert.equals(arg.op, "-");
         buster.assert.equals(arg.val[0], 4);
         buster.assert.equals(arg.val[1], 2);
+        buster.assert.equals(result.errors.length, 0);
+    };
+
+    self["Symbol"] = function() {
+        var result = a("jsr k.primm");
+        console.log(result);
+        var arg = result.ast[0].arg;
+        buster.assert.equals(arg.symbol, "k.primm");
         buster.assert.equals(result.errors.length, 0);
     };
 
